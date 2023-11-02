@@ -1,0 +1,54 @@
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: skyblue;
+}
+
+body>div {
+    padding: 20px;
+    margin: auto;
+    width: inherit;
+    display: flex;
+    flex-direction: column;
+
+}
+
+body>div>video {
+    background-color: black;
+    display: block;
+}
+
+··········································
+.tab{
+width:650px;
+margin:10px auto;
+}
+.tab .taghead{overflow:hidden; 
+    border:1px solid black;
+    background-color: black;
+    height:39px;
+    width:650px;
+    
+}
+
+.taghead ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.taghead li{
+    width: 90px;
+    float: left;
+    height: 39px;
+    line-height: 39px;
+    padding: 0 20px;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    color: white;
+    background-color: black;
+}
+.taghead .tag{
+    background-color: white;
+    color: black;
+}
