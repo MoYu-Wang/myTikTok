@@ -8,13 +8,13 @@ import (
 )
 
 func LinkqiniuSDK() {
-	// 七牛云存储的 Access Key 和 Secret Key
+	// 七牛云存储中我的 Access Key 和 Secret Key
 	accessKey := "HgEHmfBLVUOU2ULPn9VU5ZQSJu9KeekVjonltQIF"
 	secretKey := "6fE3itlwcX_P3q5sDXnzs8YyYbkHynUfXd963oyb"
 	// 创建一个 MAC（管理凭证），用于签名
 	mac := qbox.NewMac(accessKey, secretKey)
 	// 要上传的空间名（Bucket 名称）
-	bucket := "AHUT_TikTok"
+	bucket := "myTikTok"
 	// 存储区域（Zone）
 	zone := &storage.ZoneHuanan
 	cfg := storage.Config{

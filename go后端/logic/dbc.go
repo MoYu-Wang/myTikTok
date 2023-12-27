@@ -1,6 +1,6 @@
 package logic
 
-func GetSportStr() string {
+func GetDBcStr() string {
 	var str string
 	str = ""
 

@@ -7,6 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Response_Game(ctx *gin.Context) {
-	ctx.String(http.StatusOK, logic.GetGameStr())
+func Response_DBc(ctx *gin.Context) {
+	ctx.String(http.StatusOK, logic.GetDBcStr())
 }

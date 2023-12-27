@@ -19,8 +19,8 @@ func OpenRoute() {
 	//定义路由和处理函数
 	r.GET("/top", service.Response_Top)
 	r.GET("/care", service.Response_Care)
-	r.GET("/sport", service.Response_Sport)
-	r.GET("/game", service.Response_Game)
+	r.GET("/directBroadcast", service.Response_DirectBroadcast)
+	r.GET("/shopping", service.Response_Shopping)
 	r.GET("/referee", service.Response_Referee)
 
 	//启动(端口为11316)

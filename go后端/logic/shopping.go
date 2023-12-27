@@ -1,6 +1,6 @@
 package logic
 
-func GetGameStr() string {
+func GetShoppingStr() string {
 	var str string
 	str = ""
 
