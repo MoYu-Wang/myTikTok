@@ -1,7 +1,7 @@
 package service
 
 import (
-	"WebVideoServer/logic"
+	"WebVideoServer/web/logic"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

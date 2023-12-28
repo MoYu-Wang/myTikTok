@@ -1,8 +1,6 @@
 package main
 
-import (
-	"WebVideoServer/route"
-)
+import "WebVideoServer/web/route"
 
 func main() {
 	route.OpenRoute()

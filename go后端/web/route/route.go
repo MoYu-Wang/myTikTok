@@ -1,7 +1,7 @@
 package route
 
 import (
-	"WebVideoServer/service"
+	"WebVideoServer/web/service"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -19,7 +19,7 @@ func OpenRoute() {
 	//定义路由和处理函数
 	r.GET("/top", service.Response_Top)
 	r.GET("/care", service.Response_Care)
-	r.GET("/directBroadcast", service.Response_DirectBroadcast)
+	r.GET("/directBroadcast", service.Response_DBc)
 	r.GET("/shopping", service.Response_Shopping)
 	r.GET("/referee", service.Response_Referee)
 
