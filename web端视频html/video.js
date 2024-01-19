@@ -1,12 +1,10 @@
-//项目服务器IP和端口
-// var myURL = "http://124.221.123.251:11316";
+//项目服务器IP和端口(目前没买)
 
-//我本地IP和端口
+//本地IP和端口
 var myURL = "http://192.168.56.1:11316";
 
 //初始化
-var s = document.getElementById("s");
-//let arr = ["http://vjs.zencdn.net/v/oceans.mp4", "http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4","https://stream7.iqilu.com/10339/upload_transcode/202002/18/20200218114723HDu3hhxqIT.mp4","https://stream7.iqilu.com/10339/upload_transcode/202002/18/20200218093206z8V1JuPlpe.mp4"]
+var index = 0;
 var arr = [];
 let current = 0;
 
@@ -14,8 +12,8 @@ let current = 0;
 var myMap = new Map();
 myMap.set("热点","top");
 myMap.set("关注","care");
-myMap.set("体育","sport");
-myMap.set("游戏","game");
+myMap.set("直播","dBc");
+myMap.set("商城","shopping");
 myMap.set("推荐","referee");
 
 
@@ -30,8 +28,7 @@ function getRequest(url){
             if (xhr.status == 200) {
                 // 处理成功的响应
                 console.log("服务器响应:\n"+xhr.responseText);
-                strArray = translateData(xhr.responseText);
-                updateArray(strArray);
+                OKResponse(xhr.responseText);
             }else{
                 console.log("服务器未响应,http状态码: " + xhr.status + " 请求当前状态: " + xhr.readyState);
                 alert("请求超时,服务器未响应")
@@ -40,6 +37,17 @@ function getRequest(url){
         }
     };
     xhr.send();
+}
+
+function OKResponse(responseText){
+    if(index == 0||index == 1||index == 4){
+        strArray = translateData(responseText);
+        updateArray(strArray);
+    }else if(index == 2){
+
+    }else if(index == 3){
+
+    }
 }
 
 
@@ -59,6 +67,8 @@ function updateArray(strArray){
         arr.push(strArray[i]);
     }
     current = (current + arr.length)%arr.length;
+
+    //更新视频播放器
     document.getElementById("video").innerHTML = `
         <source id="s" src="${arr[current]}" type="video/mp4">
     `;
@@ -99,20 +109,61 @@ window.onkeydown = function (e)
 window.onload = function(){
     var header = document.querySelector('.taghead')
     var lis = header.querySelectorAll('li')
+    
+    //各标题点击事件(发送get请求)
     for(var i = 0;i < lis.length;i++){
+        //设置序号
         lis[i].setAttribute('index',i)
+        //注册点击事件
         lis[i].onclick=function(){
             for(var j = 0;j < lis.length;j++){
                 lis[j].className = '' 
             }
             this.className = 'tag'
-            var index = this.getAttribute('index')
+            //获得序号
+            index = this.getAttribute('index')
+            //根据序号发送get请求
             getRequest(myURL + "/" + myMap.get(this.textContent));
+            //在网站上显示发送的请求以便测试
             console.log(myURL + "/" + myMap.get(this.textContent));
+
+            //每个标签设置不同主体
+            if(index == 0||index == 1||index == 4){
+                document.getElementById("mainbody").innerHTML = `
+                    <video id="video" width="652" height="700" controls autoplay loop>
+                        <source id="s" src="" type="video/mp4">
+                    </video>
+                `;
+            }else if(index == 2){
+                document.getElementById("mainbody").innerHTML = `
+                    <h1>暂未开发</h1>
+                `;
+            }else if(index == 3){
+                document.getElementById("mainbody").innerHTML = `
+                    <h1>暂未开发</h1>
+                `;
+            }else {
+                document.getElementById("mainbody").innerHTML = `
+                    <h1>暂未开发</h1>
+                `;
+            }
+
         }
     }
+
+    //初始化窗口
+    initWindows();
+}
+
+function initWindows(){
     //默认发送热点频道请求
     getRequest(myURL + "/" + myMap.get("热点"));
+    //设置主体内容
+    document.getElementById("mainbody").innerHTML = `
+        <video id="video" width="652" height="700" controls autoplay loop>
+            <source id="s" src="" type="video/mp4">
+        </video>
+    `;
     //加载视频
     if(arr.length == 0) return;
     current = (current + arr.length)%arr.length;
@@ -121,4 +172,3 @@ window.onload = function(){
     `;
     document.getElementById("video").load();
 }
-

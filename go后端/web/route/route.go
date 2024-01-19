@@ -17,11 +17,11 @@ func OpenRoute() {
 	r.Use(cors.New(config))
 
 	//定义路由和处理函数
-	r.GET("/top", service.Response_Top)
-	r.GET("/care", service.Response_Care)
-	r.GET("/directBroadcast", service.Response_DBc)
-	r.GET("/shopping", service.Response_Shopping)
-	r.GET("/referee", service.Response_Referee)
+	r.GET("/top", service.Response_Top)           //热点
+	r.GET("/care", service.Response_Care)         //关注
+	r.GET("/dBc", service.Response_DBc)           //直播
+	r.GET("/shopping", service.Response_Shopping) //商城
+	r.GET("/referee", service.Response_Referee)   //推荐
 
 	//启动(端口为11316)
 	r.Run(":11316")
