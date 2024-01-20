@@ -17,11 +17,17 @@ func OpenRoute() {
 	r.Use(cors.New(config))
 
 	//定义路由和处理函数
-	r.GET("/top", service.Response_Top)           //热点
-	r.GET("/care", service.Response_Care)         //关注
-	r.GET("/dBc", service.Response_DBc)           //直播
-	r.GET("/shopping", service.Response_Shopping) //商城
-	r.GET("/referee", service.Response_Referee)   //推荐
+	apiRouter := r.Group("/myTikTok")
+	{
+		apiRouter.POST("/user/register") //注册用户
+		apiRouter.POST("/user/login")    //用户登录
+
+		apiRouter.GET("/top", service.Response_Top)           //热点
+		apiRouter.GET("/care", service.Response_Care)         //关注
+		apiRouter.GET("/dBc", service.Response_DBc)           //直播
+		apiRouter.GET("/shopping", service.Response_Shopping) //商城
+		apiRouter.GET("/referee", service.Response_Referee)   //推荐
+	}
 
 	//启动(端口为11316)
 	r.Run(":11316")
