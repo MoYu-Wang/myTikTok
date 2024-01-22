@@ -8,5 +8,5 @@ import (
 func InsertUser(ctx context.Context, user *dao.User) error {
 	db := GetDB(ctx)
 
-	return db.Table("users").Create(user).Error
+	return db.Table("users").Create(&user).Error
 }

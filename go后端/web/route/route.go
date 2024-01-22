@@ -2,6 +2,7 @@ package route
 
 import (
 	"WebVideoServer/web/service"
+	"net/http"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -19,8 +20,8 @@ func OpenRoute() {
 	//定义路由和处理函数
 	apiRouter := r.Group("/myTikTok")
 	{
-		apiRouter.POST("/user/register") //注册用户
-		apiRouter.POST("/user/login")    //用户登录
+		apiRouter.POST("/user/register", service.UserRegister) //注册用户
+		apiRouter.POST("/user/login", service.UserLogin)       //用户登录
 
 		apiRouter.GET("/top", service.Response_Top)           //热点
 		apiRouter.GET("/care", service.Response_Care)         //关注
@@ -29,6 +30,11 @@ func OpenRoute() {
 		apiRouter.GET("/referee", service.Response_Referee)   //推荐
 	}
 
+	r.NoRoute(func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"msg": "404",
+		})
+	})
 	//启动(端口为11316)
 	r.Run(":11316")
 }
