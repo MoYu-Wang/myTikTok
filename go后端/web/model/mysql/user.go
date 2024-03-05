@@ -17,7 +17,7 @@ func InsertUser(ctx context.Context, user *dao.User) error {
 func UserIsExist(ctx context.Context, user *io.ParamRegister) (bool, error) {
 	db := GetDB(ctx)
 	var ret int64
-	err := db.Table("User").Where("Uname=?", user.Username).Count(&ret).Error
+	err := db.Table("User").Where("Username=?", user.Username).Count(&ret).Error
 	if err != nil {
 		return false, err
 	}
@@ -31,5 +31,5 @@ func UserIsExist(ctx context.Context, user *io.ParamRegister) (bool, error) {
 func UpdateUserPassword(ctx context.Context, user *dao.User) error {
 	db := GetDB(ctx)
 
-	return db.Table("User").Where("UID=?", user.UID).Update("PassWord", user.PassWord).Error
+	return db.Table("User").Where("UserID=?", user.UserID).Update("PassWord", user.PassWord).Error
 }

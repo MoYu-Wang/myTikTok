@@ -172,3 +172,11 @@ function initWindows(){
     `;
     document.getElementById("video").load();
 }
+
+//用户右上角信息
+const userAvatar = document.getElementById('user-avatar');
+const userMenu = document.getElementById('user-menu');
+
+userAvatar.addEventListener('click', () => {
+    userMenu.style.display = userMenu.style.display === 'none' ? 'block' : 'none';
+});

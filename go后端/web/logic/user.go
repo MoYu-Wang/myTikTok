@@ -20,8 +20,8 @@ func UserRegister(ctx *gin.Context, p *io.ParamRegister) error {
 	userID := snowflake.GenID()
 	//构建一个user实例
 	user := &dao.User{
-		UID:      userID,
-		Uname:    p.Username,
+		UserID:   userID,
+		Username: p.Username,
 		PassWord: p.Password,
 	}
 	//保存进数据库
@@ -30,5 +30,8 @@ func UserRegister(ctx *gin.Context, p *io.ParamRegister) error {
 
 // 用户登录
 func UserLogin(ctx *gin.Context) {
+	//判断用户ID是否存在
+
+	//判断用户密码是否正确
 
 }

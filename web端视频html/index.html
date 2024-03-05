@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My_Tik-Tok_Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        input[type="text"], input[type="password"], input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2 style="text-align: center;">My_Tik-Tok登录界面</h2>
+        <form action="welcome.html" method="post" onsubmit="return Login()">
+            <label for="userID">用户名(用户ID):</label>
+            <input type="text" id="userID" name="userID" required><br>
+            <label for="password">密码:</label>
+            <input type="password" id="password" name="password" required><br>
+            <input type="submit" value="登录" placeholder="center">
+        </form>
+        <form action="register.html">
+            <input type="submit" value="注册">
+        </form>
+        <form action="video.html" method="post" onsubmit="return Watch()">
+            <input type="submit" value="游客登录">
+        </form>
+    </div>
+
+    <script>
+        function Login() {
+            var username = document.getElementById("userID").value;
+            var password = document.getElementById("password").value;
+
+            // 在这里可以添加更多的验证逻辑
+
+
+
+            return true;
+        }
+    </script>
+</body>
+</html>

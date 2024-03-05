@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web端短视频界面</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #user-avatar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: #333;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        #user-menu {
+            position: fixed;
+            top: 40px;
+            right: 80px;
+            width: 150px;
+            background: #f9f9f9;
+            padding: 10px;
+            display: none;
+        }
+        .menu-item {
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+            height: 80%;
+        }
+        .top-layer, .bottom-layer {
+            width: 100%;
+            height: 20%;
+            display: flex;
+            justify-content: space-around;
+        }
+        .middle-layer {
+            width: 100%;
+            height: 60%;
+        }
+    </style>
+</head>
+<body>
+    <div id="user-avatar"></div>
+    <div id="user-menu">
+        <div class="menu-item">个人中心</div>
+        <div class="menu-item">我的订单</div>
+        <div class="menu-item">历史记录</div>
+    </div>
+    <div class="main-content">
+        <div class="top-layer">
+            <div>热点</div>
+            <div>关注</div>
+            <div>直播</div>
+            <div>商城</div>
+            <div>推荐</div>
+        </div>
+        <div class="middle-layer">
+            主体内容区域
+        </div>
+        <div class="bottom-layer">
+            底部内容
+        </div>
+    </div>
+
+    <script>
+        const userAvatar = document.getElementById('user-avatar');
+        const userMenu = document.getElementById('user-menu');
+
+        userAvatar.addEventListener('click', () => {
+            userMenu.style.display = userMenu.style.display === 'none' ? 'block' : 'none';
+        });
+    </script>
+</body>
+</html>

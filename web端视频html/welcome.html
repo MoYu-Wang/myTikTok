@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome Page</title>
+</head>
+<body>
+    <h2 style="text-align: center;">Welcome, <span id="username"></span>!</h2>
+
+    <script>
+        // 从 URL 参数中获取用户名
+        var urlParams = new URLSearchParams(window.location.search);
+        var username = urlParams.get("username");
+        alert(username)
+
+        // 在页面中展示用户名
+        document.getElementById("username").innerText = username;
+    </script>
+</body>
+</html>
