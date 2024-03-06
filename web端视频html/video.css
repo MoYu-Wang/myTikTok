@@ -1,4 +1,8 @@
 body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+
     display: flex;
     flex-direction: column;
     background-color: white;
@@ -18,7 +22,8 @@ body>div>video {
     display: block;
 }
 
-·········································· .tab {
+
+.tab {
     width: 650px;
     margin: 10px auto;
 }
@@ -55,24 +60,54 @@ body>div>video {
     background-color: white;
     color: black;
 }
+/*  ********************************  */
 
-#user-avatar {
+#header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px;
     position: fixed;
-    top: 10px;
-    right: 10px;
-    width: 25px;
-    height: 25px;
-    background: #93eebb;
+    width: 50px;
+    top: 0;
+    right: 0;
+}
+#user_avatar {
+    width: 50px;
+    height: 50px;
+    background-color: rgb(60, 240, 99);
     border-radius: 50%;
     cursor: pointer;
 }
 
-#user-menu {
-    position: fixed;
-    top: 40px;
-    right: 80px;
-    width: 150px;
-    background: #f9f9f9;
+#user_menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: calc(100vh);
+    background-color: #888888; 
+    transform: translateX(100%);
+    transition: transform 0.5s ease-in-out;
+    padding-top: 50px;
+    padding-left: 20px;
+    padding-right: 40px;
+    box-sizing: border-box;
+}
+
+#user_menu.active {
+    transform: translateX(0);
+}
+
+
+input[type="menu_item"] {
+    width: 100%;
     padding: 10px;
-    display: none;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
 }

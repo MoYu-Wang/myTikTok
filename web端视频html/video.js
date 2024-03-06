@@ -173,10 +173,19 @@ function initWindows(){
     document.getElementById("video").load();
 }
 
-//用户右上角信息
-const userAvatar = document.getElementById('user-avatar');
-const userMenu = document.getElementById('user-menu');
+//右上角用户信息
+const userAvatar = document.getElementById('user_avatar');
+const userMenu = document.getElementById('user_menu');
 
-userAvatar.addEventListener('click', () => {
-    userMenu.style.display = userMenu.style.display === 'none' ? 'block' : 'none';
+userAvatar.addEventListener('click', (event) => {
+    userMenu.classList.toggle('active');
+    event.stopPropagation(); // 阻止事件冒泡
+});
+
+userMenu.addEventListener('click', (event) => {
+    event.stopPropagation(); // 阻止事件冒泡
+});
+
+document.addEventListener('click', () => {
+    userMenu.classList.remove('active');
 });
