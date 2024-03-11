@@ -4,18 +4,24 @@ package io
 
 //注册参数
 type ParamRegister struct {
-	Username string
-	Password string
+	UserName string
+	PassWord string
 }
 
 //登录参数
 type ParamLogin struct {
-	Username string
-	Password string
+	UserID   int64
+	PassWord string
+}
+
+//修改参数
+type ParamUpdate struct {
+	UserID   int64
+	PassWord string
 }
 
 //用户信息请求参数
 type UserInfoReq struct {
-	UID   int64
-	Token string
+	UserID int64
+	Token  string
 }

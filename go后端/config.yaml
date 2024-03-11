@@ -1,0 +1,9 @@
+# MySQL 连接配置
+mysql:
+  host: localhost            # MySQL my服务器主机名
+  db: mytiktok       # 要连接的数据库名称
+  user: MyTikTok             # MySQL 用户名
+  password: 2020tiktok     # MySQL 密码
+  port: 3306                 # MySQL 服务器端口号，默认为 3306
+  maxOpenConns: 20        # 最大能打开连接数
+  maxIdleConns: 10        # 最大空闲连接数

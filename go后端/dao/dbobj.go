@@ -5,21 +5,37 @@ import "gorm.io/gorm"
 //用户表
 type User struct {
 	gorm.Model
-	UserID   int64  `gorm:"column:UserID;not null;comment:用户名uid"`
-	Username string `gorm:"column:Username;not null;comment:昵称"`
+	UserID   int64  `gorm:"column:UserID;not null;comment:用户uid"`
+	UserName string `gorm:"column:UserName;not null;comment:昵称"`
 	PassWord string `gorm:"column:PassWord;not null;comment:密码"`
 }
 
 //视频表
-type Vedio struct {
+type Video struct {
 	gorm.Model
-	VedioID    int64    `gorm:"column:VedioID;comment:视频vid"`
-	Vedioname  string   `gorm:"column:Vedioname;comment:视频名称"`
-	Vediolink  string   `gorm:"column:Vediolink;comment:视频链接"`
-	UserID     int64    `gorm:"column:UserID;comment:发布人uid"`
-	Tag        []string `gorm:"column:Tag;comment:视频标签数组"`
-	Weight     float64  `gorm:"column:Weight;comment:视频初始权重"`
-	PublicTime int64    `gorm:"column:PublicTime;comment:视频开始发布时间"`
+	VideoID    int64   `gorm:"column:VideoID;comment:视频vid"`
+	VideoName  string  `gorm:"column:VideoName;comment:视频名称"`
+	VideoLink  string  `gorm:"column:VideoLink;comment:视频链接"`
+	UserID     int64   `gorm:"column:UserID;comment:发布人uid"`
+	Tags       string  `gorm:"column:Tags;comment:视频所有标签"`
+	Weight     float32 `gorm:"column:Weight;comment:视频初始权重"`
+	PublicTime int64   `gorm:"column:PublicTime;comment:视频开始发布时间"`
+}
+
+//喜爱列表
+type Favorite struct {
+	gorm.Model
+	UserID  int64 `gorm:"column:UserID;not null;comment:用户uid"`
+	VideoID int64 `gorm:"column:VideoID;comment:视频vid"`
+}
+
+//视频评论表
+type CommentList struct {
+	gorm.Model
+	UserID      int64  `gorm:"column:UserID;not null;comment:评论用户uid"`
+	VideoID     int64  `gorm:"column:VideoID;comment:视频vid"`
+	CommentText string `gorm:"column:CommentText;comment:评论文本"`
+	CommentTime int64  `gorm:"column:CommentTime;comment:评论时间"`
 }
 
 //关注列表
@@ -37,16 +53,11 @@ type UserLookTag struct {
 	PlayTime int    `gorm:"column:PlayTime;comment:标签被播放时间(单位:时间戳)"`
 }
 
-// //视频热度表
-// type Top struct {
-// 	VID        int64   `gorm:"column:VID;comment:视频vid"`
-// 	PublicTime int64   `gorm:"column:PublicTime;comment:视频发布时间戳"`
-// }
-
 //用户观看历史记录
 type History struct {
 	gorm.Model
-	UserID  int64 `gorm:"column:UserID;not null;comment:用户uid"`
-	VedioID int64 `gorm:"column:VedioID;not null;comment:视频vid"`
-	Cnt     int64 `gorm:"column:Cnt;comment:播放次数"`
+	UserID   int64 `gorm:"column:UserID;not null;comment:用户uid"`
+	VideoID  int64 `gorm:"column:VideoID;not null;comment:视频vid"`
+	Cnt      int64 `gorm:"column:Cnt;comment:播放次数"`
+	LastTime int64 `gorm:"column:LastTime;comment:上一次播放时间"`
 }
