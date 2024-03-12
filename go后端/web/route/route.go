@@ -20,8 +20,17 @@ func OpenRoute() {
 	//定义路由和处理函数
 	apiRouter := r.Group("/myTikTok")
 	{
-		apiRouter.POST("/user/register", service.UserRegister) //注册用户
-		apiRouter.POST("/user/login", service.UserLogin)       //用户登录
+		userRouter := apiRouter.Group("/user")
+		{
+			userRouter.POST("register", service.UserRegister)    //注册用户
+			userRouter.POST("login", service.UserLogin)          //用户登录
+			userRouter.POST("update", service.UserUpdate)        //用户修改信息
+			userRouter.POST("base", service.UserBase)            //获取本用户基本信息
+			userRouter.POST("forgetpwd", service.PasswordForget) //找回密码
+
+			userRouter.GET("info", service.UserInfo) //获取用户信息
+
+		}
 
 		apiRouter.GET("/top", service.Response_Top)           //热点
 		apiRouter.GET("/care", service.Response_Care)         //关注

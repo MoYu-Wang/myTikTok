@@ -1,18 +1,15 @@
 package dao
 
-import "gorm.io/gorm"
-
 //用户表
 type User struct {
-	gorm.Model
 	UserID   int64  `gorm:"column:UserID;not null;comment:用户uid"`
 	UserName string `gorm:"column:UserName;not null;comment:昵称"`
 	PassWord string `gorm:"column:PassWord;not null;comment:密码"`
+	IphoneID string `gorm:"column:IphoneID;not null;comment:手机号"`
 }
 
 //视频表
 type Video struct {
-	gorm.Model
 	VideoID    int64   `gorm:"column:VideoID;comment:视频vid"`
 	VideoName  string  `gorm:"column:VideoName;comment:视频名称"`
 	VideoLink  string  `gorm:"column:VideoLink;comment:视频链接"`
@@ -24,14 +21,12 @@ type Video struct {
 
 //喜爱列表
 type Favorite struct {
-	gorm.Model
 	UserID  int64 `gorm:"column:UserID;not null;comment:用户uid"`
 	VideoID int64 `gorm:"column:VideoID;comment:视频vid"`
 }
 
 //视频评论表
 type CommentList struct {
-	gorm.Model
 	UserID      int64  `gorm:"column:UserID;not null;comment:评论用户uid"`
 	VideoID     int64  `gorm:"column:VideoID;comment:视频vid"`
 	CommentText string `gorm:"column:CommentText;comment:评论文本"`
@@ -40,14 +35,12 @@ type CommentList struct {
 
 //关注列表
 type CareList struct {
-	gorm.Model
 	UserID     int64 `gorm:"column:UserID;comment:用户uid"`
 	CareUserID int64 `gorm:"column:CareUserID;comment:被关注用户uid"`
 }
 
 //用户观看标签表
 type UserLookTag struct {
-	gorm.Model
 	UserID   int64  `gorm:"column:UserID;comment:用户uid"`
 	Tag      string `gorm:"column:Tag;comment:用户观看标签"`
 	PlayTime int    `gorm:"column:PlayTime;comment:标签被播放时间(单位:时间戳)"`
@@ -55,7 +48,6 @@ type UserLookTag struct {
 
 //用户观看历史记录
 type History struct {
-	gorm.Model
 	UserID   int64 `gorm:"column:UserID;not null;comment:用户uid"`
 	VideoID  int64 `gorm:"column:VideoID;not null;comment:视频vid"`
 	Cnt      int64 `gorm:"column:Cnt;comment:播放次数"`

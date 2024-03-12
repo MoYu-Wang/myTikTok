@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"WebVideoServer/common"
+	"WebVideoServer/dao"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,16 +16,16 @@ type Response struct {
 
 type UserLoginResponse struct {
 	Response
-	UserId int64  `json:"user_id"`
+	UserID int64  `json:"userID"`
 	Token  string `json:"token"`
 }
 
-type User struct {
-	CareCount int64  `json:"care_count"` // 关注总数
-	FansCount int64  `json:"fans_count"` // 粉丝总数
-	ID        int64  `json:"id"`         // 用户id
-	IsCare    bool   `json:"is_care"`    // true-已关注，false-未关注
-	Name      string `json:"name"`       // 用户名称
+type UserInfo struct {
+	CareCount int64  `json:"careCount"` // 关注总数
+	FansCount int64  `json:"fansCount"` // 粉丝总数
+	ID        int64  `json:"id"`        // 用户id
+	IsCare    bool   `json:"isCare"`    // true-已关注，false-未关注
+	Name      string `json:"name"`      // 用户名称
 }
 
 // ResponseData 通用的响应内容
@@ -37,15 +38,26 @@ type ResponseData struct {
 // UserInfoResp 用户信息返回值
 type UserInfoResp struct {
 	Response
-	User User `json:"user"`
+	UserInfo UserInfo `json:"userInfo"`
+}
+
+// UserBaseResp 本用户基本信息返回值
+type UserBaseResp struct {
+	Response
+	User dao.User `json:"user"`
+}
+
+type PasswordResp struct {
+	Response
+	Password string
 }
 
 // ResponseSuccessLogin 登录成功
 func ResponseSuccessLogin(c *gin.Context, token string) {
-	userId, _ := c.Get("userId")
+	userID, _ := c.Get("UserID")
 	c.JSON(http.StatusOK, &UserLoginResponse{
 		Response: Response{common.CodeSuccess, common.CodeSuccess.Msg()},
-		UserId:   userId.(int64),
+		UserID:   userID.(int64),
 		Token:    token,
 	})
 }
@@ -59,5 +71,15 @@ func ResponseError(c *gin.Context, code common.ResCode) {
 
 // ResponseSuccessUserInfo 返回用户信息
 func ResponseSuccessUserInfo(c *gin.Context, resp *UserInfoResp) {
+	c.JSON(http.StatusOK, resp)
+}
+
+// ResponseSuccessUserBase 返回用户基本信息
+func ResponseSuccessUserBase(c *gin.Context, resp *UserBaseResp) {
+	c.JSON(http.StatusOK, resp)
+}
+
+// 返回用户密码
+func ResponseSuccessPassword(c *gin.Context, resp *PasswordResp) {
 	c.JSON(http.StatusOK, resp)
 }

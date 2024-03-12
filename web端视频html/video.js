@@ -1,12 +1,16 @@
 //项目服务器IP和端口(目前没买)
 
 //本地IP和端口
-var myURL = "http://192.168.56.1:11316/myTikTok/user/login";
+var myURL = "http://192.168.56.1:11316/myTikTok";
 
 //初始化
 var index = 0;
 var arr = [];
 let current = 0;
+//获取登录用户信息
+var data = JSON.parse(localStorage.getItem("data"));
+
+// console.log(data)
 
 //频道英文映射表
 var myMap = new Map();
