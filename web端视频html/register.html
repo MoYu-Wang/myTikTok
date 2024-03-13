@@ -97,7 +97,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    if(data.status_code != 0){
+                    if(data.status_code != 1081){
                         alert(data.status_msg);
                         return
                     }

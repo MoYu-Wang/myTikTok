@@ -11,12 +11,11 @@
     <div id="header">
         <div id="user_avatar"></div>
         <div id="user_menu">
-            <input type="menu_item" value="个人中心" readonly>
-            <input type="menu_item" value="历史记录" readonly>
-            <input type="menu_item" value="我的订单" readonly>
-            <input type="menu_item" value="修改个人信息" readonly>
-            <input type="menu_item" value="退出登录" readonly>
-            <input type="menu_item" value="注销账户" readonly>
+            <input type="menu_item" value="个人中心" readonly onclick="UserInfo()">
+            <input type="menu_item" value="历史记录" readonly onclick="HistoryVideo()">
+            <input type="menu_item" value="我的订单" readonly onclick="MyOrder()">
+            <input type="menu_item" id="userlogin" value="退出登录" readonly onclick="UserExit()">
+            <input type="menu_item" value="注销账户" readonly onclick="UserDelete()">
         </div>
     </div>
 

@@ -30,5 +30,20 @@ func InsertVideoComment(ctx context.Context, comment dao.CommentList) error {
 // 删除评论(不确定)
 func DeleteVideoComment(ctx context.Context, comment dao.CommentList) error {
 	db := GetDB(ctx)
-	return db.Table("CommentList").Delete(&dao.CommentList{}, comment).Error
+	commentList := dao.CommentList{}
+	return db.Table("CommentList").Delete(&commentList, comment).Error
+}
+
+// 删除用户所有评论
+func DeleteUserALLComment(ctx context.Context, userID int64) error {
+	db := GetDB(ctx)
+	commentList := dao.CommentList{}
+	return db.Table("CommentList").Where("UserID=?", userID).Delete(&commentList).Error
+}
+
+// 删除视频所有评论
+func DeleteVideoALLComment(ctx context.Context, videoID int64) error {
+	db := GetDB(ctx)
+	commentList := dao.CommentList{}
+	return db.Table("CommentList").Where("VideoID=?", videoID).Delete(&commentList).Error
 }

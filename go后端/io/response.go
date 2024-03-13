@@ -16,8 +16,14 @@ type Response struct {
 
 type UserLoginResponse struct {
 	Response
-	UserID int64  `json:"userID"`
-	Token  string `json:"token"`
+	UserID   int64  `json:"userID"`
+	UserName string `json:"userName"`
+	Token    string `json:"token"`
+}
+
+type UserRegisterResponse struct {
+	Response
+	UserID int64 `json:"userID"`
 }
 
 type UserInfo struct {
@@ -52,20 +58,36 @@ type PasswordResp struct {
 	Password string
 }
 
-// ResponseSuccessLogin 登录成功
-func ResponseSuccessLogin(c *gin.Context, token string) {
-	userID, _ := c.Get("UserID")
-	c.JSON(http.StatusOK, &UserLoginResponse{
-		Response: Response{common.CodeSuccess, common.CodeSuccess.Msg()},
-		UserID:   userID.(int64),
-		Token:    token,
-	})
-}
-
 // ResponseError 响应错误
 func ResponseError(c *gin.Context, code common.ResCode) {
 	c.JSON(http.StatusOK, &ResponseData{
 		Response: Response{code, code.Msg()},
+	})
+}
+
+// ResponseSuccess 响应成功
+func ResponseSuccess(c *gin.Context, code common.ResCode) {
+	c.JSON(http.StatusOK, &ResponseData{
+		Response: Response{code, code.Msg()},
+	})
+}
+
+func ResponseSuccessRegister(c *gin.Context, userID int64) {
+	c.JSON(http.StatusOK, &UserRegisterResponse{
+		Response: Response{common.CodeUserRegisterSuccess, common.CodeUserRegisterSuccess.Msg()},
+		UserID:   userID,
+	})
+}
+
+// ResponseSuccessLogin 登录成功
+func ResponseSuccessLogin(c *gin.Context, token string) {
+	userID, _ := c.Get("UserID")
+	userName, _ := c.Get("UserName")
+	c.JSON(http.StatusOK, &UserLoginResponse{
+		Response: Response{common.CodeSuccess, common.CodeSuccess.Msg()},
+		UserID:   userID.(int64),
+		UserName: userName.(string),
+		Token:    token,
 	})
 }
 

@@ -25,7 +25,7 @@ func UserRegister(ctx *gin.Context, p *io.ParamRegister) common.ResCode {
 	//生成UID 雪花ID%10000000000
 	userID := snowflake.GenID() % 10000000000
 	//判断该UID是否存在,如果存在,重新生成
-	for f, err := mysql.QueryUserIsExist(ctx, userID); f; {
+	for f, err := mysql.QueryUserIDIsExist(ctx, userID); f; {
 		if err != nil {
 			return common.CodeMysqlFailed
 		}
@@ -51,7 +51,7 @@ func UserRegister(ctx *gin.Context, p *io.ParamRegister) common.ResCode {
 // 用户id登录
 func UserIDLogin(ctx *gin.Context, p *io.ParamLogin) (string, common.ResCode) {
 	//判断用户ID是否存在
-	f, err := mysql.QueryUserIsExist(ctx, p.UserID)
+	f, err := mysql.QueryUserIDIsExist(ctx, p.UserID)
 	if err != nil {
 		return "", common.CodeMysqlFailed
 	}
@@ -189,16 +189,94 @@ func UpdateUserBase(ctx *gin.Context, p *io.ParamUpdate, claim *jwt.MyClaims) (*
 // 找回密码
 func QueryPassword(ctx *gin.Context, p *io.ParamForgetpwd) (string, common.ResCode) {
 	var pwd string
-	var err error
 	//判断是用户id找回还是手机号找回
 	if p.IphoneID != "" {
+		//判断该手机号是否存在
+		f, err := mysql.QueryIphoneIDIsExist(ctx, p.IphoneID)
+		if err != nil {
+			return "", common.CodeMysqlFailed
+		}
+		if !f {
+			return "", common.CodeIphoneNotExist
+		}
+		//找回密码
 		if pwd, err = mysql.QueryPasswordByIphoneID(ctx, p.IphoneID); err != nil {
 			return "", common.CodeMysqlFailed
 		}
 	} else {
+		//判断该id是否存在
+		f, err := mysql.QueryUserIDIsExist(ctx, p.UserID)
+		if err != nil {
+			return "", common.CodeMysqlFailed
+		}
+		if !f {
+			return "", common.CodeInvalidLoginUserID
+		}
 		if pwd, err = mysql.QueryPasswordByUID(ctx, p.UserID); err != nil {
 			return "", common.CodeMysqlFailed
 		}
 	}
+
 	return pwd, common.CodeSuccess
+}
+
+// 用户注销
+func DeleteUser(ctx *gin.Context, p *io.UserInfoReq) common.ResCode {
+	//注销用户需要先删除其他表关于该用户的数据，最后再删除user表中数据
+
+	//1.删除用户发布视频部分
+	//查找用户发布的所有视频id
+	vids, err := mysql.QueryVideoIDByUserID(ctx, p.UserID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	for _, vid := range vids {
+		//删除commentlist表中VideoID=vid数据
+		if err := mysql.DeleteVideoALLComment(ctx, vid); err != nil {
+			return common.CodeMysqlFailed
+		}
+		//删除favorite表中VideoID=vid数据
+		if err := mysql.DeleteVideoALLFavorite(ctx, vid); err != nil {
+			return common.CodeMysqlFailed
+		}
+		//删除history表中VideoID=vid数据
+		if err := mysql.DeleteVideoALLHistory(ctx, vid); err != nil {
+			return common.CodeMysqlFailed
+		}
+		//删除video表中Video=vid数据
+		if err := mysql.DeleteVideoByVID(ctx, vid); err != nil {
+			return common.CodeInvalidLoginInfo
+		}
+	}
+
+	//2.删除用户部分
+	//删除userlooktag表中关于UserID=uid数据
+	if err := mysql.DeleteUserLookALLTag(ctx, p.UserID); err != nil {
+		return common.CodeMysqlFailed
+	}
+	//删除carelist表中UserId=uid数据
+	if err := mysql.DeleteUserALLCare(ctx, p.UserID); err != nil {
+		return common.CodeMysqlFailed
+	}
+	//删除carelist表中CareUserID=uid数据
+	if err := mysql.DeleteUserALLFans(ctx, p.UserID); err != nil {
+		return common.CodeInvalidLoginInfo
+	}
+	//删除commentlist表中UserID=uid数据
+	if err := mysql.DeleteUserALLComment(ctx, p.UserID); err != nil {
+		return common.CodeMysqlFailed
+	}
+	//删除favorite表中UserID=uid数据
+	if err := mysql.DeleteUserALLFavorite(ctx, p.UserID); err != nil {
+		return common.CodeMysqlFailed
+	}
+	//删除history表中UserID=uid数据
+	if err := mysql.DeleteUserALLHistory(ctx, p.UserID); err != nil {
+		return common.CodeMysqlFailed
+	}
+	//最后删除user表中UserID=uid数据
+	if err := mysql.DeleteUserByUID(ctx, p.UserID); err != nil {
+		return common.CodeMysqlFailed
+	}
+	return common.CodeSuccess
 }

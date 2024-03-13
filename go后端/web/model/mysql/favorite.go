@@ -52,5 +52,20 @@ func InsertUserLikeVedio(ctx context.Context, ret dao.Favorite) error {
 // 取消点赞
 func DeleteUserLikeVedio(ctx context.Context, ret dao.Favorite) error {
 	db := GetDB(ctx)
-	return db.Table("Favorite").Delete(&dao.Favorite{}, ret).Error
+	favorite := dao.Favorite{}
+	return db.Table("Favorite").Delete(&favorite, ret).Error
+}
+
+// 删除用户所有点赞
+func DeleteUserALLFavorite(ctx context.Context, userID int64) error {
+	db := GetDB(ctx)
+	favorite := dao.Favorite{}
+	return db.Table("Favorite").Where("UserID=?", userID).Delete(&favorite).Error
+}
+
+// 删除视频所有点赞
+func DeleteVideoALLFavorite(ctx context.Context, videoID int64) error {
+	db := GetDB(ctx)
+	favorite := dao.Favorite{}
+	return db.Table("Favorite").Where("VideoID=?", videoID).Delete(&favorite).Error
 }

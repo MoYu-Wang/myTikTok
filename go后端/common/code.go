@@ -14,9 +14,11 @@ const (
 	CodeNeedLogin            ResCode = 1060
 	CodeInvalidToken         ResCode = 1070
 	CodeRegisterFailed       ResCode = 1080
-	CodeIphoneIsExist        ResCode = 1081
-	CodeIphoneNotExist       ResCode = 1082
+	CodeUserRegisterSuccess  ResCode = 1081
+	CodeIphoneIsExist        ResCode = 1082
+	CodeIphoneNotExist       ResCode = 1083
 	CodeMysqlFailed          ResCode = 1090
+	CodeUserDeleteSuccess    ResCode = 1100
 )
 
 var codeMsgMap = map[ResCode]string{
@@ -29,9 +31,11 @@ var codeMsgMap = map[ResCode]string{
 	CodeNeedLogin:            "需要登录",
 	CodeInvalidToken:         "无效的token",
 	CodeRegisterFailed:       "注册失败",
+	CodeUserRegisterSuccess:  "注册成功",
 	CodeIphoneIsExist:        "手机号已被注册",
 	CodeIphoneNotExist:       "手机号未注册",
 	CodeMysqlFailed:          "mysql操作错误",
+	CodeUserDeleteSuccess:    "用户注销成功",
 }
 
 func (c ResCode) Msg() string {

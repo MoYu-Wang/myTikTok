@@ -5,6 +5,7 @@ import (
 	"WebVideoServer/io"
 	"WebVideoServer/jwt"
 	"WebVideoServer/web/logic"
+	"WebVideoServer/web/model/mysql"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -40,19 +41,21 @@ func UserRegister(ctx *gin.Context) {
 	}
 	userID, _ := ctx.Get("UserID")
 
-	//自动登录,获取Token
-	user := &io.ParamLogin{
-		UserID:   userID.(int64),
-		PassWord: p.PassWord,
-		IphoneID: p.IphoneID,
-	}
-	token, err := logic.UserIDLogin(ctx, user)
-	if err != common.CodeSuccess {
-		io.ResponseError(ctx, err)
-		return
-	}
+	//目前先不支持自动登录
+	// //自动登录,获取Token
+	// user := &io.ParamLogin{
+	// 	UserID:   userID.(int64),
+	// 	PassWord: p.PassWord,
+	// 	IphoneID: p.IphoneID,
+	// }
+	// token, err := logic.UserIDLogin(ctx, user)
+	// if err != common.CodeSuccess {
+	// 	io.ResponseError(ctx, err)
+	// 	return
+	// }
+
 	//4.返回成功响应
-	io.ResponseSuccessLogin(ctx, token)
+	io.ResponseSuccessRegister(ctx, userID.(int64))
 }
 
 // 用户登录
@@ -69,23 +72,32 @@ func UserLogin(ctx *gin.Context) {
 	//2.服务调用
 	//判断是根据哪个ID登录
 	var token string
-	var err common.ResCode
+	var code common.ResCode
 	if p.IphoneID != "" {
 		var userID int64
-		token, userID, err = logic.IphoneIDLogin(ctx, p)
-		if err != common.CodeSuccess {
-			io.ResponseError(ctx, err)
+		token, userID, code = logic.IphoneIDLogin(ctx, p)
+		if code != common.CodeSuccess {
+			io.ResponseError(ctx, code)
 			return
 		}
 		ctx.Set("UserID", userID)
 	} else {
-		token, err = logic.UserIDLogin(ctx, p)
-		if err != common.CodeSuccess {
-			io.ResponseError(ctx, err)
+		token, code = logic.UserIDLogin(ctx, p)
+		if code != common.CodeSuccess {
+			io.ResponseError(ctx, code)
 			return
 		}
 		ctx.Set("UserID", p.UserID)
 	}
+	//获取uid
+	uid, _ := ctx.Get("UserID")
+	//获取UserName
+	userName, err := mysql.QueryUserName(ctx, uid.(int64))
+	if err != nil {
+		io.ResponseError(ctx, common.CodeMysqlFailed)
+		return
+	}
+	ctx.Set("UserName", userName)
 
 	//3.返回成功响应
 	io.ResponseSuccessLogin(ctx, token)
@@ -202,6 +214,7 @@ func PasswordForget(ctx *gin.Context) {
 	ret, code := logic.QueryPassword(ctx, p)
 	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	resp := io.PasswordResp{
 		Response: io.Response{StatusCode: 0, StatusMsg: "success"},
@@ -209,4 +222,30 @@ func PasswordForget(ctx *gin.Context) {
 	}
 	//3.返回成功响应
 	io.ResponseSuccessPassword(ctx, &resp)
+}
+
+// 用户注销
+func UserDelete(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	p := new(io.UserInfoReq)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	fmt.Println(p)
+	//登录校验,解析Token里的参数
+	_, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//2.服务调用
+	code := logic.DeleteUser(ctx, p)
+	if code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
+	//3.返回成功响应
+	io.ResponseSuccess(ctx, common.CodeUserDeleteSuccess)
 }

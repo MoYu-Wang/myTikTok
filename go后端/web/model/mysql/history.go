@@ -50,3 +50,17 @@ func AddUserWatch(ctx context.Context, userID int64, videoID int64) error {
 	err := db.Table("History").Create(&ret).Error
 	return err
 }
+
+// 删除用户所有历史记录
+func DeleteUserALLHistory(ctx context.Context, userID int64) error {
+	db := GetDB(ctx)
+	history := dao.History{}
+	return db.Table("History").Where("UserID=?", userID).Delete(&history).Error
+}
+
+// 删除观看过该视频的所有用户记录
+func DeleteVideoALLHistory(ctx context.Context, videoID int64) error {
+	db := GetDB(ctx)
+	history := dao.History{}
+	return db.Table("History").Where("VideoID=?", videoID).Delete(&history).Error
+}

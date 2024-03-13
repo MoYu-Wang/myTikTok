@@ -12,14 +12,15 @@ func InsertUser(ctx context.Context, user *dao.User) error {
 	return db.Table("User").Create(&user).Error
 }
 
-// 注销用户
-func DeleteUser(ctx context.Context, user *dao.User) error {
+// 根据用户id注销用户
+func DeleteUserByUID(ctx context.Context, userID int64) error {
 	db := GetDB(ctx)
-	return db.Table("User").Delete(&dao.User{}, user).Error
+	user := dao.User{}
+	return db.Table("User").Where("UserID=?", userID).Delete(&user).Error
 }
 
-// 判断用户是否存在
-func QueryUserIsExist(ctx context.Context, userID int64) (bool, error) {
+// 判断用户id是否存在
+func QueryUserIDIsExist(ctx context.Context, userID int64) (bool, error) {
 	db := GetDB(ctx)
 	var ret int64
 	err := db.Table("User").Where("UserID=?", userID).Count(&ret).Error

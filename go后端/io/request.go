@@ -32,6 +32,7 @@ type ParamForgetpwd struct {
 
 //用户信息请求参数
 type UserInfoReq struct {
-	UserID int64
-	Token  string
+	UserID   int64  `json:"userID"`
+	UserName string `json:"userName"`
+	Token    string `json:"token"`
 }

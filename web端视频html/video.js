@@ -8,7 +8,16 @@ var index = 0;
 var arr = [];
 let current = 0;
 //获取登录用户信息
-var data = JSON.parse(localStorage.getItem("data"));
+var userData = JSON.parse(localStorage.getItem("userData"));
+
+//游客登录的情况
+if (userData !== "") {
+    document.getElementById("userlogin").value = "退出登录";
+    document.getElementById("userlogin").setAttribute("onclick", "UserExit()");
+} else {
+    document.getElementById("userlogin").value = "登录账号";
+    document.getElementById("userlogin").setAttribute("onclick", "UserLogin()");
+}
 
 // console.log(data)
 
@@ -21,9 +30,8 @@ myMap.set("商城","shopping");
 myMap.set("推荐","referee");
 
 
-//处理发送的请求(未实现)
+//处理发送的GET请求
 function getRequest(url){
-
     var xhr = new XMLHttpRequest();
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function () {
@@ -193,3 +201,90 @@ userMenu.addEventListener('click', (event) => {
 document.addEventListener('click', () => {
     userMenu.classList.remove('active');
 });
+
+
+//个人中心
+function UserInfo(){
+    if(!UserIsLogin()){
+        alert("用户未登录")
+        return 
+    }
+}
+
+//历史记录
+function HistoryVideo(){
+    if(!UserIsLogin()){
+        alert("用户未登录")
+        return 
+    }
+}
+
+//我的订单
+function MyOrder(){
+    if(!UserIsLogin()){
+        alert("用户未登录")
+        return 
+    }
+    window.location.href = "404.html";
+}
+
+//用户登录页面跳转
+function UserLogin(){
+    window.location.href = "login.html";
+}
+
+//退出登录
+function UserExit(){
+    if(!UserIsLogin()){
+        alert("用户未登录")
+        return 
+    }
+    if(confirm("请问是否退出登录")){
+        var nowData = "";
+        localStorage.setItem("userData", JSON.stringify(nowData));
+        window.location.reload();
+    }
+}
+
+//注销用户
+function UserDelete(){
+    if(!UserIsLogin()){
+        alert("用户未登录")
+        return 
+    }
+    if(confirm("注销用户会导致您的用户所有信息全都删除,请问您真的要注销您的账户吗?")){
+        
+        fetch(myURL+'/user/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userID: userData.userID,userName: userData.userName ,token: userData.token}),
+        })
+        .then(response => {
+            if (!response.ok) {
+                alert("服务器未响应")
+                throw new Error('Network response was not ok');
+            }   
+            return response.json();
+        })
+        .then(data => {
+            if(data.status_code != 1100){
+                alert(data.status_msg);
+                return
+            }
+            alert(data.status_msg);
+            nowData = "";
+            localStorage.setItem("userData", JSON.stringify(nowData));
+            window.location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+function UserIsLogin(){
+    if(userData == "")return false;
+    return true;
+}

@@ -2,10 +2,10 @@ package jwt
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/spf13/viper"
 )
 
 var mySecret = []byte("先这样写")
@@ -15,10 +15,12 @@ var mySecret = []byte("先这样写")
 // 我们这里需要额外记录一个username字段，所以要自定义结构体
 // 如果想要保存更多信息，都可以添加到这个结构体中
 type MyClaims struct {
-	UserID   int64  `json:"UserID"`
-	UserName string `json:"UserName"`
+	UserID   int64  `json:"userID"`
+	UserName string `json:"userName"`
 	jwt.StandardClaims
 }
+
+var outtime = 3 * 24 * time.Hour
 
 // GenToken 生成JWT
 func GenToken(userID int64, userName string) (string, error) {
@@ -27,9 +29,8 @@ func GenToken(userID int64, userName string) (string, error) {
 		userID,
 		userName,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(
-				time.Duration(viper.GetInt("auth.jwt_expire")) * time.Hour).Unix(), // 过期时间
-			Issuer: "tiktok", // 签发人
+			ExpiresAt: time.Now().Add(outtime).Unix(), // 过期时间
+			Issuer:    "tiktok",                       // 签发人
 		},
 	}
 	// 使用指定的签名方法创建签名对象
@@ -46,9 +47,11 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 		return mySecret, nil
 	})
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	if token.Valid {
+		fmt.Println(err)
 		return mg, nil
 	}
 	return nil, errors.New("invaild token")

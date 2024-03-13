@@ -56,7 +56,7 @@ func TimeToWeight(Vediotime int64) float64 {
 // 热点推送算法
 func TopAlgorithm(ctx *gin.Context) ([]string, error) {
 	//获取所有视频VID
-	AllVID, err := mysql.GetAllVID(ctx)
+	AllVID, err := mysql.QueryAllVID(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -67,8 +67,8 @@ func TopAlgorithm(ctx *gin.Context) ([]string, error) {
 	for _, val := range AllVID {
 		var flag Vvalue
 		flag.VID = val
-		weight, _ := mysql.VIDGetWeight(ctx, val)
-		stime, _ := mysql.VIDGetStartTime(ctx, val)
+		weight, _ := mysql.QueryWeightByVID(ctx, val)
+		stime, _ := mysql.QueryStartTimeByVID(ctx, val)
 		flag.Value = weight * TimeToWeight(GetNowTime()-stime)
 		vv = append(vv, flag)
 	}
@@ -78,7 +78,7 @@ func TopAlgorithm(ctx *gin.Context) ([]string, error) {
 	for i := 0; i < MAX_VedioLink; i++ {
 		if len(vv) > i {
 			var str string
-			str, err = mysql.VIDGetVlink(ctx, vv[i].VID)
+			str, err = mysql.QueryVlinkByVID(ctx, vv[i].VID)
 			TopArr = append(TopArr, str)
 			if err != nil {
 				return TopArr, err
