@@ -70,25 +70,26 @@ func UserLogin(ctx *gin.Context) {
 		return
 	}
 	//2.服务调用
-	//判断是否token登录
-	if p.Token != "" {
-		//登录校验,解析Token里的参数
-		claim, err := jwt.ParseToken(p.Token)
-		if err != nil {
-			io.ResponseError(ctx, common.CodeNeedLogin)
-			return
-		}
-		ctx.Set("UserID", claim.UserID)
-		//获取UserName
-		userName, err := mysql.QueryUserName(ctx, claim.UserID)
-		if err != nil {
-			io.ResponseError(ctx, common.CodeMysqlFailed)
-			return
-		}
-		ctx.Set("UserName", userName)
-		//成功响应
-		io.ResponseSuccessLogin(ctx, p.Token)
-	}
+	// //判断是否token登录
+	//(先不实现)
+	// if p.Token != "" {
+	// 	//登录校验,解析Token里的参数
+	// 	claim, err := jwt.ParseToken(p.Token)
+	// 	if err != nil {
+	// 		io.ResponseError(ctx, common.CodeNeedLogin)
+	// 		return
+	// 	}
+	// 	ctx.Set("UserID", claim.UserID)
+	// 	//获取UserName
+	// 	userName, err := mysql.QueryUserName(ctx, claim.UserID)
+	// 	if err != nil {
+	// 		io.ResponseError(ctx, common.CodeMysqlFailed)
+	// 		return
+	// 	}
+	// 	ctx.Set("UserName", userName)
+	// 	//成功响应
+	// 	io.ResponseSuccessLogin(ctx, p.Token)
+	// }
 
 	//判断是根据哪个ID登录
 	var token string

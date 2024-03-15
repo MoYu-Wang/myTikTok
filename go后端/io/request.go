@@ -14,7 +14,6 @@ type ParamLogin struct {
 	UserID   int64  `json:"userID"`
 	PassWord string `json:"password"`
 	IphoneID string `json:"iphoneID"`
-	Token    string `json:"token"`
 }
 
 //修改参数
