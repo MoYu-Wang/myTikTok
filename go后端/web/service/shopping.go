@@ -7,6 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Response_Shopping(ctx *gin.Context) {
+func Shopping(ctx *gin.Context) {
 	ctx.String(http.StatusOK, logic.GetShoppingStr())
 }

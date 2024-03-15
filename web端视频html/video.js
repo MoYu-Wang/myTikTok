@@ -1,7 +1,7 @@
 //项目服务器IP和端口(目前没买)
 
 //本地IP和端口
-var myURL = "http://192.168.56.1:11316/myTikTok";
+var myURL = "http://150.158.115.140:11316/myTikTok";
 
 //初始化
 var index = 0;
@@ -12,9 +12,13 @@ var userData = JSON.parse(localStorage.getItem("userData"));
 
 //游客登录的情况
 if (userData !== "") {
+    document.getElementById("user_name").innerText = userData.userName;
+
     document.getElementById("userlogin").value = "退出登录";
     document.getElementById("userlogin").setAttribute("onclick", "UserExit()");
 } else {
+    document.getElementById("user_name").innerText = "未登录"
+
     document.getElementById("userlogin").value = "登录账号";
     document.getElementById("userlogin").setAttribute("onclick", "UserLogin()");
 }
@@ -25,7 +29,7 @@ if (userData !== "") {
 var myMap = new Map();
 myMap.set("热点","top");
 myMap.set("关注","care");
-myMap.set("直播","dBc");
+myMap.set("直播","broadcast");
 myMap.set("商城","shopping");
 myMap.set("推荐","referee");
 

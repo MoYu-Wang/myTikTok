@@ -7,6 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Response_Care(ctx *gin.Context) {
+func CareVideo(ctx *gin.Context) {
 	ctx.String(http.StatusOK, logic.GetCareStr())
 }

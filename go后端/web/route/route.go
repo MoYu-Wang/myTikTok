@@ -33,11 +33,11 @@ func OpenRoute() {
 
 		}
 
-		apiRouter.GET("/top", service.Response_Top)           //热点
-		apiRouter.GET("/care", service.Response_Care)         //关注
-		apiRouter.GET("/dBc", service.Response_DBc)           //直播
-		apiRouter.GET("/shopping", service.Response_Shopping) //商城
-		apiRouter.GET("/referee", service.Response_Referee)   //推荐
+		apiRouter.GET("/top", service.TopVideo)         //热点
+		apiRouter.GET("/care", service.CareVideo)       //关注
+		apiRouter.GET("/broadcast", service.Broadcast)  //直播
+		apiRouter.GET("/shopping", service.Shopping)    //商城
+		apiRouter.GET("/referee", service.RefereeVideo) //推荐
 	}
 
 	r.NoRoute(func(ctx *gin.Context) {
