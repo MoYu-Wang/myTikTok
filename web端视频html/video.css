@@ -85,7 +85,7 @@ body>div>video {
     position: absolute;
     top: 0;
     right: 0;
-    width: 250px;
+    width: 200px;
     height: calc(100vh);
     background-color: #888888; 
     transform: translateX(100%);

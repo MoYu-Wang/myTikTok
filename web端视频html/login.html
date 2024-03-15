@@ -43,11 +43,7 @@
     <div class="login-container">
         <h2 style="text-align: center;">My_Tik-Tok登录界面</h2>
         <form id="loginForm">
-            <label for="ID">用户ID(或手机号):</label>
-            <input type="text" id="ID" name="ID" required><br>
-            <label for="password">密码:</label>
-            <input type="password" id="password" name="password" required><br>
-            <input type="submit" value="登录" placeholder="center" onclick="Login()">
+
         </form>
         <form action="register.html">
             <input type="submit" value="注册">
@@ -59,14 +55,63 @@
 
     <script>
         var myURL = "http://150.158.115.140:11316/myTikTok";
+        //页面初始化
+        window.onload = function() {
+            // 在这里进行你的判断操作
+            //获取token信息
+            var userData = JSON.parse(localStorage.getItem("userData"));
+            if (userData != ""){
+                TokenLogin()
+            }else{
+                IDLogin()
+            }
+        };
+
+        function IDLogin(){
+            document.getElementById("loginForm").innerHTML = `
+            <label for="ID">用户ID(或手机号):</label>
+            <input type="text" id="ID" name="ID" required><br>
+            <label for="password">密码:</label>
+            <input type="password" id="password" name="password" required><br>
+            <input type="submit" value="登录" placeholder="center" onclick="Login()">
+            <input type="submit" value="使用曾经登录账号" onclick="TokenLogin()">
+            `;
+
+        }
+        function TokenLogin(){
+            //获取token信息
+            var userData = JSON.parse(localStorage.getItem("userData"));
+            if (userData != "") {
+                //存在用户登录信息
+                name = userData.userName;
+                document.getElementById("loginForm").innerHTML = `
+                <h1>用户昵称:`+name+`</h1>
+                <input type="submit" value="登录" placeholder="center" onclick="Login()">
+                <input type="submit" value="切换账号" onclick="IDLogin()">
+                `;
+            }else{
+                alert("曾经没有账号登录或账号已退出")
+            }
+        }
+
         function Login() {
             event.preventDefault(); // 阻止表单默认提交行为
+
+            
+            //获取token信息
+            var userData = JSON.parse(localStorage.getItem("userData"));
+            if(userData != ""){
+                //先这样写
+                alert("登录成功,正在为您跳转页面!")
+                window.location.href = "video.html"
+            }
 
             var id = document.getElementById("ID").value;
             var pwd = document.getElementById("password").value;
 
             var uid = 0;
             var iphoneid = "";
+            var utoken = "";
             if(id.length == 10){
                 //用户id登录
                 uid = parseInt(id)
@@ -116,11 +161,14 @@
 
             return true;
         }
+
         function Watch() {
             event.preventDefault(); // 阻止表单默认提交行为
-            var data = "";
-            localStorage.setItem("data", JSON.stringify(data)); 
-            window.location.href = "video.html"
+            if(confirm("注意,游客登录会导致您退出登录原有账号\n会消除您的历史登录,请问您是否还要进行游客登录?")){
+                var data = "";
+                localStorage.setItem("userData", JSON.stringify(data)); 
+                window.location.href = "video.html"
+            }
         }
     </script>
 </body>
