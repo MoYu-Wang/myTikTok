@@ -36,3 +36,14 @@ type UserInfoReq struct {
 	UserName string `json:"userName"`
 	Token    string `json:"token"`
 }
+
+//用户上传视频请求参数
+type UserUpLoadVideoReq struct {
+	UserID   int64  `json:"userID"`
+	UserName string `json:"userName"`
+	Token    string `json:"token"`
+
+	VideoName string `json:"videoName"`
+	VideoTags string `json:"VideoTags"`
+	VideoLink string `json:"videoLink"`
+}

@@ -21,7 +21,7 @@ create table User(
 create table Video(
     VideoID bigint primary key comment '视频id',
     VideoName varchar(100) comment '视频名称',
-    VideoLink varchar(100) comment '视频链接',
+    VideoLink text comment '视频链接',
     UserID bigint comment '视频发布人id',
     Tags  text comment '视频标签',
     Weight float(32,16) comment'视频初始权重',

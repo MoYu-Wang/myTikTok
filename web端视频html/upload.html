@@ -63,6 +63,18 @@
             text-align: center;
             color: #f00;
         }
+
+        #uploadProgress {
+            width: 100%;
+            margin-bottom: 10px;
+            display: none; /* 初始隐藏进度条 */
+        }
+
+        #progressText {
+            text-align: center;
+            font-size: 16px;
+            display: none; /* 初始隐藏进度文本 */
+        }
     </style>
 </head>
 <body>
@@ -78,14 +90,22 @@
             <input type="file" name="file" id="fileInput"><br>
             
             <button type="button" onclick="uploadVideo()">上传视频</button>
+            <button type="button" onclick="reback()">返回主页</button>
+
+            <progress id="uploadProgress" value="0" max="1"></progress> <!-- 进度条 -->
+            <div id="progressText">上传进度:0%</div> <!-- 进度文本 -->
         </form>
-        <p id="message"></p>
+        <p id="message"></p> 
     </div>
     
     <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        myURL =  "http://150.158.115.140:11316/myTikTok";
+        myURL =  "http://192.168.64.191:11316/myTikTok";
+        //获取登录用户信息
+        var userData = JSON.parse(localStorage.getItem("userData"));
         function uploadVideo() {
+            var uploaderInfo = {}; // 定义 uploaderInfo 变量
             if (document.getElementById("videoName").value == ""){
                 showMessage("请输入视频名称")
                 return; 
@@ -104,14 +124,19 @@
                 return;
             }
 
-            var videoName = document.getElementById('videoName').value;
-            var videoTags = document.getElementById('videoTags').value.split('#');
-            videoTags.shift(); // 删除数组中的第一项
+            var vName = document.getElementById('videoName').value;
+            var vTags = document.getElementById('videoTags').value;
 
             var formData = new FormData();
             formData.append('file', file);
-            formData.append('videoName', videoName);
-            formData.append('videoTags', JSON.stringify(videoTags));
+            formData.append('videoName', vName);
+            formData.append('videoTags', JSON.stringify(vTags));
+
+            // 显示上传进度条和文本
+            var progress = document.getElementById('uploadProgress');
+            var progressText = document.getElementById('progressText');
+            progress.style.display = 'block';
+            progressText.style.display = 'block';
 
             // 这里添加上传到腾讯云点播的代码
             // new TcVod.default(opts) 是 script 引入 的用法
@@ -126,6 +151,10 @@
             })
             uploader.on('media_progress', function(info) {
                 console.log(info.percent) // 进度
+                // 更新上传进度条
+                progress.value = info.percent;
+                // 更新上传进度文本
+                progressText.innerText = '上传进度：' + info.percent*100 + '%';
             })
             uploader.done().then(function (doneResult) {
             // deal with doneResult
@@ -135,6 +164,7 @@
             // 视频上传完成时
             uploader.on('media_upload', function(info) {
                 uploaderInfo.isVideoUploadSuccess = true;
+                
             })
             // 视频上传进度
             uploader.on('media_progress', function(info) {
@@ -148,26 +178,70 @@
             // uploader.on('cover_progress', function(info) {
             // uploaderInfo.coverProgress = info.percent;
             // })
-            uploader.done().then(function (doneResult) {
+            uploader.done().then(function (info) {
+                //alert("视频上传成功")
+                // 隐藏进度条和文本
+                progress.style.display = 'none';
+                progressText.style.display = 'none';
+                // 获取上传后生成的视频链接
+                var videoURL = info.video.url;
+                console.log("视频链接：" + videoURL);
+
+                //上传视频到后端
+                fetch(myURL+'/user/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userID: userData.userID,
+                        userName: userData.userName,
+                        token: userData.token,
+                        videoName:vName,
+                        videoTags:vTags,
+                        videoLink:videoURL
+                    }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        alert("服务器未响应")
+                        throw new Error('Network response was not ok');
+                    }   
+                    return response.json();
+                })
+                .then(data => {
+                    if(data.status_code != 1101){
+                        alert(data.status_msg);
+                        return
+                    }
+                    alert(data.status_msg);
+                    window.location.reload()
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
             // deal with doneResult
             })
-
-
-
-            // 在这里发送上传请求并处理响应
-
-
         }
         //获取签名
         function getSignature() {
-            return axios.post(myURL+"/user/getsign").then(function (response) {
-                return response.data.signature;
+            return axios.post(myURL+"/user/getsign",{
+                 userID: userData.userID,
+                 userName: userData.userName ,
+                 token: userData.token,
+            }).then(function (response) {
+                console.log(response.data.mysign)
+                return response.data.mysign;
             })
         };
         //
         function showMessage(message) {
             var messageElement = document.getElementById('message');
             messageElement.innerText = message;
+        }
+        function reback(){
+            window.location.href = "video.html";
         }
     </script>
 </body>

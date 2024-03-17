@@ -67,3 +67,9 @@ func DeleteVideoByVID(ctx context.Context, videoID int64) error {
 	video := dao.Video{}
 	return db.Table("Video").Where("VideoID=?", videoID).Delete(&video).Error
 }
+
+// 上传视频
+func InsertVideo(ctx context.Context, video *dao.Video) error {
+	db := GetDB(ctx)
+	return db.Table("Video").Create(&video).Error
+}

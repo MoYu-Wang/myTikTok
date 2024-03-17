@@ -1,6 +1,6 @@
 //项目服务器IP和端口
 
-var myURL = "http://150.158.115.140:11316/myTikTok";
+var myURL = "http://192.168.64.191:11316/myTikTok";
 
 //初始化
 var index = 0;

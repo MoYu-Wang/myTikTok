@@ -317,3 +317,23 @@ func GetSign() string {
 	return signatureB64
 
 }
+
+// 上传视频
+func UpLoadVideo(ctx *gin.Context, p *io.UserUpLoadVideoReq) common.ResCode {
+	video := &dao.Video{
+		VideoID:    snowflake.GenID(),
+		VideoName:  p.VideoName,
+		VideoLink:  p.VideoLink,
+		UserID:     p.UserID,
+		Tags:       p.VideoTags,
+		Weight:     0,
+		PublicTime: time.Now().UnixNano(),
+	}
+	//上传视频
+	err := mysql.InsertVideo(ctx, video)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	//
+	return common.CodeSuccess
+}
