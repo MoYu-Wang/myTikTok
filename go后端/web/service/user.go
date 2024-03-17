@@ -270,3 +270,37 @@ func UserDelete(ctx *gin.Context) {
 	//3.返回成功响应
 	io.ResponseSuccess(ctx, common.CodeUserDeleteSuccess)
 }
+
+//上传视频
+func UpLoadVideo(ctx *gin.Context) {
+
+}
+
+//获取签名
+func GetSign(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	p := new(io.UserInfoReq)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	fmt.Println(p)
+	//登录校验,解析Token里的参数
+	_, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//2.服务调用
+	//获取签名
+	mysign := logic.GetSign()
+
+	resp := io.GetSignResp{
+		Response: io.Response{StatusCode: 0, StatusMsg: "success"},
+		Sign:     mysign,
+	}
+	//3.返回成功响应
+	io.ResponseSuccessGetSign(ctx, &resp)
+}
