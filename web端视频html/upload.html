@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上传本地视频</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #message {
+            text-align: center;
+            color: #f00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>上传本地视频</h1>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <label for="videoName">视频名称:</label>
+            <input type="text" id="videoName" name="videoName"><br>
+            
+            <label for="videoTags">视频标签 (每个不同标签用#号开头):</label>
+            <input type="text" id="videoTags" name="videoTags"><br>
+            
+            <input type="file" name="file" id="fileInput"><br>
+            
+            <button type="button" onclick="uploadVideo()">上传视频</button>
+        </form>
+        <p id="message"></p>
+    </div>
+    
+    <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
+    <script>
+        myURL =  "http://150.158.115.140:11316/myTikTok";
+        function uploadVideo() {
+            if (document.getElementById("videoName").value == ""){
+                showMessage("请输入视频名称")
+                return; 
+            }
+            if (document.getElementById("videoTags").value == ""){
+                showMessage("请至少输入一个标签")
+                return 
+            }else if(document.getElementById("videoTags").value[0] != '#'){
+                showMessage("请输入正确的标签格式")
+                return 
+            }
+            var fileInput = document.getElementById('fileInput');
+            var file = fileInput.files[0];
+            if (!file) {
+                showMessage("请选择一个视频文件");
+                return;
+            }
+
+            var videoName = document.getElementById('videoName').value;
+            var videoTags = document.getElementById('videoTags').value.split('#');
+            videoTags.shift(); // 删除数组中的第一项
+
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('videoName', videoName);
+            formData.append('videoTags', JSON.stringify(videoTags));
+
+            // 这里添加上传到腾讯云点播的代码
+            // new TcVod.default(opts) 是 script 引入 的用法
+            const tcVod = new TcVod.default({
+              getSignature: getSignature // 前文中所述的获取上传签名的函数
+            })
+
+
+            const uploader = tcVod.upload({
+                mediaFile: file, // 媒体文件（视频或音频或图片），类型为 File
+                dynamicAccelerate: true, // 开启动态加速
+            })
+            uploader.on('media_progress', function(info) {
+                console.log(info.percent) // 进度
+            })
+            uploader.done().then(function (doneResult) {
+            // deal with doneResult
+            }).catch(function (err) {
+            // deal with error
+            })
+            // 视频上传完成时
+            uploader.on('media_upload', function(info) {
+                uploaderInfo.isVideoUploadSuccess = true;
+            })
+            // 视频上传进度
+            uploader.on('media_progress', function(info) {
+                uploaderInfo.progress = info.percent;
+            })
+            // // 封面上传完成时
+            // uploader.on('cover_upload', function(info) {
+            // uploaderInfo.isCoverUploadSuccess = true;
+            // })
+            // // 封面上传进度
+            // uploader.on('cover_progress', function(info) {
+            // uploaderInfo.coverProgress = info.percent;
+            // })
+            uploader.done().then(function (doneResult) {
+            // deal with doneResult
+            })
+
+
+
+            // 在这里发送上传请求并处理响应
+
+
+        }
+        //获取签名
+        function getSignature() {
+            return axios.post(myURL+"/user/getsign").then(function (response) {
+                return response.data.signature;
+            })
+        };
+        //
+        function showMessage(message) {
+            var messageElement = document.getElementById('message');
+            messageElement.innerText = message;
+        }
+    </script>
+</body>
+</html>
