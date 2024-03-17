@@ -58,6 +58,11 @@ type PasswordResp struct {
 	Password string
 }
 
+type GetSignResp struct {
+	Response
+	Sign string
+}
+
 // ResponseError 响应错误
 func ResponseError(c *gin.Context, code common.ResCode) {
 	c.JSON(http.StatusOK, &ResponseData{
@@ -103,5 +108,10 @@ func ResponseSuccessUserBase(c *gin.Context, resp *UserBaseResp) {
 
 // 返回用户密码
 func ResponseSuccessPassword(c *gin.Context, resp *PasswordResp) {
+	c.JSON(http.StatusOK, resp)
+}
+
+// 返回获取上传视频签名
+func ResponseSuccessGetSign(c *gin.Context, resp *GetSignResp) {
 	c.JSON(http.StatusOK, resp)
 }
