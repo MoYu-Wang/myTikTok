@@ -271,12 +271,12 @@ func UserDelete(ctx *gin.Context) {
 	io.ResponseSuccess(ctx, common.CodeUserDeleteSuccess)
 }
 
-//上传视频
+// 上传视频
 func UpLoadVideo(ctx *gin.Context) {
 
 }
 
-//获取签名
+// 获取签名
 func GetSign(ctx *gin.Context) {
 	//1.获取参数和参数校验
 	p := new(io.UserInfoReq)

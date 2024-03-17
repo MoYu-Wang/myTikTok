@@ -7,6 +7,12 @@ import (
 	"WebVideoServer/jwt"
 	"WebVideoServer/snowflake"
 	"WebVideoServer/web/model/mysql"
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/base64"
+	"math/rand"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -311,4 +317,3 @@ func GetSign() string {
 	return signatureB64
 
 }
-
