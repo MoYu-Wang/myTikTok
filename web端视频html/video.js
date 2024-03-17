@@ -291,3 +291,11 @@ function UserIsLogin(){
     if(userData == "")return false;
     return true;
 }
+
+function UpLoadVideo(){
+    if(!UserIsLogin()){
+        alert("用户未登录")
+        return 
+    }
+    window.location.href = "upload.html";
+}
