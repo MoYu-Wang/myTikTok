@@ -60,7 +60,7 @@ type PasswordResp struct {
 
 type GetSignResp struct {
 	Response
-	Sign string
+	Sign string `json:"sign"`
 }
 
 // ResponseError 响应错误
