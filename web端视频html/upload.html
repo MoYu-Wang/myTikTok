@@ -104,6 +104,17 @@
         myURL =  "http://192.168.64.191:11316/myTikTok";
         //获取登录用户信息
         var userData = JSON.parse(localStorage.getItem("userData"));
+        //页面初始化
+        window.onload = function() {
+            // 在这里进行你的判断操作
+            //获取token信息
+            var userData = JSON.parse(localStorage.getItem("userData"));
+            if (userData != ""){
+                alert("用户未登录或登录信息已过期,正在为您跳转登录界面")
+                window.location.href = "login.html"
+                return 
+            }
+        };
         function uploadVideo() {
             var uploaderInfo = {}; // 定义 uploaderInfo 变量
             if (document.getElementById("videoName").value == ""){
