@@ -7,6 +7,12 @@ import (
 	"WebVideoServer/jwt"
 	"WebVideoServer/snowflake"
 	"WebVideoServer/web/model/mysql"
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/base64"
+	"math/rand"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -279,4 +285,35 @@ func DeleteUser(ctx *gin.Context, p *io.UserInfoReq) common.ResCode {
 		return common.CodeMysqlFailed
 	}
 	return common.CodeSuccess
+}
+
+// 生成签名
+func generateHmacSHA1(secretToken, payloadBody string) []byte {
+	mac := hmac.New(sha1.New, []byte(secretToken))
+	sha1.New()
+	mac.Write([]byte(payloadBody))
+	return mac.Sum(nil)
+}
+
+// 获取签名
+func GetSign() string {
+	//SecretId: AKID6EG9vdGWxQ4iM0mb0X5fEmK5ujXgyESr
+	//SecretKey:aH1zyyywATmbUPLORTSSWgwEVn6Pk5Rm
+	rand.Seed(time.Now().Unix())
+	secretId := "AKID6EG9vdGWxQ4iM0mb0X5fEmK5ujXgyESr"
+	secretKey := "aH1zyyywATmbUPLORTSSWgwEVn6Pk5Rm"
+	// timestamp := time.Now().Unix()
+	timestamp := int64(1571215095)
+	expireTime := timestamp + 86400*365*10
+	timestampStr := strconv.FormatInt(timestamp, 10)
+	expireTimeStr := strconv.FormatInt(expireTime, 10)
+
+	random := 220625
+	randomStr := strconv.Itoa(random)
+	original := "secretId=" + secretId + "&currentTimeStamp=" + timestampStr + "&expireTime=" + expireTimeStr + "&random=" + randomStr
+	signature := generateHmacSHA1(secretKey, original)
+	signature = append(signature, []byte(original)...)
+	signatureB64 := base64.StdEncoding.EncodeToString(signature)
+	return signatureB64
+
 }
