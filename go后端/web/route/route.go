@@ -28,6 +28,8 @@ func OpenRoute() {
 			userRouter.POST("base", service.UserBase)            //获取本用户基本信息
 			userRouter.POST("forgetpwd", service.PasswordForget) //找回密码
 			userRouter.POST("delete", service.UserDelete)        //用户注销
+			userRouter.POST("upload", service.UpLoadVideo)       //上传视频
+			userRouter.POST("getsign", service.GetSign)          //获取上传签名
 
 			userRouter.GET("info", service.UserInfo) //获取用户信息
 
