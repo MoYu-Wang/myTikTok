@@ -5,7 +5,6 @@ import (
 	"WebVideoServer/io"
 	"WebVideoServer/jwt"
 	"WebVideoServer/web/logic"
-	"WebVideoServer/web/model/mysql"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -70,56 +69,22 @@ func UserLogin(ctx *gin.Context) {
 		return
 	}
 	//2.服务调用
-	// //判断是否token登录
-	//(先不实现)
-	// if p.Token != "" {
-	// 	//登录校验,解析Token里的参数
-	// 	claim, err := jwt.ParseToken(p.Token)
-	// 	if err != nil {
-	// 		io.ResponseError(ctx, common.CodeNeedLogin)
-	// 		return
-	// 	}
-	// 	ctx.Set("UserID", claim.UserID)
-	// 	//获取UserName
-	// 	userName, err := mysql.QueryUserName(ctx, claim.UserID)
-	// 	if err != nil {
-	// 		io.ResponseError(ctx, common.CodeMysqlFailed)
-	// 		return
-	// 	}
-	// 	ctx.Set("UserName", userName)
-	// 	//成功响应
-	// 	io.ResponseSuccessLogin(ctx, p.Token)
-	// }
-
 	//判断是根据哪个ID登录
 	var token string
 	var code common.ResCode
 	if p.IphoneID != "" {
-		var userID int64
-		token, userID, code = logic.IphoneIDLogin(ctx, p)
+		token, code = logic.IphoneIDLogin(ctx, p)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
 		}
-		ctx.Set("UserID", userID)
 	} else {
 		token, code = logic.UserIDLogin(ctx, p)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
 		}
-		ctx.Set("UserID", p.UserID)
 	}
-	//获取uid
-	uid, _ := ctx.Get("UserID")
-	//获取UserName
-	userName, err := mysql.QueryUserName(ctx, uid.(int64))
-	if err != nil {
-		io.ResponseError(ctx, common.CodeMysqlFailed)
-		return
-	}
-	ctx.Set("UserName", userName)
-
 	//3.返回成功响应
 	io.ResponseSuccessLogin(ctx, token)
 }
@@ -136,11 +101,7 @@ func UserInfo(ctx *gin.Context) {
 		return
 	}
 	//登录校验,解析Token里的参数
-	claim, err := jwt.ParseToken(p.Token)
-	if err != nil {
-		io.ResponseError(ctx, common.CodeNeedLogin)
-		return
-	}
+	claim, _ := jwt.ParseToken(p.Token)
 	//2.服务调用
 	//获取用户信息
 	userResp, err := logic.GetUserInfo(ctx, p, claim)
@@ -160,7 +121,7 @@ func UserInfo(ctx *gin.Context) {
 // 获取本用户基本信息
 func UserBase(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.UserInfoReq)
+	p := new(io.UserBaseReq)
 	//绑定Query参数
 	if err := ctx.ShouldBindJSON(&p); err != nil {
 		// 请求参数有误，直接返回响应
@@ -183,7 +144,7 @@ func UserBase(ctx *gin.Context) {
 	}
 	resp := io.UserBaseResp{
 		Response: io.Response{StatusCode: 0, StatusMsg: "success"},
-		User:     *userBase,
+		UserBase: *userBase,
 	}
 	//3.返回成功响应
 	io.ResponseSuccessUserBase(ctx, &resp)
@@ -207,17 +168,13 @@ func UserUpdate(ctx *gin.Context) {
 	}
 	//2.服务调用
 	//更新用户基本信息
-	ret, code := logic.UpdateUserBase(ctx, p, claim)
+	code := logic.UpdateUserBase(ctx, p, claim)
 	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
 		return
 	}
-	resp := io.UserBaseResp{
-		Response: io.Response{StatusCode: 0, StatusMsg: "success"},
-		User:     *ret,
-	}
 	//3.返回成功响应
-	io.ResponseSuccessUserBase(ctx, &resp)
+	io.ResponseSuccess(ctx, common.CodeUpdateUserInfoSuccess)
 }
 
 // 找回密码
@@ -248,7 +205,7 @@ func PasswordForget(ctx *gin.Context) {
 // 用户注销
 func UserDelete(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.UserInfoReq)
+	p := new(io.UserBaseReq)
 	if err := ctx.ShouldBindJSON(&p); err != nil {
 		// 请求参数有误，直接返回响应
 		io.ResponseError(ctx, common.CodeInvalidParam)
@@ -256,14 +213,13 @@ func UserDelete(ctx *gin.Context) {
 	}
 	fmt.Println(p)
 	//登录校验,解析Token里的参数
-	_, err := jwt.ParseToken(p.Token)
+	claim, err := jwt.ParseToken(p.Token)
 	if err != nil {
-		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
 	}
 	//2.服务调用
-	code := logic.DeleteUser(ctx, p)
+	code := logic.DeleteUser(ctx, claim.UserID)
 	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
 	}
@@ -271,61 +227,147 @@ func UserDelete(ctx *gin.Context) {
 	io.ResponseSuccess(ctx, common.CodeUserDeleteSuccess)
 }
 
-// 上传视频
-func UpLoadVideo(ctx *gin.Context) {
+// 更新token
+func UpdateToken(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.UserUpLoadVideoReq)
+	p := new(io.UserBaseReq)
 	if err := ctx.ShouldBindJSON(&p); err != nil {
 		// 请求参数有误，直接返回响应
 		io.ResponseError(ctx, common.CodeInvalidParam)
 		return
 	}
-	fmt.Printf("请求参数:")
-	fmt.Println(p)
 	//登录校验,解析Token里的参数
-	_, err := jwt.ParseToken(p.Token)
+	claim, err := jwt.ParseToken(p.Token)
 	if err != nil {
 		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
 	}
 	//2.服务调用
-	if code := logic.UpLoadVideo(ctx, p); code != common.CodeSuccess {
+	token, err := jwt.GenToken(claim.UserID, claim.UserName)
+	if err != nil {
+		fmt.Println("token生成失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//3.返回成功响应
+	io.ResponseSuccessLogin(ctx, token)
+}
+
+// 用户作品
+func UserWorks(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	p := new(io.UserBaseReq)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	//登录校验,解析Token里的参数
+	claim, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//2.服务调用
+	//获取用户发布的所有视频
+	vids, code := logic.GetUserVideoIDs(ctx, claim)
+	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
 		return
 	}
-
+	var videoInfos []io.VideoInfo
+	for _, vid := range vids {
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
+		if code != common.CodeSuccess {
+			io.ResponseError(ctx, code)
+			return
+		}
+		videoInfos = append(videoInfos, *videoInfo)
+	}
+	resp := &io.UserWorkResp{
+		Response:   io.Response{StatusCode: 0, StatusMsg: "success"},
+		VideoInfos: videoInfos,
+	}
 	//3.返回成功响应
-	io.ResponseSuccess(ctx, common.CodeUserUpLoadVideoSuccess)
+	io.ResponseSuccessUserWork(ctx, resp)
 }
 
-// 获取签名
-func GetSign(ctx *gin.Context) {
+// 用户历史记录
+func UserHistory(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.UserInfoReq)
+	p := new(io.UserBaseReq)
 	if err := ctx.ShouldBindJSON(&p); err != nil {
 		// 请求参数有误，直接返回响应
 		io.ResponseError(ctx, common.CodeInvalidParam)
 		return
 	}
-	fmt.Printf("请求参数:")
-	fmt.Println(p)
 	//登录校验,解析Token里的参数
-	_, err := jwt.ParseToken(p.Token)
+	claim, err := jwt.ParseToken(p.Token)
 	if err != nil {
 		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
 	}
 	//2.服务调用
-	//获取签名
-	mysign := logic.GetSign()
-	fmt.Println("mysign:" + mysign)
-
-	resp := io.GetSignResp{
-		Response: io.Response{StatusCode: 0, StatusMsg: "success"},
-		Sign:     mysign,
+	vids, code := logic.GetUserHistoryVideoIDs(ctx, claim)
+	if code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	var videoInfos []io.VideoInfo
+	for _, vid := range vids {
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
+		if code != common.CodeSuccess {
+			io.ResponseError(ctx, code)
+			return
+		}
+		videoInfos = append(videoInfos, *videoInfo)
+	}
+	resp := &io.UserHistoryResp{
+		Response:   io.Response{StatusCode: 0, StatusMsg: "success"},
+		VideoInfos: videoInfos,
 	}
 	//3.返回成功响应
-	io.ResponseSuccessGetSign(ctx, &resp)
+	io.ResponseSuccessUserHistory(ctx, resp)
+}
+
+// 用户喜爱视频列表
+func UserFavorite(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	p := new(io.UserBaseReq)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	//登录校验,解析Token里的参数
+	claim, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//2.服务调用
+	vids, code := logic.GetUserFavoriteVideoIDs(ctx, claim)
+	if code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	var videoInfos []io.VideoInfo
+	for _, vid := range vids {
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
+		if code != common.CodeSuccess {
+			io.ResponseError(ctx, code)
+			return
+		}
+		videoInfos = append(videoInfos, *videoInfo)
+	}
+	resp := &io.UserFavoriteResp{
+		Response:   io.Response{StatusCode: 0, StatusMsg: "success"},
+		VideoInfos: videoInfos,
+	}
+	//3.返回成功响应
+	io.ResponseSuccessUserFavorite(ctx, resp)
 }

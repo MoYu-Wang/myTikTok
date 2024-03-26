@@ -1,6 +1,6 @@
 //项目服务器IP和端口
 
-var myURL = "http://192.168.64.191:11316/myTikTok";
+var myURL = "http://150.158.115.140:11316/myTikTok";
 alert("请根据键盘↑↓键来切换视频");
 //初始化
 var index = 0;
@@ -8,6 +8,10 @@ var arr = [];
 let current = 0;
 //获取登录用户信息
 var userData = JSON.parse(localStorage.getItem("userData"));
+
+//判断用户登录信息是否过期
+
+
 
 //游客登录的情况
 if (userData !== "") {

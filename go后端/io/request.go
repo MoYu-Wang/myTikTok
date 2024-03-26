@@ -16,12 +16,17 @@ type ParamLogin struct {
 	IphoneID string `json:"iphoneID"`
 }
 
-//修改参数
+//修改个人信息参数
 type ParamUpdate struct {
 	UserName string `json:"username"`
 	PassWord string `json:"password"`
 	IphoneID string `json:"iphoneID"`
 	Token    string `json:"token"`
+}
+
+//用户基本请求
+type UserBaseReq struct {
+	Token string `json:"token"`
 }
 
 //找回密码参数
@@ -39,11 +44,28 @@ type UserInfoReq struct {
 
 //用户上传视频请求参数
 type UserUpLoadVideoReq struct {
+	Token string `json:"token"`
+
+	VideoName string `json:"videoName"`
+	VideoTags string `json:"videoTags"`
+	VideoLink string `json:"videoLink"`
+}
+
+//用户点赞请求参数
+type UserFavoriteReq struct {
 	UserID   int64  `json:"userID"`
 	UserName string `json:"userName"`
 	Token    string `json:"token"`
 
-	VideoName string `json:"videoName"`
-	VideoTags string `json:"VideoTags"`
-	VideoLink string `json:"videoLink"`
+	VideoID int64 `json:"videoID"`
+}
+
+//用户评论请求参数
+type UserCommit struct {
+	UserID   int64  `json:"userID"`
+	UserName string `json:"userName"`
+	Token    string `json:"token"`
+
+	VideoID     int64  `json:"videoID"`
+	CommentText string `gorm:"column:CommentText;comment:评论文本"`
 }

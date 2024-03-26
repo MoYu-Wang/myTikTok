@@ -101,7 +101,7 @@
     <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        myURL =  "http://192.168.64.191:11316/myTikTok";
+        myURL =  "http://150.158.115.140:11316/myTikTok";
         //获取登录用户信息
         var userData = JSON.parse(localStorage.getItem("userData"));
         //页面初始化
@@ -109,7 +109,7 @@
             // 在这里进行你的判断操作
             //获取token信息
             var userData = JSON.parse(localStorage.getItem("userData"));
-            if (userData != ""){
+            if (userData == ""){
                 alert("用户未登录或登录信息已过期,正在为您跳转登录界面")
                 window.location.href = "login.html"
                 return 
@@ -225,10 +225,11 @@
                         alert(data.status_msg);
                         return
                     }
-                    alert(data.status_msg);
+                    alert(data.status_msg + "您的视频链接为:" + videoURL);
                     window.location.reload()
                 })
                 .catch(error => {
+                    alert("您的登录信息可能已过期,请重新登录");
                     console.error('Error:', error);
                 });
 
