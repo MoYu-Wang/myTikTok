@@ -43,7 +43,7 @@ type CareList struct {
 type UserLookTag struct {
 	UserID   int64  `gorm:"column:UserID;comment:用户uid"`
 	Tag      string `gorm:"column:Tag;comment:用户观看标签"`
-	PlayTime int    `gorm:"column:PlayTime;comment:标签被播放时间(单位:时间戳)"`
+	PlayTime int64  `gorm:"column:PlayTime;comment:标签被播放时间(单位:时间戳)"`
 }
 
 //用户观看历史记录

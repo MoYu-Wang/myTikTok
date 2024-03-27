@@ -26,27 +26,26 @@ func OpenRoute() {
 			userRouter.POST("/login", service.UserLogin)          //用户登录
 			userRouter.POST("/update", service.UserUpdate)        //用户修改信息
 			userRouter.POST("/info", service.UserInfo)            //获取用户信息
-			userRouter.POST("/base", service.UserBase)            //获取本用户基本信息
 			userRouter.POST("/forgetpwd", service.PasswordForget) //找回密码
-			userRouter.POST("/delete", service.UserDelete)        //用户注销
-			userRouter.POST("/updatetoken", service.UpdateToken)  //更新用户登录信息
 
-			userRouter.POST("/works", service.UserWorks)       //用户作品
-			userRouter.POST("/favorite", service.UserFavorite) //用户点赞视频列表
-			userRouter.POST("/history", service.UserHistory)   //用户观看历史记录
+			userRouter.GET("/delete", service.UserDelete)       //用户注销
+			userRouter.GET("/updatetoken", service.UpdateToken) //更新用户登录信息
+			userRouter.GET("/base", service.UserBase)           //获取本用户基本信息
+			userRouter.GET("/works", service.UserWorks)         //用户作品
+			userRouter.GET("/favorite", service.UserFavorite)   //用户点赞视频列表
+			userRouter.GET("/history", service.UserHistory)     //用户观看历史记录
 
 		}
 
 		videoRouter := apiRouter.Group("/video")
 		{
-			videoRouter.GET("/top", service.TopVideo) //获取热点视频
+			videoRouter.GET("/top", service.TopVideo)         //获取热点视频
+			videoRouter.GET("/care", service.CareVideo)       //获取关注视频
+			videoRouter.GET("/referee", service.RefereeVideo) //获取推荐视频
+			videoRouter.GET("/search", service.SearchVideo)   //模糊查询视频
+			videoRouter.GET("/getsign", service.GetSign)      //获取上传签名
 
-			videoRouter.POST("/care", service.CareVideo)       //获取关注视频
-			videoRouter.POST("/referee", service.RefereeVideo) //获取推荐视频
-
-			videoRouter.POST("/getsign", service.GetSign)      //获取上传签名
 			videoRouter.POST("/upload", service.UpLoadVideo)   //上传视频
-			videoRouter.POST("/commit", service.CommitVideo)   //评论视频
 			videoRouter.POST("/operate", service.OperateVideo) //划走视频后对视频的操作
 		}
 		apiRouter.GET("/broadcast", service.Broadcast) //直播

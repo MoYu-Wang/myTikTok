@@ -24,16 +24,16 @@ type ParamUpdate struct {
 	Token    string `json:"token"`
 }
 
-//用户基本请求
-type UserBaseReq struct {
-	Token string `json:"token"`
-}
-
 //找回密码参数
 type ParamForgetpwd struct {
 	UserID   int64  `json:"userID"`
 	IphoneID string `json:"iphoneID"`
 }
+
+// //用户基本请求
+// type UserBaseReq struct {
+// 	Token string `json:"token"`
+// }
 
 //用户信息请求参数
 type UserInfoReq struct {
@@ -51,21 +51,17 @@ type UserUpLoadVideoReq struct {
 	VideoLink string `json:"videoLink"`
 }
 
-//用户点赞请求参数
-type UserFavoriteReq struct {
-	UserID   int64  `json:"userID"`
-	UserName string `json:"userName"`
-	Token    string `json:"token"`
-
-	VideoID int64 `json:"videoID"`
+//用户操作视频请求参数
+type OperateVideoReq struct {
+	Token        string   `json:"token"`
+	VideoID      int64    `json:"videoID"`
+	WatchTime    int64    `json:"watchTime"`
+	IsFavorite   int64    `json:"isFavorite"`
+	CommentNum   int64    `json:"commentNum"`
+	CommentTexts []string `json:"commentTexts"`
 }
 
-//用户评论请求参数
-type UserCommit struct {
-	UserID   int64  `json:"userID"`
-	UserName string `json:"userName"`
-	Token    string `json:"token"`
-
-	VideoID     int64  `json:"videoID"`
-	CommentText string `gorm:"column:CommentText;comment:评论文本"`
+//模糊查询视频请求
+type SearchVideoReq struct {
+	SearchText string `json:"searchText"`
 }

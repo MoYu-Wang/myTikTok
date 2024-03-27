@@ -1,6 +1,8 @@
 package logic
 
 import (
+	"WebVideoServer/common"
+	"WebVideoServer/jwt"
 	"WebVideoServer/web/model/mysql"
 	"sort"
 	"time"
@@ -10,14 +12,47 @@ import (
 
 const MAX_VedioLink = 10 //最大缓存视频链接
 
-type Vvalue struct {
+type TopVideo struct {
 	VID   int64
 	Value float64
+	Cnt   int64
 }
 
-func SortByValue(v []Vvalue) {
+type RefereeVideo struct {
+	VID   int64
+	Value float64
+	Cnt   int64
+}
+
+type CareVideo struct {
+	VID        int64
+	PublicTime int64
+}
+
+// 热点视频排序算法:按照播放次数从小到大,再按权值从大到小
+func SortTopVID(v []TopVideo) {
 	sort.Slice(v, func(i, j int) bool {
+		if v[i].Cnt != v[j].Cnt {
+			return v[i].Cnt < v[j].Cnt
+		}
 		return v[i].Value > v[j].Value
+	})
+}
+
+// 推荐视频排序算法:按照播放次数从小到大,再按新权值从大到小
+func SortRefereeVID(v []RefereeVideo) {
+	sort.Slice(v, func(i, j int) bool {
+		if v[i].Cnt != v[j].Cnt {
+			return v[i].Cnt < v[j].Cnt
+		}
+		return v[i].Value > v[j].Value
+	})
+}
+
+// 关注视频排序算法:直接按照发布时间距当前时间从小到大排序
+func SortCareVID(v []CareVideo) {
+	sort.Slice(v, func(i, j int) bool {
+		return v[i].PublicTime < v[j].PublicTime
 	})
 }
 
@@ -54,50 +89,107 @@ func TimeToWeight(Vediotime int64) float64 {
 }
 
 // 热点推送算法
-func TopAlgorithm(ctx *gin.Context) ([]string, error) {
+func GetTopVideoIDs(ctx *gin.Context, claim *jwt.MyClaims) ([]int64, common.ResCode) {
 	//获取所有视频VID
 	AllVID, err := mysql.QueryAllVID(ctx)
 	if err != nil {
-		return nil, err
+		return nil, common.CodeMysqlFailed
 	}
-	//判断该用户是否观看过该视频(暂时不写)
-
-	//计算所有视频权值
-	var vv []Vvalue
+	//计算所有视频权值并排序
+	var vv []TopVideo
 	for _, val := range AllVID {
-		var flag Vvalue
-		flag.VID = val
+		var flag TopVideo
+
 		weight, _ := mysql.QueryWeightByVID(ctx, val)
 		stime, _ := mysql.QueryStartTimeByVID(ctx, val)
+		cnt, _ := mysql.QueryUserWatchCount(ctx, claim.UserID, val)
+
+		flag.VID = val
+		flag.Cnt = cnt
 		flag.Value = weight * TimeToWeight(GetNowTime()-stime)
 		vv = append(vv, flag)
 	}
-	//排序找出权值最大的最大缓存量个视频
-	SortByValue(vv)
-	var TopArr []string
+	SortTopVID(vv)
+	//找出权值最大的最大缓存量个视频
+	var TopIDs []int64
 	for i := 0; i < MAX_VedioLink; i++ {
 		if len(vv) > i {
-			var str string
-			str, err = mysql.QueryVlinkByVID(ctx, vv[i].VID)
-			TopArr = append(TopArr, str)
-			if err != nil {
-				return TopArr, err
-			}
+			TopIDs = append(TopIDs, vv[i].VID)
 		}
 	}
-	return TopArr, err
+	return TopIDs, common.CodeSuccess
 }
 
-func CareAlgorithm(ctx *gin.Context) ([]string, error) {
-	var err error
-	var CareArr []string
-	return CareArr, err
+func GetRefereeVideoIDs(ctx *gin.Context, claim *jwt.MyClaims) ([]int64, common.ResCode) {
+	//获取所有视频VID
+	AllVID, err := mysql.QueryAllVID(ctx)
+	if err != nil {
+		return nil, common.CodeMysqlFailed
+	}
+	//计算所有视频权值并排序
+	var vv []RefereeVideo
+	for _, val := range AllVID {
+		var flag RefereeVideo
+
+		weight, _ := mysql.QueryWeightByVID(ctx, val)
+		stime, _ := mysql.QueryStartTimeByVID(ctx, val)
+		cnt, _ := mysql.QueryUserWatchCount(ctx, claim.UserID, val)
+
+		tagsWeight, code := GetWeightByUserLookVideo(ctx, claim.UserID, val)
+		if code != common.CodeSuccess {
+			return nil, common.CodeGetVideoTagsWeightError
+		}
+
+		flag.VID = val
+		flag.Cnt = cnt
+		flag.Value = (weight + float64(tagsWeight)) * TimeToWeight(GetNowTime()-stime)
+
+		vv = append(vv, flag)
+	}
+	SortRefereeVID(vv)
+	//找出权值最大的最大缓存量个视频
+	var RefereeIDs []int64
+	for i := 0; i < MAX_VedioLink; i++ {
+		if len(vv) > i {
+			RefereeIDs = append(RefereeIDs, vv[i].VID)
+		}
+	}
+	return RefereeIDs, common.CodeSuccess
+
 }
 
-func RefereeAlgorithm(ctx *gin.Context) ([]string, error) {
-	var err error
-	var RefereeArr []string
-	return RefereeArr, err
+func GetCareVideoIDs(ctx *gin.Context, claim *jwt.MyClaims) ([]int64, common.ResCode) {
+	//获取所有关注人uid
+	AllCareUID, err := mysql.QueryUserCareList(ctx, claim.UserID)
+	if err != nil {
+		return nil, common.CodeMysqlFailed
+	}
+	//查询所有关注用户的所有视频vid
+	var careVIDs []int64
+	for _, val := range AllCareUID {
+		vids, _ := mysql.QueryVideoIDByUserID(ctx, val)
+		careVIDs = append(careVIDs, vids...)
+	}
+	//获取视频VID并排序
+	var vv []CareVideo
+	for _, val := range careVIDs {
+		var flag CareVideo
+
+		stime, _ := mysql.QueryStartTimeByVID(ctx, val)
+
+		flag.VID = val
+		flag.PublicTime = GetNowTime() - stime
+		vv = append(vv, flag)
+	}
+	SortCareVID(vv)
+	//找出权值最大的最大缓存量个视频
+	var CareIDs []int64
+	for i := 0; i < MAX_VedioLink; i++ {
+		if len(vv) > i {
+			CareIDs = append(CareIDs, vv[i].VID)
+		}
+	}
+	return CareIDs, common.CodeSuccess
 }
 
 // 获取当前时间戳(ms)

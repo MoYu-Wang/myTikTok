@@ -357,7 +357,7 @@ func UpLoadVideo(ctx *gin.Context, p *io.UserUpLoadVideoReq, claim *jwt.MyClaims
 		VideoLink:  p.VideoLink,
 		UserID:     claim.UserID,
 		Tags:       p.VideoTags,
-		Weight:     0,
+		Weight:     1,
 		PublicTime: time.Now().UnixNano(),
 	}
 	//上传视频

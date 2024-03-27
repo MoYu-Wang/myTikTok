@@ -3,6 +3,7 @@ package mysql
 import (
 	"WebVideoServer/dao"
 	"context"
+	"strings"
 )
 
 // 根据视频ID查找视频链接
@@ -27,6 +28,13 @@ func QueryWeightByVID(ctx context.Context, videoID int64) (float64, error) {
 	var ret float64
 	err := db.Table("Video").Select("Weight").Where("VideoID=?", videoID).Find(&ret).Error
 	return ret, err
+}
+
+// 增加用户观看视频时间
+func AddVideoWeight(ctx context.Context, videoID int64, watchTime float64) error {
+	db := GetDB(ctx)
+	weight, _ := QueryWeightByVID(ctx, videoID)
+	return db.Table("Video").Where("VideoID=?", videoID).Update("Weight", weight+watchTime).Error
 }
 
 // 根据视频ID查找视频所有信息
@@ -72,4 +80,28 @@ func DeleteVideoByVID(ctx context.Context, videoID int64) error {
 func InsertVideo(ctx context.Context, video *dao.Video) error {
 	db := GetDB(ctx)
 	return db.Table("Video").Create(&video).Error
+}
+
+// 获取视频标签
+func QueryTagsByVideoID(ctx context.Context, videoID int64) (string, error) {
+	db := GetDB(ctx)
+	var tags string
+	err := db.Table("Video").Select("Tags").Where("VideoID=?", videoID).Find(&tags).Error
+	return tags, err
+}
+
+// 获取视频标签数组
+func QueryTagArrByVideoID(ctx context.Context, videoID int64) ([]string, error) {
+	tags, err := QueryTagsByVideoID(ctx, videoID)
+	if err != nil {
+		return nil, err
+	}
+	tagArr := strings.Split(tags, "#")
+	tagArrs := make([]string, 0, len(tagArr))
+	for _, tag := range tagArr {
+		if tag != "" {
+			tagArrs = append(tagArrs, tag)
+		}
+	}
+	return tagArrs, nil
 }

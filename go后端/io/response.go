@@ -31,6 +31,17 @@ type VideoResponse struct {
 	VideoCommits []VideoCommit `json:"videoCommits"` //视频所有评论
 }
 
+// 用户信息
+type UserInfo struct {
+	CareCount int64  `json:"careCount"` // 关注总数
+	FansCount int64  `json:"fansCount"` // 粉丝总数
+	GetLikes  int64  `json:"getLikes"`  //获取点赞数
+	ID        int64  `json:"id"`        // 用户id
+	IsCare    bool   `json:"isCare"`    // true-已关注，false-未关注
+	Name      string `json:"name"`      // 用户名称
+}
+
+// 视频信息
 type VideoInfo struct {
 	VideoID          int64  `json:"videoID"`          //视频id
 	UserID           int64  `json:"userID"`           //视频发布人id
@@ -45,15 +56,6 @@ type VideoCommit struct {
 	UserID     int64  `json:"userID"`     //评论者
 	CommitText string `json:"commitText"` //评论文本
 	CommitTime int64  `json:"commitTime"` //评论时间
-}
-
-type UserInfo struct {
-	CareCount int64  `json:"careCount"` // 关注总数
-	FansCount int64  `json:"fansCount"` // 粉丝总数
-	GetLikes  int64  `json:"getLikes"`  //获取点赞数
-	ID        int64  `json:"id"`        // 用户id
-	IsCare    bool   `json:"isCare"`    // true-已关注，false-未关注
-	Name      string `json:"name"`      // 用户名称
 }
 
 type UserBase struct {
@@ -100,11 +102,37 @@ type UserFavoriteResp struct {
 	VideoInfos []VideoInfo `json:"videoInfos"`
 }
 
+// TopVideoResp 热点视频返回值
+type TopVideoResp struct {
+	Response
+	VideoInfos []VideoInfo `json:"videoInfos"`
+}
+
+// CareVideoResp 关注视频返回值
+type CareVideoResp struct {
+	Response
+	VideoInfos []VideoInfo `json:"videoInfos"`
+}
+
+// RefereeVideoResp 推荐视频返回值
+type RefereeVideoResp struct {
+	Response
+	VideoInfos []VideoInfo `json:"videoInfos"`
+}
+
+// SearchVideoResp 搜索视频返回值
+type SearchVideoResp struct {
+	Response
+	VideoInfos []VideoInfo `json:"videoInfos"`
+}
+
+// PasswordResp 密码返回值
 type PasswordResp struct {
 	Response
 	Password string
 }
 
+// GetSignResp 获取上传签名返回值
 type GetSignResp struct {
 	Response
 	Sign string `json:"mysign"`
@@ -171,5 +199,25 @@ func ResponseSuccessUserHistory(c *gin.Context, resp *UserHistoryResp) {
 
 // 返回用户点赞视频列表
 func ResponseSuccessUserFavorite(c *gin.Context, resp *UserFavoriteResp) {
+	c.JSON(http.StatusOK, resp)
+}
+
+// 返回热点视频列表
+func ResponseSuccessTopVideo(c *gin.Context, resp *TopVideoResp) {
+	c.JSON(http.StatusOK, resp)
+}
+
+// 返回关注视频列表
+func ResponseSuccessCareVideo(c *gin.Context, resp *CareVideoResp) {
+	c.JSON(http.StatusOK, resp)
+}
+
+// 返回推荐视频列表
+func ResponseSuccessRefereeVideo(c *gin.Context, resp *RefereeVideoResp) {
+	c.JSON(http.StatusOK, resp)
+}
+
+// 返回搜索视频列表
+func ResponseSuccessSearchVideo(c *gin.Context, resp *SearchVideoResp) {
 	c.JSON(http.StatusOK, resp)
 }

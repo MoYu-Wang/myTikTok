@@ -40,20 +40,7 @@ func UserRegister(ctx *gin.Context) {
 	}
 	userID, _ := ctx.Get("UserID")
 
-	//目前先不支持自动登录
-	// //自动登录,获取Token
-	// user := &io.ParamLogin{
-	// 	UserID:   userID.(int64),
-	// 	PassWord: p.PassWord,
-	// 	IphoneID: p.IphoneID,
-	// }
-	// token, err := logic.UserIDLogin(ctx, user)
-	// if err != common.CodeSuccess {
-	// 	io.ResponseError(ctx, err)
-	// 	return
-	// }
-
-	//4.返回成功响应
+	//3.返回成功响应
 	io.ResponseSuccessRegister(ctx, userID.(int64))
 }
 
@@ -121,16 +108,9 @@ func UserInfo(ctx *gin.Context) {
 // 获取本用户基本信息
 func UserBase(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.UserBaseReq)
-	//绑定Query参数
-	if err := ctx.ShouldBindJSON(&p); err != nil {
-		// 请求参数有误，直接返回响应
-		zap.L().Error("get user info invalid param", zap.Error(err))
-		io.ResponseError(ctx, common.CodeInvalidParam)
-		return
-	}
+	token := ctx.DefaultQuery("token", "")
 	//登录校验,解析Token里的参数
-	claim, err := jwt.ParseToken(p.Token)
+	claim, err := jwt.ParseToken(token)
 	if err != nil {
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
@@ -205,15 +185,9 @@ func PasswordForget(ctx *gin.Context) {
 // 用户注销
 func UserDelete(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.UserBaseReq)
-	if err := ctx.ShouldBindJSON(&p); err != nil {
-		// 请求参数有误，直接返回响应
-		io.ResponseError(ctx, common.CodeInvalidParam)
-		return
-	}
-	fmt.Println(p)
+	token := ctx.DefaultQuery("token", "")
 	//登录校验,解析Token里的参数
-	claim, err := jwt.ParseToken(p.Token)
+	claim, err := jwt.ParseToken(token)
 	if err != nil {
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
@@ -230,21 +204,16 @@ func UserDelete(ctx *gin.Context) {
 // 更新token
 func UpdateToken(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.UserBaseReq)
-	if err := ctx.ShouldBindJSON(&p); err != nil {
-		// 请求参数有误，直接返回响应
-		io.ResponseError(ctx, common.CodeInvalidParam)
-		return
-	}
+	token := ctx.DefaultQuery("token", "")
 	//登录校验,解析Token里的参数
-	claim, err := jwt.ParseToken(p.Token)
+	claim, err := jwt.ParseToken(token)
 	if err != nil {
 		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
 	}
 	//2.服务调用
-	token, err := jwt.GenToken(claim.UserID, claim.UserName)
+	token, err = jwt.GenToken(claim.UserID, claim.UserName)
 	if err != nil {
 		fmt.Println("token生成失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
@@ -257,14 +226,9 @@ func UpdateToken(ctx *gin.Context) {
 // 用户作品
 func UserWorks(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.UserBaseReq)
-	if err := ctx.ShouldBindJSON(&p); err != nil {
-		// 请求参数有误，直接返回响应
-		io.ResponseError(ctx, common.CodeInvalidParam)
-		return
-	}
+	token := ctx.DefaultQuery("token", "")
 	//登录校验,解析Token里的参数
-	claim, err := jwt.ParseToken(p.Token)
+	claim, err := jwt.ParseToken(token)
 	if err != nil {
 		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
@@ -297,14 +261,9 @@ func UserWorks(ctx *gin.Context) {
 // 用户历史记录
 func UserHistory(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.UserBaseReq)
-	if err := ctx.ShouldBindJSON(&p); err != nil {
-		// 请求参数有误，直接返回响应
-		io.ResponseError(ctx, common.CodeInvalidParam)
-		return
-	}
+	token := ctx.DefaultQuery("token", "")
 	//登录校验,解析Token里的参数
-	claim, err := jwt.ParseToken(p.Token)
+	claim, err := jwt.ParseToken(token)
 	if err != nil {
 		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
@@ -336,14 +295,9 @@ func UserHistory(ctx *gin.Context) {
 // 用户喜爱视频列表
 func UserFavorite(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.UserBaseReq)
-	if err := ctx.ShouldBindJSON(&p); err != nil {
-		// 请求参数有误，直接返回响应
-		io.ResponseError(ctx, common.CodeInvalidParam)
-		return
-	}
+	token := ctx.DefaultQuery("token", "")
 	//登录校验,解析Token里的参数
-	claim, err := jwt.ParseToken(p.Token)
+	claim, err := jwt.ParseToken(token)
 	if err != nil {
 		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
