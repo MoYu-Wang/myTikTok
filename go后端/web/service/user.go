@@ -185,15 +185,20 @@ func PasswordForget(ctx *gin.Context) {
 // 用户注销
 func UserDelete(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	token := ctx.DefaultQuery("token", "")
+	p := new(io.ParamUserDelete)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
 	//登录校验,解析Token里的参数
-	claim, err := jwt.ParseToken(token)
+	claim, err := jwt.ParseToken(p.Token)
 	if err != nil {
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
 	}
 	//2.服务调用
-	code := logic.DeleteUser(ctx, claim.UserID)
+	code := logic.DeleteUser(ctx, claim.UserID, p.Password)
 	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
 	}

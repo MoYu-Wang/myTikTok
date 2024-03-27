@@ -27,8 +27,8 @@ func OpenRoute() {
 			userRouter.POST("/update", service.UserUpdate)        //用户修改信息
 			userRouter.POST("/info", service.UserInfo)            //获取用户信息
 			userRouter.POST("/forgetpwd", service.PasswordForget) //找回密码
+			userRouter.POST("/delete", service.UserDelete)        //用户注销
 
-			userRouter.GET("/delete", service.UserDelete)       //用户注销
 			userRouter.GET("/updatetoken", service.UpdateToken) //更新用户登录信息
 			userRouter.GET("/base", service.UserBase)           //获取本用户基本信息
 			userRouter.GET("/works", service.UserWorks)         //用户作品

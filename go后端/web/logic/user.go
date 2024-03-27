@@ -258,7 +258,15 @@ func QueryPassword(ctx *gin.Context, p *io.ParamForgetpwd) (string, common.ResCo
 }
 
 // 用户注销
-func DeleteUser(ctx *gin.Context, userID int64) common.ResCode {
+func DeleteUser(ctx *gin.Context, userID int64, password string) common.ResCode {
+	//判断用户id和密码是否正确
+	pwd, err := mysql.QueryPasswordByUID(ctx, userID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	if password != pwd {
+		return common.CodeInvalidLoginPassword
+	}
 	//注销用户需要先删除其他表关于该用户的数据，最后再删除user表中数据
 
 	//1.删除用户发布视频部分
@@ -328,11 +336,10 @@ func generateHmacSHA1(secretToken, payloadBody string) []byte {
 
 // 获取签名
 func GetSign() string {
-	//SecretId: AKID6EG9vdGWxQ4iM0mb0X5fEmK5ujXgyESr
-	//SecretKey:aH1zyyywATmbUPLORTSSWgwEVn6Pk5Rm
 	rand.Seed(time.Now().Unix())
-	secretId := "AKID6EG9vdGWxQ4iM0mb0X5fEmK5ujXgyESr"
-	secretKey := "aH1zyyywATmbUPLORTSSWgwEVn6Pk5Rm"
+	//这里改为自己的腾讯云ID和Key
+	secretId := ""
+	secretKey := ""
 	// timestamp := time.Now().Unix()
 	timestamp := int64(1571215095)
 	expireTime := timestamp + 86400*365*10

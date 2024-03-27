@@ -30,6 +30,12 @@ type ParamForgetpwd struct {
 	IphoneID string `json:"iphoneID"`
 }
 
+//用户注销请求
+type ParamUserDelete struct {
+	Token    string `json:"token"`
+	Password string `json:"password"`
+}
+
 // //用户基本请求
 // type UserBaseReq struct {
 // 	Token string `json:"token"`
