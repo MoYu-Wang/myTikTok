@@ -1,113 +1,113 @@
 ### 请求参数和响应参数都是json形式
 
 ### 后端接口说明
-Post:
-    /user/register: 注册用户
-    /user/login: 用户登录
-    /user/update: 用户修改信息
-    /user/info: 获取用户信息
-    /user/forgetpwd: 找回密码
-    /user/delete: 用户注销
-
-    /video/upload: 上传视频
-    /video/operate: 划走视频后对视频的操作
-
-GET:
-    /user/base: 获取本用户基本信息
-    /user/updatetoken: 更新用户登录信息
-    /user/works: 用户作品
-    /user/favorite: 用户点赞视频列表
-    /user/history: 用户观看历史记录
-
-    /video/top: 获取热点视频
-    /video/care: 获取关注视频
-    /video/referee: 获取推荐视频
-    /video/search: 模糊查询视频
-    /video/getsign: 获取上传签名
-
-
-(以下暂未实现)
-/broadcast: 直播
-/shopping: 商城
 
 ## 我的后端URL:
     http://150.158.115.140:11316/myTikTok
 
+http请求:
+    Post:
+    ​    /user/register: 注册用户
+    ​    /user/login: 用户登录(支持用户ID登录或用户手机号登录,判断方式:ID十位数字,手机号十一位数字)
+    ​    /user/update: 用户修改信息
+    ​    /user/info: 获取所查看用户信息
+    ​    /user/forgetpwd: 找回密码
+    ​    /user/delete: 用户注销
+        /video/upload: 上传视频(上传视频前需要先获取上传签名)
+        /video/operate: 划走视频后对视频的操作
+
+    GET:
+    ​    /user/base: 获取本用户基本信息
+    ​    /user/updatetoken: 更新用户登录信息(用于判断用户登录token是否过期)
+    ​    /user/works: 用户作品
+    ​    /user/favorite: 用户点赞视频列表
+    ​    /user/history: 用户观看历史记录
+        /video/top: 获取热点视频
+        /video/care: 获取关注视频
+        /video/referee: 获取推荐视频
+        /video/search: 模糊查询视频
+        /video/getsign: 获取上传签名
+
+    (以下暂未实现)
+    /broadcast: 直播
+    /shopping: 商城
+
+    
     用户组(/user):
         POST:
             /register:
                 请求参数:
                     {
-                        username:"",
-                        password:"",
-                        iphoneID:""
+                        username:"",    //用户昵称(int64)
+                        password:"",    //密码(string)
+                        iphoneID:""     //手机号(string)
                     }
-
+    
                 响应参数:
                     {
-                        status_code:"",
-                        status_msg:"",
-
-                        userID:""
+                        status_code:"", //返回code
+                        status_msg:"",  //返回信息
+    
+                        userID:""       //用户ID(int64)
                     }
-
+    
             /login:
                 请求参数:
                     {
-                        userID:"",
-                        password:"",
-                        iphoneID:""
+                        userID:"",  //(int64)
+                        password:"", //(string)
+                        iphoneID:""  //(string)
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
                         status_msg:"",
-
-                        token:""
+    
+                        token:""    //返回用户token(string)
                     }
-
+    
             /update:
                 请求参数:
                     {
-                        username:"",
-                        password:"",
-                        iphoneID:"",
-                        token:""
+                        username:"",    //(string)
+                        password:"",    //(string)
+                        iphoneID:"",    //(string)
+                        token:""        //(string)
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
                         status_msg:""
                     }
-
+    
             /info:
                 请求参数:
                     {
-                        userID:"",
-                        userName:"",
-                        token:""
+                        userID:"",  //(int64)
+                        userName:"",    //(string)
+                        token:""    //(string)
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
                         status_msg:"",
-
-                        careCount:"",
-                        fansCount:"",
-                        getLikes:"",
-                        id:"",
-                        isCare:"",
-                        name:""
+    
+                        careCount:"",   //用户关注数(int64)
+                        fansCount:"",   //用户粉丝数(int64)
+                        getLikes:"",    //用户获得点赞数(int64)
+                        id:"",          //用户id(int64)
+                        isCare:"",      //本用户是否关注该用户(bool)
+                        name:""         //用户昵称(string)
                     }
-
+    
             /forgetpwd:
                 请求参数:
                     {
-                        userID:"",
-                        iphoneID:""
+                        userID:"",  //(int64)
+                        iphoneID:"" //(string)
                     }
 
 
@@ -115,73 +115,73 @@ GET:
                     {
                         status_code:"",
                         status_msg:"",
-
-                        password:""
+    
+                        password:"" //(string)
                     }
-
+    
             /delete:
                 请求参数:
                     {
-                        token:"",
+                        token:"",   //(string)
                         password:""
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
                         status_msg:""
                     }
-
+    
         GET:
             /base:
                 请求参数:
                     {
                         token:""
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
                         status_msg:"",
-
-                        userID:"",
-                        userName:"",
-                        password:"",
-                        iphoneID:""
+    
+                        userID:"",  //(int64)
+                        userName:"",    //(string)
+                        password:"",    //(string)
+                        iphoneID:"" //(string)
                     }
-
+    
             /updatetoken:
                 请求参数:
                     {
                         token:""
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
                         status_msg:"",
-
+    
                         token:""
                     }
-
+    
             /works:
                 请求参数:
                     {
                         token:""
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
                         status_msg:"",
-
+    
                         videoInfos:[
                             {
-                                videoID:"",
-                                userID:"",
-                                videoLink:"",
-                                videoFavoriteNum:"",
-                                videoCommitNum:""
+                                videoID:"",             //视频id(int64)
+                                userID:"",              //发布人id(int64)
+                                videoLink:"",           //视频链接(string)
+                                videoFavoriteNum:"",    //视频点赞数(int64)
+                                videoCommitNum:""       //视频评论数(int64)
                             },
                             {
                                 videoID:"",
@@ -193,18 +193,18 @@ GET:
                             ...
                         ]
                     }
-
+    
             /favorite:
                 请求参数:
                     {
                         token:""
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
                         status_msg:"",
-
+    
                         videoInfos:[
                             {
                                 videoID:"",
@@ -223,18 +223,18 @@ GET:
                             ...
                         ]
                     }
-
+    
             /history:
                 请求参数:
                     {
                         token:""
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
                         status_msg:"",
-
+    
                         videoInfos:[
                             {
                                 videoID:"",
@@ -260,29 +260,33 @@ GET:
             /upload:
                 请求参数:
                     {
-                        token:"",
-                        videoName:"",
-                        videoTags:"",
-                        videoLink:""
+                        token:"",       
+                        videoName:"",       //视频名称(string)
+                        videoTags:"",       //视频标签(每个独立的标签前面用#分割)(string)
+                        videoLink:""        //视频链接(string)
                     }
-
+    
                 响应参数:
                     {
-                        status_code:"",
-                        status_msg:""
+                        status_code:"",     
+                        status_msg:""       
                     }
             
             /operate:
                 请求参数:
                     {
-                        token:"",
-                        videoID:"",
-                        watchTime:"",
-                        isFavorite:"",
-                        commentNum:"",
-                        commentTexts:""
+                        token:"",           //(string)
+                        videoID:"",         //视频id(int64)
+                        watchTime:"",       //观看时长(观看该视频的时长(最长为该视频的最大时长(单位:ms)))(int64)
+                        isFavorite:"",      //点赞操作(-1:取消点赞,0:未进行点赞操作,1:点赞)(int64)
+                        commentNum:"",      //评论数量(int64)
+                        commentTexts:[      //(string[])
+                            "",(string)
+                            "",
+                            ...
+                        ]     //评论内容
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
@@ -303,11 +307,11 @@ GET:
                         
                         videoInfos:[
                             {
-                                videoID:"",
-                                userID:"",
-                                videoLink:"",
-                                videoFavoriteNum:"",
-                                videoCommitNum:""
+                                videoID:"",     //(int64)
+                                userID:"",      //(int64)
+                                videoLink:"",   //(string)
+                                videoFavoriteNum:"", //(int64)
+                                videoCommitNum:""   //(int64)
                             },
                             {
                                 videoID:"",
@@ -319,13 +323,13 @@ GET:
                             ...
                         ]
                     }
-
+    
             /care:
                 请求参数:
                     {
                         token:""
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
@@ -349,18 +353,18 @@ GET:
                             ...
                         ]
                     }
-
+    
             /referee:
                 请求参数:
                     {
                         token:""
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
                         status_msg:"",
-
+    
                         videoInfos:[
                             {
                                 videoID:"",
@@ -379,7 +383,7 @@ GET:
                             ...
                         ]
                     }
-
+    
             /getsign:
                 请求参数:
                     {
@@ -391,15 +395,15 @@ GET:
                     {
                         status_code:"",
                         status_msg:"",
-
-                        mysign:""
+    
+                        mysign:"" //返回腾讯云上传视频签名(string)
                     }
             /search:
                 请求参数:
                     {
-                        searchText:""
+                        searchText:"" //搜索文本(string)
                     }
-
+    
                 响应参数:
                     {
                         status_code:"",
@@ -427,7 +431,7 @@ GET:
 
     (后期拓展,目前不实现)
     /broadcast:
-
+    
     /shopping:
 
 

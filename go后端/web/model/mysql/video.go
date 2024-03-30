@@ -57,7 +57,7 @@ func QueryVIDByVName(ctx context.Context, videoName string) ([]int64, error) {
 func QueryAllVID(ctx context.Context) ([]int64, error) {
 	db := GetDB(ctx)
 	var ret []int64
-	err := db.Table("Video").Find(&ret).Error
+	err := db.Table("Video").Select("VideoID").Find(&ret).Error
 	return ret, err
 }
 
