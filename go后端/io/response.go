@@ -1,6 +1,7 @@
 package io
 
 import (
+	"fmt"
 	"net/http"
 
 	"WebVideoServer/common"
@@ -147,12 +148,15 @@ func ResponseError(c *gin.Context, code common.ResCode) {
 
 // ResponseSuccess 响应成功
 func ResponseSuccess(c *gin.Context, code common.ResCode) {
+	fmt.Println(code)
 	c.JSON(http.StatusOK, &ResponseData{
 		Response: Response{code, code.Msg()},
 	})
+
 }
 
 func ResponseSuccessRegister(c *gin.Context, userID int64) {
+	fmt.Println(userID)
 	c.JSON(http.StatusOK, &UserRegisterResponse{
 		Response: Response{common.CodeUserRegisterSuccess, common.CodeUserRegisterSuccess.Msg()},
 		UserID:   userID,
@@ -161,6 +165,7 @@ func ResponseSuccessRegister(c *gin.Context, userID int64) {
 
 // ResponseSuccessLogin 登录成功
 func ResponseSuccessLogin(c *gin.Context, token string) {
+	fmt.Println(token)
 	c.JSON(http.StatusOK, &UserLoginResponse{
 		Response: Response{common.CodeSuccess, common.CodeSuccess.Msg()},
 		Token:    token,
@@ -169,55 +174,66 @@ func ResponseSuccessLogin(c *gin.Context, token string) {
 
 // ResponseSuccessUserInfo 返回用户信息
 func ResponseSuccessUserInfo(c *gin.Context, resp *UserInfoResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
 
 // ResponseSuccessUserBase 返回用户基本信息
 func ResponseSuccessUserBase(c *gin.Context, resp *UserBaseResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
 
 // 返回用户密码
 func ResponseSuccessPassword(c *gin.Context, resp *PasswordResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
 
 // 返回获取上传视频签名
 func ResponseSuccessGetSign(c *gin.Context, resp *GetSignResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
 
 // 返回用户所有作品
 func ResponseSuccessUserWork(c *gin.Context, resp *UserWorkResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
 
 // 返回用户观看历史记录
 func ResponseSuccessUserHistory(c *gin.Context, resp *UserHistoryResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
 
 // 返回用户点赞视频列表
 func ResponseSuccessUserFavorite(c *gin.Context, resp *UserFavoriteResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
 
 // 返回热点视频列表
 func ResponseSuccessTopVideo(c *gin.Context, resp *TopVideoResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
 
 // 返回关注视频列表
 func ResponseSuccessCareVideo(c *gin.Context, resp *CareVideoResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
 
 // 返回推荐视频列表
 func ResponseSuccessRefereeVideo(c *gin.Context, resp *RefereeVideoResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
 
 // 返回搜索视频列表
 func ResponseSuccessSearchVideo(c *gin.Context, resp *SearchVideoResp) {
+	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }
