@@ -28,6 +28,10 @@ func UpLoadVideo(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
 	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
 	//2.服务调用
 	if code := logic.UpLoadVideo(ctx, p, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
@@ -43,11 +47,15 @@ func GetSign(ctx *gin.Context) {
 	//1.获取参数和参数校验
 	token := ctx.DefaultQuery("token", "")
 	//登录校验,解析Token里的参数
-	_, err := jwt.ParseToken(token)
+	claim, err := jwt.ParseToken(token)
 	if err != nil {
 		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
 	}
 	//2.服务调用
 	//获取签名
@@ -124,6 +132,10 @@ func RefereeVideo(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
 	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
 	//2.服务调用
 	vids, code := logic.GetRefereeVideoIDs(ctx, claim)
 	if code != common.CodeSuccess {
@@ -156,6 +168,10 @@ func CareVideo(ctx *gin.Context) {
 	if err != nil {
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
 	}
 	//2.服务调用
 	vids, code := logic.GetCareVideoIDs(ctx, claim)

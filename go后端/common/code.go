@@ -12,6 +12,7 @@ const (
 	CodeInvalidLoginUserID      ResCode = 1041
 	CodeInvalidLoginPassword    ResCode = 1042
 	CodeUpdateUserInfoSuccess   ResCode = 1043
+	CodeUserNotExist            ResCode = 1044
 	CodeServerBusy              ResCode = 1050
 	CodeNeedLogin               ResCode = 1060
 	CodeInvalidToken            ResCode = 1070
@@ -32,6 +33,7 @@ var codeMsgMap = map[ResCode]string{
 	CodeInvalidLoginUserID:      "用户id不存在",
 	CodeInvalidLoginPassword:    "用户密码错误",
 	CodeUpdateUserInfoSuccess:   "修改用户信息成功",
+	CodeUserNotExist:            "用户已注销或用户id不存在",
 	CodeServerBusy:              "服务繁忙",
 	CodeNeedLogin:               "用户需要登录或登录信息已过期",
 	CodeInvalidToken:            "无效的token",

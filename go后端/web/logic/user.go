@@ -375,3 +375,16 @@ func UpLoadVideo(ctx *gin.Context, p *io.UserUpLoadVideoReq, claim *jwt.MyClaims
 	//
 	return common.CodeSuccess
 }
+
+// 判断用户是否注销或不存在
+func UserIsExist(ctx *gin.Context, claim *jwt.MyClaims) common.ResCode {
+	//判断用户ID是否存在
+	f, err := mysql.QueryUserIDIsExist(ctx, claim.UserID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	if f {
+		return common.CodeSuccess
+	}
+	return common.CodeUserNotExist
+}

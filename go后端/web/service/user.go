@@ -120,6 +120,10 @@ func UserBase(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
 	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
 	//2.服务调用
 	//获取本用户基本信息
 	userBase, code := logic.GetUser(ctx, claim)
@@ -152,6 +156,10 @@ func UserUpdate(ctx *gin.Context) {
 	if err != nil {
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
 	}
 	//2.服务调用
 	//更新用户基本信息
@@ -208,6 +216,10 @@ func UserDelete(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
 	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
 	//2.服务调用
 	code := logic.DeleteUser(ctx, claim.UserID, p.Password)
 	if code != common.CodeSuccess {
@@ -227,6 +239,10 @@ func UpdateToken(ctx *gin.Context) {
 		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
 	}
 	//2.服务调用
 	token, err = jwt.GenToken(claim.UserID, claim.UserName)
@@ -249,6 +265,10 @@ func UserWorks(ctx *gin.Context) {
 		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
 	}
 	//2.服务调用
 	//获取用户发布的所有视频
@@ -285,6 +305,10 @@ func UserHistory(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
 	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
 	//2.服务调用
 	vids, code := logic.GetUserHistoryVideoIDs(ctx, claim)
 	if code != common.CodeSuccess {
@@ -318,6 +342,10 @@ func UserFavorite(ctx *gin.Context) {
 		fmt.Println("token解析失败")
 		io.ResponseError(ctx, common.CodeNeedLogin)
 		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
 	}
 	//2.服务调用
 	vids, code := logic.GetUserFavoriteVideoIDs(ctx, claim)
