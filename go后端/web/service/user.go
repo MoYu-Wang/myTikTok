@@ -31,6 +31,7 @@ func UserRegister(ctx *gin.Context) {
 		return
 	}
 
+	fmt.Println("请求参数:")
 	fmt.Println(p)
 
 	//2.服务调用
@@ -55,6 +56,8 @@ func UserLogin(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeInvalidParam)
 		return
 	}
+	fmt.Println("请求参数:")
+	fmt.Println(p)
 	//2.服务调用
 	//判断是根据哪个ID登录
 	var token string
@@ -87,6 +90,8 @@ func UserInfo(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeInvalidParam)
 		return
 	}
+	fmt.Println("请求参数:")
+	fmt.Println(p)
 	//登录校验,解析Token里的参数
 	claim, _ := jwt.ParseToken(p.Token)
 	//2.服务调用
@@ -140,6 +145,8 @@ func UserUpdate(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeInvalidParam)
 		return
 	}
+	fmt.Println("请求参数:")
+	fmt.Println(p)
 	//登录校验,解析Token里的参数
 	claim, err := jwt.ParseToken(p.Token)
 	if err != nil {
@@ -166,6 +173,8 @@ func PasswordForget(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeInvalidParam)
 		return
 	}
+	fmt.Println("请求参数:")
+	fmt.Println(p)
 	//未来加上短信验证
 
 	//2.服务调用
@@ -191,6 +200,8 @@ func UserDelete(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeInvalidParam)
 		return
 	}
+	fmt.Println("请求参数:")
+	fmt.Println(p)
 	//登录校验,解析Token里的参数
 	claim, err := jwt.ParseToken(p.Token)
 	if err != nil {

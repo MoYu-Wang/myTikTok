@@ -71,6 +71,8 @@ func OperateVideo(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeInvalidParam)
 		return
 	}
+	fmt.Println("请求参数:")
+	fmt.Println(p)
 	//登录校验
 	claim, _ := jwt.ParseToken(p.Token)
 	//2.服务调用
