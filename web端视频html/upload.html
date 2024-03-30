@@ -199,7 +199,7 @@
                 console.log("视频链接：" + videoURL);
 
                 //上传视频到后端
-                fetch(myURL+'/user/upload', {
+                fetch(myURL+'/video/upload', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -238,14 +238,23 @@
         }
         //获取签名
         function getSignature() {
-            return axios.post(myURL+"/user/getsign",{
-                 userID: userData.userID,
-                 userName: userData.userName ,
-                 token: userData.token,
-            }).then(function (response) {
-                console.log(response.data.mysign)
-                return response.data.mysign;
-            })
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", myURL+'/video/getsign/?token="' + userData.token +'"', true);
+            xhr.onreadystatechange = function () {
+                if(xhr.readyState == 4 ){
+                    arr = [];
+                    if (xhr.status == 200) {
+                        // 处理成功的响应
+                        console.log("服务器响应:\n"+xhr.responseText);
+                        return JSON.stringify(xhr.responseText).mysign
+                    }else{
+                        console.log("服务器未响应,http状态码: " + xhr.status + " 请求当前状态: " + xhr.readyState);
+                        alert("请求超时,服务器未响应")
+                        return;
+                    }
+                }
+            };
+            xhr.send();
         };
         //
         function showMessage(message) {

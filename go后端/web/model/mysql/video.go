@@ -18,7 +18,7 @@ func QueryVlinkByVID(ctx context.Context, videoID int64) (string, error) {
 func QueryStartTimeByVID(ctx context.Context, videoID int64) (int64, error) {
 	db := GetDB(ctx)
 	var ret int64
-	err := db.Table("Video").Select("StartTime").Where("VideoID=?", videoID).Find(&ret).Error
+	err := db.Table("Video").Select("PublicTime").Where("VideoID=?", videoID).Find(&ret).Error
 	return ret, err
 }
 
