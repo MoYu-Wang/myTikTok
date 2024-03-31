@@ -26,10 +26,9 @@ type UserRegisterResponse struct {
 	UserID int64 `json:"userID"`
 }
 
-type VideoResponse struct {
+type VideoCommentResp struct {
 	Response
-	VideoInfo
-	VideoCommits []VideoCommit `json:"videoCommits"` //视频所有评论
+	VideoComments []VideoComment `json:"videoComments"` //视频所有评论
 }
 
 // 用户信息
@@ -53,7 +52,8 @@ type VideoInfo struct {
 	IsFavorite bool `json:"isFavorite"` //当前登录账号是否点赞该视频
 }
 
-type VideoCommit struct {
+type VideoComment struct {
+	CommentID  int64  `json:"commentID"`  //评论ID
 	UserID     int64  `json:"userID"`     //评论者
 	CommitText string `json:"commitText"` //评论文本
 	CommitTime int64  `json:"commitTime"` //评论时间
@@ -137,6 +137,11 @@ type PasswordResp struct {
 type GetSignResp struct {
 	Response
 	Sign string `json:"mysign"`
+}
+
+type CommentVideoResp struct {
+	Response
+	CommentID int64 `json:"commentID"`
 }
 
 // ResponseError 响应错误
@@ -234,6 +239,18 @@ func ResponseSuccessRefereeVideo(c *gin.Context, resp *RefereeVideoResp) {
 
 // 返回搜索视频列表
 func ResponseSuccessSearchVideo(c *gin.Context, resp *SearchVideoResp) {
+	fmt.Println(resp)
+	c.JSON(http.StatusOK, resp)
+}
+
+// 返回视频评论id
+func ResponseSuccessCommentVideo(c *gin.Context, resp *CommentVideoResp) {
+	fmt.Println(resp)
+	c.JSON(http.StatusOK, resp)
+}
+
+// 返回获取视频所有评论
+func ResponseSuccessGetVideoComments(c *gin.Context, resp *VideoCommentResp) {
 	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }

@@ -57,6 +57,27 @@ type UserUpLoadVideoReq struct {
 	VideoLink string `json:"videoLink"`
 }
 
+//点赞视频请求
+type FavoriteVideoReq struct {
+	Token      string `json:"token"`
+	VideoID    int64  `json:"videoID"`
+	IsFavorite int64  `json:"isFavorite"`
+}
+
+//评论视频请求
+type CommentVideoReq struct {
+	Token       string `json:"token"`
+	VideoID     int64  `json:"videoID"`
+	CommentText string `json:"commentText"`
+}
+
+//删除评论请求
+type DeleteCommentReq struct {
+	Token     string `json:"token"`
+	VideoID   int64  `json:"videoID"`
+	CommentID int64  `json:"commentID"`
+}
+
 //用户操作视频请求参数
 type OperateVideoReq struct {
 	Token        string   `json:"token"`

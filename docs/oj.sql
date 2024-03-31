@@ -41,6 +41,7 @@ create table Favorite(
 
 #视频评论表
 create table CommentList(
+    CommentID bigint primary key comment '评论id',
     UserID bigint comment '用户id',
     VideoID bigint comment '视频id',
     CommentText text comment '评论文本',

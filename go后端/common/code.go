@@ -15,6 +15,7 @@ const (
 	CodeUserNotExist            ResCode = 1044
 	CodeServerBusy              ResCode = 1050
 	CodeNeedLogin               ResCode = 1060
+	CodeCommentNotOwn           ResCode = 1061
 	CodeInvalidToken            ResCode = 1070
 	CodeRegisterFailed          ResCode = 1080
 	CodeUserRegisterSuccess     ResCode = 1081
@@ -36,6 +37,7 @@ var codeMsgMap = map[ResCode]string{
 	CodeUserNotExist:            "用户已注销或用户id不存在",
 	CodeServerBusy:              "服务繁忙",
 	CodeNeedLogin:               "用户需要登录或登录信息已过期",
+	CodeCommentNotOwn:           "该评论不属于自己",
 	CodeInvalidToken:            "无效的token",
 	CodeRegisterFailed:          "注册失败",
 	CodeUserRegisterSuccess:     "注册成功",

@@ -5,6 +5,7 @@ import (
 	"WebVideoServer/dao"
 	"WebVideoServer/io"
 	"WebVideoServer/jwt"
+	"WebVideoServer/snowflake"
 	"WebVideoServer/web/model/mysql"
 	"sort"
 
@@ -143,6 +144,7 @@ func OperateVideo(ctx *gin.Context, p *io.OperateVideoReq, claim *jwt.MyClaims) 
 	if p.CommentNum > 0 {
 		for _, commentText := range p.CommentTexts {
 			comment := dao.CommentList{
+				CommentID:   snowflake.GenID(),
 				UserID:      claim.UserID,
 				VideoID:     p.VideoID,
 				CommentText: commentText,
@@ -163,4 +165,78 @@ func GetSearchVideoIDs(ctx *gin.Context, searchText string) ([]int64, common.Res
 		return nil, common.CodeMysqlFailed
 	}
 	return searchIDs, common.CodeSuccess
+}
+
+// 获取视频评论
+func GetVideoComment(ctx *gin.Context, videoID int64) ([]io.VideoComment, common.ResCode) {
+	comments, err := mysql.QueryVideoComments(ctx, videoID)
+	if err != nil {
+		return nil, common.CodeMysqlFailed
+	}
+	var vcomments []io.VideoComment
+	for _, val := range comments {
+		vcomment := &io.VideoComment{
+			CommentID:  val.CommentID,
+			UserID:     val.UserID,
+			CommitTime: val.CommentTime,
+			CommitText: val.CommentText,
+		}
+		vcomments = append(vcomments, *vcomment)
+	}
+	return vcomments, common.CodeSuccess
+}
+
+// 视频点赞
+func FavoriteVideo(ctx *gin.Context, p *io.FavoriteVideoReq, claim *jwt.MyClaims) common.ResCode {
+	//判断是否点赞 0:未进行操作 1:点赞操作 -1:取消点赞操作
+	if p.IsFavorite > 0 {
+		if err := mysql.InsertUserLikeVedio(ctx, dao.Favorite{
+			UserID:  claim.UserID,
+			VideoID: p.VideoID,
+		}); err != nil {
+			return common.CodeMysqlFailed
+		}
+	}
+	if p.IsFavorite < 0 {
+		if err := mysql.DeleteUserLikeVedio(ctx, dao.Favorite{
+			UserID:  claim.UserID,
+			VideoID: p.VideoID,
+		}); err != nil {
+			return common.CodeMysqlFailed
+		}
+	}
+	return common.CodeSuccess
+}
+
+// 评论视频
+func CommentVideo(ctx *gin.Context, p *io.CommentVideoReq, claim *jwt.MyClaims) (int64, common.ResCode) {
+	comment := dao.CommentList{
+		CommentID:   snowflake.GenID(),
+		UserID:      claim.UserID,
+		VideoID:     p.VideoID,
+		CommentText: p.CommentText,
+		CommentTime: GetNowTime(),
+	}
+	if err := mysql.InsertVideoComment(ctx, comment); err != nil {
+		return 0, common.CodeMysqlFailed
+	}
+	return comment.CommentID, common.CodeSuccess
+}
+
+// 删除评论
+func DeleteComment(ctx *gin.Context, p *io.DeleteCommentReq, claim *jwt.MyClaims) common.ResCode {
+	//判断该评论是否是自己的
+	f, err := mysql.QueryCommentFromUser(ctx, p.CommentID, claim.UserID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	if !f {
+		return common.CodeCommentNotOwn
+	}
+	//删除评论
+	err = mysql.DeleteVideoComment(ctx, p.CommentID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	return common.CodeSuccess
 }

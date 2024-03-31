@@ -6,6 +6,7 @@ import (
 	"WebVideoServer/jwt"
 	"WebVideoServer/web/logic"
 	"fmt"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -224,4 +225,127 @@ func SearchVideo(ctx *gin.Context) {
 	}
 	//3.返回成功响应
 	io.ResponseSuccessSearchVideo(ctx, resp)
+}
+
+// 获取视频评论
+func GetVideoComment(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	videoID, err := strconv.ParseInt(ctx.DefaultQuery("videoID", ""), 10, 64)
+	if err != nil {
+		fmt.Println("转换失败:", err)
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	//2.服务调用
+	comments, code := logic.GetVideoComment(ctx, videoID)
+	if code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	resp := &io.VideoCommentResp{
+		Response:      io.Response{StatusCode: 0, StatusMsg: "success"},
+		VideoComments: comments,
+	}
+	//3.返回成功响应
+	io.ResponseSuccessGetVideoComments(ctx, resp)
+}
+
+// 视频点赞
+func FavoriteVideo(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	p := new(io.FavoriteVideoReq)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	fmt.Printf("请求参数:")
+	fmt.Println(p)
+	//登录校验,解析Token里的参数
+	claim, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
+	//2.服务调用
+	if code := logic.FavoriteVideo(ctx, p, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+
+	//3.返回成功响应
+	io.ResponseSuccess(ctx, common.CodeSuccess)
+}
+
+// 评论视频
+func CommentVideo(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	p := new(io.CommentVideoReq)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	fmt.Printf("请求参数:")
+	fmt.Println(p)
+	//登录校验,解析Token里的参数
+	claim, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
+	//2.服务调用
+	commentID, code := logic.CommentVideo(ctx, p, claim)
+	if code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	resp := &io.CommentVideoResp{
+		Response:  io.Response{StatusCode: 0, StatusMsg: "success"},
+		CommentID: commentID,
+	}
+	//3.返回成功响应
+	io.ResponseSuccessCommentVideo(ctx, resp)
+}
+
+// 删除视频评论
+func DeleteVideoComment(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	p := new(io.DeleteCommentReq)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	fmt.Printf("请求参数:")
+	fmt.Println(p)
+	//登录校验,解析Token里的参数
+	claim, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
+	//2.服务调用
+	if code := logic.DeleteComment(ctx, p, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+
+	//3.返回成功响应
+	io.ResponseSuccess(ctx, common.CodeSuccess)
 }

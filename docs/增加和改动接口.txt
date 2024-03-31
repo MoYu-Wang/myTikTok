@@ -1,0 +1,37 @@
+GET:
+    /video/getcomment  获取视频评论
+
+POST:
+    /video/favorite  点赞视频
+    /video/comment  评论视频
+    /video/deletecomment 删除评论
+
+/video/getcomment:
+请求参数:
+{
+    videoID:  //int64
+}
+
+/video/favorite:
+请求参数:
+{
+    token:"",   //string
+    videoID:,   //int64
+    isFavorite: //int64
+}
+
+/video/comment:
+请求参数:
+{
+    token:"",   //string
+    videoID:,   //int64
+    commentText:""  //string
+}
+
+/video/deletecomment:
+请求参数:
+{
+    token:"",   //string
+    videoID:,   //int64
+    CommentID:  //int64
+}

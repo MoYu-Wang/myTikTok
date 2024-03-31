@@ -27,6 +27,7 @@ type Favorite struct {
 
 //视频评论表
 type CommentList struct {
+	CommentID   int64  `gorm:"column:CommentID;not null;comment:评论cid"`
 	UserID      int64  `gorm:"column:UserID;not null;comment:评论用户uid"`
 	VideoID     int64  `gorm:"column:VideoID;comment:视频vid"`
 	CommentText string `gorm:"column:CommentText;comment:评论文本"`

@@ -152,7 +152,7 @@
             // 这里添加上传到腾讯云点播的代码
             // new TcVod.default(opts) 是 script 引入 的用法
             const tcVod = new TcVod.default({
-              getSignature: getSignature // 前文中所述的获取上传签名的函数
+              getSignature: getSignature // 获取上传签名的函数,需要自己定义
             })
 
 
