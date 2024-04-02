@@ -43,7 +43,7 @@ type UserInfo struct {
 
 // 视频信息
 type VideoInfo struct {
-	VideoID          int64  `json:"videoID"`          //视频id
+	VideoID          string `json:"videoID"`          //视频id
 	UserID           int64  `json:"userID"`           //视频发布人id
 	VideoLink        string `json:"videoLink"`        //视频链接
 	VideoFavoriteNum int64  `json:"videoFavoriteNum"` //视频点赞人数
@@ -53,7 +53,7 @@ type VideoInfo struct {
 }
 
 type VideoComment struct {
-	CommentID  int64  `json:"commentID"`  //评论ID
+	CommentID  string `json:"commentID"`  //评论ID
 	UserID     int64  `json:"userID"`     //评论者
 	CommitText string `json:"commitText"` //评论文本
 	CommitTime int64  `json:"commitTime"` //评论时间

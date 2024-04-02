@@ -8,6 +8,7 @@ import (
 	"WebVideoServer/snowflake"
 	"WebVideoServer/web/model/mysql"
 	"sort"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,7 +32,7 @@ func GetVideoInfoByVID(ctx *gin.Context, videoID int64, claim *jwt.MyClaims) (*i
 		return nil, common.CodeMysqlFailed
 	}
 	videoInfo := &io.VideoInfo{
-		VideoID:          ret.VideoID,
+		VideoID:          strconv.FormatInt(ret.VideoID, 10),
 		UserID:           ret.UserID,
 		VideoLink:        ret.VideoLink,
 		VideoFavoriteNum: vfnum,
@@ -176,7 +177,7 @@ func GetVideoComment(ctx *gin.Context, videoID int64) ([]io.VideoComment, common
 	var vcomments []io.VideoComment
 	for _, val := range comments {
 		vcomment := &io.VideoComment{
-			CommentID:  val.CommentID,
+			CommentID:  strconv.FormatInt(val.CommentID, 10),
 			UserID:     val.UserID,
 			CommitTime: val.CommentTime,
 			CommitText: val.CommentText,
