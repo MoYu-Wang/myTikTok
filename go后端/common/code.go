@@ -7,6 +7,7 @@ type Action int32
 const (
 	CodeSuccess                 ResCode = 0
 	CodeInvalidParam            ResCode = 1010
+	CodeDataTypeChangeError     ResCode = 1011
 	CodeGetVideoTagsWeightError ResCode = 1020
 	CodeInvalidLoginInfo        ResCode = 1040
 	CodeInvalidLoginUserID      ResCode = 1041
@@ -29,6 +30,7 @@ const (
 var codeMsgMap = map[ResCode]string{
 	CodeSuccess:                 "success",
 	CodeInvalidParam:            "请求参数错误",
+	CodeDataTypeChangeError:     "数据类型转化失败",
 	CodeGetVideoTagsWeightError: "获取视频标签权值算法错误",
 	CodeInvalidLoginInfo:        "查不到该用户信息",
 	CodeInvalidLoginUserID:      "用户id不存在",

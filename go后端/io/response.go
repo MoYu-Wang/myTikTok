@@ -141,7 +141,7 @@ type GetSignResp struct {
 
 type CommentVideoResp struct {
 	Response
-	CommentID int64 `json:"commentID"`
+	CommentID string `json:"commentID"`
 }
 
 // ResponseError 响应错误

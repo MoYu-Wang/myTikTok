@@ -318,7 +318,7 @@ func CommentVideo(ctx *gin.Context) {
 	}
 	resp := &io.CommentVideoResp{
 		Response:  io.Response{StatusCode: 0, StatusMsg: "success"},
-		CommentID: commentID,
+		CommentID: strconv.FormatInt(commentID, 10),
 	}
 	//3.返回成功响应
 	io.ResponseSuccessCommentVideo(ctx, resp)

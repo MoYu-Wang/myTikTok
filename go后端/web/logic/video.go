@@ -101,8 +101,12 @@ func GetWeightByUserLookVideo(ctx *gin.Context, userID int64, videoID int64) (in
 
 // 对视频进行操作
 func OperateVideo(ctx *gin.Context, p *io.OperateVideoReq, claim *jwt.MyClaims) common.ResCode {
+	videoID, err := strconv.ParseInt(p.VideoID, 10, 64)
+	if err != nil {
+		return common.CodeDataTypeChangeError
+	}
 	//对视频进行基础权值增加处理
-	if err := mysql.AddVideoWeight(ctx, p.VideoID, float64(p.WatchTime)); err != nil {
+	if err := mysql.AddVideoWeight(ctx, videoID, float64(p.WatchTime)); err != nil {
 		return common.CodeMysqlFailed
 	}
 	//判断是否登录,若未登录,则直接返回
@@ -110,12 +114,12 @@ func OperateVideo(ctx *gin.Context, p *io.OperateVideoReq, claim *jwt.MyClaims) 
 		return common.CodeSuccess
 	}
 	//增加用户打开视频次数
-	if err := mysql.AddUserWatch(ctx, claim.UserID, p.VideoID); err != nil {
+	if err := mysql.AddUserWatch(ctx, claim.UserID, videoID); err != nil {
 		return common.CodeMysqlFailed
 	}
 	//增加用户观看标签时长
 	//获取标签数组
-	tags, err := mysql.QueryTagArrByVideoID(ctx, p.VideoID)
+	tags, err := mysql.QueryTagArrByVideoID(ctx, videoID)
 	if err != nil {
 		return common.CodeMysqlFailed
 	}
@@ -128,7 +132,7 @@ func OperateVideo(ctx *gin.Context, p *io.OperateVideoReq, claim *jwt.MyClaims) 
 	if p.IsFavorite > 0 {
 		if err := mysql.InsertUserLikeVedio(ctx, dao.Favorite{
 			UserID:  claim.UserID,
-			VideoID: p.VideoID,
+			VideoID: videoID,
 		}); err != nil {
 			return common.CodeMysqlFailed
 		}
@@ -136,7 +140,7 @@ func OperateVideo(ctx *gin.Context, p *io.OperateVideoReq, claim *jwt.MyClaims) 
 	if p.IsFavorite < 0 {
 		if err := mysql.DeleteUserLikeVedio(ctx, dao.Favorite{
 			UserID:  claim.UserID,
-			VideoID: p.VideoID,
+			VideoID: videoID,
 		}); err != nil {
 			return common.CodeMysqlFailed
 		}
@@ -147,7 +151,7 @@ func OperateVideo(ctx *gin.Context, p *io.OperateVideoReq, claim *jwt.MyClaims) 
 			comment := dao.CommentList{
 				CommentID:   snowflake.GenID(),
 				UserID:      claim.UserID,
-				VideoID:     p.VideoID,
+				VideoID:     videoID,
 				CommentText: commentText,
 				CommentTime: GetNowTime(),
 			}
@@ -189,11 +193,16 @@ func GetVideoComment(ctx *gin.Context, videoID int64) ([]io.VideoComment, common
 
 // 视频点赞
 func FavoriteVideo(ctx *gin.Context, p *io.FavoriteVideoReq, claim *jwt.MyClaims) common.ResCode {
+	//将videoID转化为int64
+	videoID, err := strconv.ParseInt(p.VideoID, 10, 64)
+	if err != nil {
+		return common.CodeDataTypeChangeError
+	}
 	//判断是否点赞 0:未进行操作 1:点赞操作 -1:取消点赞操作
 	if p.IsFavorite > 0 {
 		if err := mysql.InsertUserLikeVedio(ctx, dao.Favorite{
 			UserID:  claim.UserID,
-			VideoID: p.VideoID,
+			VideoID: videoID,
 		}); err != nil {
 			return common.CodeMysqlFailed
 		}
@@ -201,7 +210,7 @@ func FavoriteVideo(ctx *gin.Context, p *io.FavoriteVideoReq, claim *jwt.MyClaims
 	if p.IsFavorite < 0 {
 		if err := mysql.DeleteUserLikeVedio(ctx, dao.Favorite{
 			UserID:  claim.UserID,
-			VideoID: p.VideoID,
+			VideoID: videoID,
 		}); err != nil {
 			return common.CodeMysqlFailed
 		}
@@ -211,10 +220,16 @@ func FavoriteVideo(ctx *gin.Context, p *io.FavoriteVideoReq, claim *jwt.MyClaims
 
 // 评论视频
 func CommentVideo(ctx *gin.Context, p *io.CommentVideoReq, claim *jwt.MyClaims) (int64, common.ResCode) {
+	//将videoID转化为int64
+	videoID, err := strconv.ParseInt(p.VideoID, 10, 64)
+	if err != nil {
+		return 0, common.CodeDataTypeChangeError
+	}
+
 	comment := dao.CommentList{
 		CommentID:   snowflake.GenID(),
 		UserID:      claim.UserID,
-		VideoID:     p.VideoID,
+		VideoID:     videoID,
 		CommentText: p.CommentText,
 		CommentTime: GetNowTime(),
 	}
@@ -226,8 +241,12 @@ func CommentVideo(ctx *gin.Context, p *io.CommentVideoReq, claim *jwt.MyClaims) 
 
 // 删除评论
 func DeleteComment(ctx *gin.Context, p *io.DeleteCommentReq, claim *jwt.MyClaims) common.ResCode {
+	commentID, err := strconv.ParseInt(p.CommentID, 10, 64)
+	if err != nil {
+		return common.CodeDataTypeChangeError
+	}
 	//判断该评论是否是自己的
-	f, err := mysql.QueryCommentFromUser(ctx, p.CommentID, claim.UserID)
+	f, err := mysql.QueryCommentFromUser(ctx, commentID, claim.UserID)
 	if err != nil {
 		return common.CodeMysqlFailed
 	}
@@ -235,7 +254,7 @@ func DeleteComment(ctx *gin.Context, p *io.DeleteCommentReq, claim *jwt.MyClaims
 		return common.CodeCommentNotOwn
 	}
 	//删除评论
-	err = mysql.DeleteVideoComment(ctx, p.CommentID)
+	err = mysql.DeleteVideoComment(ctx, commentID)
 	if err != nil {
 		return common.CodeMysqlFailed
 	}
