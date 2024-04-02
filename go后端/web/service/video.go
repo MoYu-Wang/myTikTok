@@ -32,6 +32,7 @@ func UpLoadVideo(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	if code := logic.UpLoadVideo(ctx, p, claim); code != common.CodeSuccess {
@@ -57,6 +58,7 @@ func GetSign(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	//获取签名
@@ -136,6 +138,7 @@ func RefereeVideo(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	vids, code := logic.GetRefereeVideoIDs(ctx, claim)
@@ -173,6 +176,7 @@ func CareVideo(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	vids, code := logic.GetCareVideoIDs(ctx, claim)
@@ -271,6 +275,7 @@ func FavoriteVideo(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	if code := logic.FavoriteVideo(ctx, p, claim); code != common.CodeSuccess {
@@ -303,6 +308,7 @@ func CommentVideo(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	commentID, code := logic.CommentVideo(ctx, p, claim)
@@ -339,6 +345,7 @@ func DeleteVideoComment(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	if code := logic.DeleteComment(ctx, p, claim); code != common.CodeSuccess {
