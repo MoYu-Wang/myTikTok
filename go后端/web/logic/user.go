@@ -388,3 +388,51 @@ func UserIsExist(ctx *gin.Context, claim *jwt.MyClaims) common.ResCode {
 	}
 	return common.CodeUserNotExist
 }
+
+// 关注用户
+func CareUser(ctx *gin.Context, p *io.CareUserReq, claim *jwt.MyClaims) common.ResCode {
+	//判断用户ID是否存在
+	f, err := mysql.QueryUserIDIsExist(ctx, p.UserID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	if !f {
+		return common.CodeUserNotExist
+	}
+	if p.Operate < 0 {
+		//取消关注用户
+		err := mysql.DeleteUserCare(ctx, claim.UserID, p.UserID)
+		if err != nil {
+			return common.CodeMysqlFailed
+		}
+	} else {
+		if p.Operate > 0 {
+			//添加关注用户
+			err := mysql.InsertUserCare(ctx, claim.UserID, p.UserID)
+			if err != nil {
+				return common.CodeMysqlFailed
+			}
+		}
+	}
+	return common.CodeSuccess
+}
+
+// 获取关注列表
+func GetUserCareList(ctx *gin.Context, claim *jwt.MyClaims) ([]io.CareUser, common.ResCode) {
+	var ret []io.CareUser
+	careIDs, err := mysql.QueryUserCareList(ctx, claim.UserID)
+	if err != nil {
+		return nil, common.CodeMysqlFailed
+	}
+	for _, careID := range careIDs {
+		var careUser io.CareUser
+		careUser.UserID = careID
+		careUser.UserName, err = mysql.QueryUserName(ctx, careID)
+		if err != nil {
+			return nil, common.CodeMysqlFailed
+		}
+		ret = append(ret, careUser)
+	}
+
+	return ret, common.CodeSuccess
+}

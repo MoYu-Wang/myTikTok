@@ -28,10 +28,12 @@ func OpenRoute() {
 			userRouter.POST("/info", service.UserInfo)            //获取用户信息
 			userRouter.POST("/forgetpwd", service.PasswordForget) //找回密码
 			userRouter.POST("/delete", service.UserDelete)        //用户注销
+			userRouter.POST("/works", service.UserWorks)          //用户作品
+			userRouter.POST("/care", service.CareUser)            //关注用户
 
+			userRouter.GET("/carelist", service.CareList)       //关注列表
 			userRouter.GET("/updatetoken", service.UpdateToken) //更新用户登录信息
 			userRouter.GET("/base", service.UserBase)           //获取本用户基本信息
-			userRouter.GET("/works", service.UserWorks)         //用户作品
 			userRouter.GET("/favorite", service.UserFavorite)   //用户点赞视频列表
 			userRouter.GET("/history", service.UserHistory)     //用户观看历史记录
 

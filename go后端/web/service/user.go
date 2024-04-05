@@ -123,6 +123,7 @@ func UserBase(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	//获取本用户基本信息
@@ -160,6 +161,7 @@ func UserUpdate(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	//更新用户基本信息
@@ -219,11 +221,13 @@ func UserDelete(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	code := logic.DeleteUser(ctx, claim.UserID, p.Password)
 	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//3.返回成功响应
 	io.ResponseSuccess(ctx, common.CodeUserDeleteSuccess)
@@ -243,6 +247,7 @@ func UpdateToken(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	token, err = jwt.GenToken(claim.UserID, claim.UserName)
@@ -258,21 +263,16 @@ func UpdateToken(ctx *gin.Context) {
 // 用户作品
 func UserWorks(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	token := ctx.DefaultQuery("token", "")
-	//登录校验,解析Token里的参数
-	claim, err := jwt.ParseToken(token)
-	if err != nil {
-		fmt.Println("token解析失败")
-		io.ResponseError(ctx, common.CodeNeedLogin)
+	p := new(io.UserWorkReq)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		io.ResponseError(ctx, common.CodeInvalidParam)
 		return
 	}
-	//判断token解析出来的用户信息是否正确
-	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
-		io.ResponseError(ctx, code)
-	}
+	//登录校验,解析Token里的参数
+	claim, _ := jwt.ParseToken(p.Token)
 	//2.服务调用
 	//获取用户发布的所有视频
-	vids, code := logic.GetUserVideoIDs(ctx, claim)
+	vids, code := logic.GetUserVideoIDs(ctx, p.UserID)
 	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
 		return
@@ -308,6 +308,7 @@ func UserHistory(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	vids, code := logic.GetUserHistoryVideoIDs(ctx, claim)
@@ -346,6 +347,7 @@ func UserFavorite(ctx *gin.Context) {
 	//判断token解析出来的用户信息是否正确
 	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
+		return
 	}
 	//2.服务调用
 	vids, code := logic.GetUserFavoriteVideoIDs(ctx, claim)
@@ -368,4 +370,57 @@ func UserFavorite(ctx *gin.Context) {
 	}
 	//3.返回成功响应
 	io.ResponseSuccessUserFavorite(ctx, resp)
+}
+
+func CareUser(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	p := new(io.CareUserReq)
+	//登录校验,解析Token里的参数
+	claim, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	//2.服务调用
+	if code := logic.CareUser(ctx, p, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	//3.返回响应
+	io.ResponseSuccess(ctx, common.CodeSuccess)
+}
+
+// 获取关注列表
+func CareList(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	token := ctx.DefaultQuery("token", "")
+	//登录校验,解析Token里的参数
+	claim, err := jwt.ParseToken(token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
+	//2.服务调用
+	careList, code := logic.GetUserCareList(ctx, claim)
+	if code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	resp := &io.CareListResp{
+		Response: io.Response{StatusCode: 0, StatusMsg: "success"},
+		CareList: careList,
+	}
+	//3.返回响应
+	io.ResponseSuccessCareList(ctx, resp)
 }

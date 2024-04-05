@@ -92,3 +92,16 @@ type OperateVideoReq struct {
 type SearchVideoReq struct {
 	SearchText string `json:"searchText"`
 }
+
+//用户作品请求
+type UserWorkReq struct {
+	Token  string `json:"token"`
+	UserID int64  `json:"userID"`
+}
+
+//关注用户请求
+type CareUserReq struct {
+	Token   string `json:"token"`
+	UserID  int64  `json:"userID"`
+	Operate int64  `json:"operate"`
+}

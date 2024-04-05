@@ -64,3 +64,20 @@ func DeleteUserALLFans(ctx context.Context, careUserID int64) error {
 	carelist := dao.CareList{}
 	return db.Table("CareList").Where("CareUserID=?", careUserID).Delete(&carelist).Error
 }
+
+// 添加用户关注
+func InsertUserCare(ctx context.Context, userID int64, careUserID int64) error {
+	db := GetDB(ctx)
+	ret := dao.CareList{
+		UserID:     userID,
+		CareUserID: careUserID,
+	}
+	return db.Table("CareList").Create(&ret).Error
+}
+
+// 取消用户关注
+func DeleteUserCare(ctx context.Context, userID int64, careUserID int64) error {
+	db := GetDB(ctx)
+	ret := dao.CareList{}
+	return db.Table("CareList").Where("UserID=? AND CareUserID=?", userID, careUserID).Delete(&ret).Error
+}

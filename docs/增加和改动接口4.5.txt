@@ -1,0 +1,43 @@
+改动:
+/user/works
+GET -> POST
+请求参数:
+{
+    token:"", //登录凭证
+    userID:"" //所查看用户id
+}
+
+增加:
+/user/care  关注用户
+POST
+请求参数:
+{
+    token:"",
+    userID:,    //被关注用户id(int)
+    operate:    //关注操作(int) -1:取消关注 1:关注用户
+}
+
+/user/carelist 关注列表
+GET
+请求参数:
+{
+    token:""
+}
+
+响应参数:
+{
+    status_code:,
+    status_msg:"",
+
+    careList:[
+        {
+            userID:,    //用户id
+            userName:"" //用户昵称
+        },
+        {
+            userID:,    //用户id
+            userName:"" //用户昵称
+        },
+        ...
+    ]
+}

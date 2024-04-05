@@ -43,8 +43,8 @@ func GetVideoInfoByVID(ctx *gin.Context, videoID int64, claim *jwt.MyClaims) (*i
 }
 
 // 获取用户发布的所有视频id
-func GetUserVideoIDs(ctx *gin.Context, claim *jwt.MyClaims) ([]int64, common.ResCode) {
-	ret, err := mysql.QueryVideoIDByUserID(ctx, claim.UserID)
+func GetUserVideoIDs(ctx *gin.Context, userID int64) ([]int64, common.ResCode) {
+	ret, err := mysql.QueryVideoIDByUserID(ctx, userID)
 	if err != nil {
 		return nil, common.CodeMysqlFailed
 	}
