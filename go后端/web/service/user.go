@@ -375,6 +375,14 @@ func UserFavorite(ctx *gin.Context) {
 func CareUser(ctx *gin.Context) {
 	//1.获取参数和参数校验
 	p := new(io.CareUserReq)
+	//绑定Query参数
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	fmt.Println("请求参数:")
+	fmt.Println(p)
 	//登录校验,解析Token里的参数
 	claim, err := jwt.ParseToken(p.Token)
 	if err != nil {
