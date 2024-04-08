@@ -97,9 +97,9 @@ function UserInfoParam(Token,uID){
   }
 }
 
-function VideoOperateInfoParam(Token,uID){
+function VideoOperateInfoParam(Token,vID){
   return {
-    userID:uID,
+    videoID:vID,
     token:Token
   }
 }
