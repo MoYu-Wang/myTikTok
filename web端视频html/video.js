@@ -216,6 +216,7 @@ function UserInfo(){
         alert("用户未登录")
         return 
     }
+    
 }
 
 //历史记录
@@ -224,15 +225,6 @@ function HistoryVideo(){
         alert("用户未登录")
         return 
     }
-}
-
-//我的订单
-function MyOrder(){
-    if(!UserIsLogin()){
-        alert("用户未登录")
-        return 
-    }
-    window.location.href = "404.html";
 }
 
 //用户登录页面跳转

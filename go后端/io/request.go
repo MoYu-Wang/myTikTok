@@ -4,7 +4,7 @@ package io
 
 //注册参数
 type ParamRegister struct {
-	UserName string `json:"username"`
+	UserName string `json:"userName"`
 	PassWord string `json:"password"`
 	IphoneID string `json:"iphoneID"`
 }
@@ -18,7 +18,7 @@ type ParamLogin struct {
 
 //修改个人信息参数
 type ParamUpdate struct {
-	UserName string `json:"username"`
+	UserName string `json:"userName"`
 	PassWord string `json:"password"`
 	IphoneID string `json:"iphoneID"`
 	Token    string `json:"token"`
@@ -43,9 +43,8 @@ type ParamUserDelete struct {
 
 //用户信息请求参数
 type UserInfoReq struct {
-	UserID   int64  `json:"userID"`
-	UserName string `json:"userName"`
-	Token    string `json:"token"`
+	UserID int64  `json:"userID"`
+	Token  string `json:"token"`
 }
 
 //用户上传视频请求参数
@@ -91,6 +90,7 @@ type OperateVideoReq struct {
 //模糊查询视频请求
 type SearchVideoReq struct {
 	SearchText string `json:"searchText"`
+	Token      string `json:"token"`
 }
 
 //用户作品请求

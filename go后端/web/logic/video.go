@@ -33,6 +33,8 @@ func GetVideoInfoByVID(ctx *gin.Context, videoID int64, claim *jwt.MyClaims) (*i
 	}
 	videoInfo := &io.VideoInfo{
 		VideoID:          strconv.FormatInt(ret.VideoID, 10),
+		VideoName:        ret.VideoName,
+		VideoTags:        ret.Tags,
 		UserID:           ret.UserID,
 		VideoLink:        ret.VideoLink,
 		VideoFavoriteNum: vfnum,

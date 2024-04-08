@@ -44,12 +44,11 @@ func OpenRoute() {
 			videoRouter.GET("/top", service.TopVideo)               //获取热点视频
 			videoRouter.GET("/care", service.CareVideo)             //获取关注视频
 			videoRouter.GET("/referee", service.RefereeVideo)       //获取推荐视频
-			videoRouter.GET("/search", service.SearchVideo)         //模糊查询视频
 			videoRouter.GET("/getsign", service.GetSign)            //获取上传签名
 			videoRouter.GET("/getcomment", service.GetVideoComment) //获取视频评论
 
-			videoRouter.POST("/upload", service.UpLoadVideo) //上传视频
-
+			videoRouter.POST("/upload", service.UpLoadVideo)               //上传视频
+			videoRouter.POST("/search", service.SearchVideo)               //模糊查询视频
 			videoRouter.POST("/favorite", service.FavoriteVideo)           //视频点赞
 			videoRouter.POST("/comment", service.CommentVideo)             //评论视频
 			videoRouter.POST("/deletecomment", service.DeleteVideoComment) //视频删除评论

@@ -44,6 +44,8 @@ type UserInfo struct {
 // 视频信息
 type VideoInfo struct {
 	VideoID          string `json:"videoID"`          //视频id
+	VideoName        string `json:"videoName"`        //视频名称
+	VideoTags        string `json:"videoTags"`        //视频标签
 	UserID           int64  `json:"userID"`           //视频发布人id
 	VideoLink        string `json:"videoLink"`        //视频链接
 	VideoFavoriteNum int64  `json:"videoFavoriteNum"` //视频点赞人数

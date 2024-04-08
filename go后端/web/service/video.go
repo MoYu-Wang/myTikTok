@@ -204,19 +204,25 @@ func CareVideo(ctx *gin.Context) {
 // 模糊查询视频
 func SearchVideo(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	searchText := ctx.DefaultQuery("searchText", "")
+	p := new(io.SearchVideoReq)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		//请求参数有误,直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	fmt.Println("请求参数:")
+	fmt.Println(p)
+	//登录校验
+	claim, _ := jwt.ParseToken(p.Token)
 	//2.服务调用
-	vids, code := logic.GetSearchVideoIDs(ctx, searchText)
+	vids, code := logic.GetSearchVideoIDs(ctx, p.SearchText)
 	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
 		return
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, &jwt.MyClaims{
-			UserID:   0,
-			UserName: "",
-		})
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
