@@ -506,7 +506,7 @@ document.querySelector('body').addEventListener('wheel', function(event) {
 
     // 输出滚动方向
     if (deltaY > 0) {
-        if (null != videoInfos[index]){
+        if (null != videoInfos[index] && null != userData.token){
             VideoCloseOperate(videoInfos[index].videoID)
         }
         //切换下个视频
@@ -533,7 +533,7 @@ document.querySelector('body').addEventListener('wheel', function(event) {
             VideoLoadOperate();
         }
     } else if (deltaY < 0) {
-        if (null != videoInfos[index]){
+        if (null != videoInfos[index] && null != userData.token){
             VideoCloseOperate(videoInfos[index].videoID)
         }
         //切换上个视频
