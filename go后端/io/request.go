@@ -56,6 +56,12 @@ type UserUpLoadVideoReq struct {
 	VideoLink string `json:"videoLink"`
 }
 
+//视频操作信息请求参数
+type VideoOperateInfoReq struct {
+	Token   string `json:"token"`
+	VideoID string `json:"videoID"`
+}
+
 //点赞视频请求
 type FavoriteVideoReq struct {
 	Token      string `json:"token"`

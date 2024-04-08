@@ -1,5 +1,6 @@
 var index = 0;
 var videoInfos = [];
+var videoOperateInfo = {};
 let current = 0;
 var userData = {};
 var videoWatchTime = 0;//视频播放时间(ms)
@@ -95,6 +96,7 @@ function UserInfo(){
 function initVideo(){
     index = 0;
     videoInfos = [];
+    videoOperateInfo = {};
 }
 
 
@@ -197,22 +199,37 @@ function VideoLoadOperate(){
     .catch(error => {
         console.error('Error:', error);
     });
+    POST_Req("/video/info",VideoOperateInfoParam(userData.token,videoInfo.userID))
+    .then(data => {
+        if(data.status_code != 0){
+            alert(data.status_msg);
+            return
+        }
+        console.log(data);
+        videoOperateInfo = data;
+        //是否点赞视频
+        if (data.isFavorite){
+            document.getElementById("favorite").innerHTML = `取消点赞`;
+            isfav = 1;
+        }else{
+            document.getElementById("favorite").innerHTML = `点赞`;
+            isfav = 0;
+        }
+        //点赞数量
+        document.getElementById("favoriteNum").innerHTML = data.videoFavoriteNum;
+        //评论数量
+        document.getElementById("commentNum").innerHTML = data.videoCommitNum;
+        
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+    
+    
     //更改视频名称
     document.getElementById("vName").innerHTML = videoInfo.videoName;
     //更改视频标签
     document.getElementById("vTags").innerHTML = videoInfo.videoTags;
-    //是否点赞视频
-    if (videoInfo.isFavorite){
-        document.getElementById("favorite").innerHTML = `取消点赞`;
-        isfav = 1;
-    }else{
-        document.getElementById("favorite").innerHTML = `点赞`;
-        isfav = 0;
-    }
-    //点赞数量
-    document.getElementById("favoriteNum").innerHTML = videoInfo.videoFavoriteNum;
-    //评论数量
-    document.getElementById("commentNum").innerHTML = videoInfo.videoCommitNum;
     //更新视频播放器
     document.getElementById("video").innerHTML = `
         <source id="s" src="${videoInfo.videoLink}" type="video/mp4">
@@ -226,11 +243,11 @@ function VideoLoadOperate(){
 
 //视频划走之后的操作
 function VideoCloseOperate(vID){
-    if(videoInfos[index].isFavorite){
-        isfav = isfav - 1;
-    }
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
+    if(videoOperateInfo.isFavorite){
+        isfav = isfav - 1;
+    }
     POST_Req("/video/operate",OperateVideoParam(userData.token,vID,videoWatchTime,isfav,comNum,comTexts))
     .then(data => {
         if(data.status_code != 0){
@@ -408,7 +425,7 @@ document.getElementById("careUser").addEventListener("click",function(){
         if(this.innerText == "+"){
             //获取登录用户信息
             var userData = JSON.parse(localStorage.getItem("userData"));
-            POST_Req("",CareUserParam(userData.token,videoInfos[index].userID,1))
+            POST_Req("/user/care",CareUserParam(userData.token,videoInfos[index].userID,1))
             .then(data => {
                 if(data.status_code != 0){
                     alert(data.status_msg);
@@ -422,7 +439,7 @@ document.getElementById("careUser").addEventListener("click",function(){
             });
         }
         else if(this.innerText == "√"){
-            alert("该用户已被关注")
+            alert("您已经关注了该用户")
         }
     }else{
         alert("发布人信息获取失败")
@@ -438,8 +455,10 @@ document.getElementById("favorite").addEventListener("click",function(){
     isfav ^= 1;
     if(isfav){
         document.getElementById("favorite").innerHTML = `取消点赞`;
+        document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) + 1);
     }else{
         document.getElementById("favorite").innerHTML = `点赞`;
+        document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) - 1);
     }
 });
 

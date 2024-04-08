@@ -43,15 +43,18 @@ type UserInfo struct {
 
 // 视频信息
 type VideoInfo struct {
-	VideoID          string `json:"videoID"`          //视频id
-	VideoName        string `json:"videoName"`        //视频名称
-	VideoTags        string `json:"videoTags"`        //视频标签
-	UserID           int64  `json:"userID"`           //视频发布人id
-	VideoLink        string `json:"videoLink"`        //视频链接
-	VideoFavoriteNum int64  `json:"videoFavoriteNum"` //视频点赞人数
-	VideoCommitNum   int64  `json:"videoCommitNum"`   //视频评论人数
+	VideoID   string `json:"videoID"`   //视频id
+	VideoName string `json:"videoName"` //视频名称
+	VideoTags string `json:"videoTags"` //视频标签
+	UserID    int64  `json:"userID"`    //视频发布人id
+	VideoLink string `json:"videoLink"` //视频链接
+}
 
-	IsFavorite bool `json:"isFavorite"` //当前登录账号是否点赞该视频
+// 操作视频信息
+type VideoOperateInfo struct {
+	VideoFavoriteNum int64 `json:"videoFavoriteNum"` //视频点赞数
+	VideoCommitNum   int64 `json:"videoCommitNum"`   //视频评论数
+	IsFavorite       bool  `json:"isFavorite"`       //当前登录账号是否点赞该视频
 }
 
 type VideoComment struct {
@@ -83,6 +86,12 @@ type ResponseData struct {
 	Response
 	Msg  interface{} `json:"msg,omitempty"`
 	Data interface{} `json:"data,omitempty"`
+}
+
+// 用户操作信息
+type VideoOperateInfoResp struct {
+	Response
+	VideoOperateInfo
 }
 
 // UserInfoResp 用户信息返回值
@@ -209,6 +218,12 @@ func ResponseSuccessPassword(c *gin.Context, resp *PasswordResp) {
 
 // 返回获取上传视频签名
 func ResponseSuccessGetSign(c *gin.Context, resp *GetSignResp) {
+	fmt.Println(resp)
+	c.JSON(http.StatusOK, resp)
+}
+
+// 返回视频操作信息
+func ResponseSuccessVideoOperate(c *gin.Context, resp *VideoOperateInfoResp) {
 	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }

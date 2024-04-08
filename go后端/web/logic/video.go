@@ -19,6 +19,19 @@ func GetVideoInfoByVID(ctx *gin.Context, videoID int64, userID int64) (*io.Video
 	if err != nil {
 		return nil, common.CodeMysqlFailed
 	}
+
+	videoInfo := &io.VideoInfo{
+		VideoID:   strconv.FormatInt(ret.VideoID, 10),
+		VideoName: ret.VideoName,
+		VideoTags: ret.Tags,
+		UserID:    ret.UserID,
+		VideoLink: ret.VideoLink,
+	}
+	return videoInfo, common.CodeSuccess
+}
+
+// 获取与用户相关的视频信息
+func GetVideoOperateInfo(ctx *gin.Context, userID int64, videoID int64) (*io.VideoOperateInfo, common.ResCode) {
 	vfnum, err := mysql.QueryVideoFavoriteNum(ctx, videoID)
 	if err != nil {
 		return nil, common.CodeMysqlFailed
@@ -31,17 +44,13 @@ func GetVideoInfoByVID(ctx *gin.Context, videoID int64, userID int64) (*io.Video
 	if err != nil {
 		return nil, common.CodeMysqlFailed
 	}
-	videoInfo := &io.VideoInfo{
-		VideoID:          strconv.FormatInt(ret.VideoID, 10),
-		VideoName:        ret.VideoName,
-		VideoTags:        ret.Tags,
-		UserID:           ret.UserID,
-		VideoLink:        ret.VideoLink,
+
+	videoOperateInfo := &io.VideoOperateInfo{
 		VideoFavoriteNum: vfnum,
 		VideoCommitNum:   vcnum,
 		IsFavorite:       isf,
 	}
-	return videoInfo, common.CodeSuccess
+	return videoOperateInfo, common.CodeSuccess
 }
 
 // 获取用户发布的所有视频id
@@ -130,38 +139,38 @@ func OperateVideo(ctx *gin.Context, p *io.OperateVideoReq, claim *jwt.MyClaims) 
 			return common.CodeMysqlFailed
 		}
 	}
-	// //判断是否点赞 0:未进行操作 1:点赞操作 -1:取消点赞操作
-	// if p.IsFavorite > 0 {
-	// 	if err := mysql.InsertUserLikeVedio(ctx, dao.Favorite{
-	// 		UserID:  claim.UserID,
-	// 		VideoID: videoID,
-	// 	}); err != nil {
-	// 		return common.CodeMysqlFailed
-	// 	}
-	// }
-	// if p.IsFavorite < 0 {
-	// 	if err := mysql.DeleteUserLikeVedio(ctx, dao.Favorite{
-	// 		UserID:  claim.UserID,
-	// 		VideoID: videoID,
-	// 	}); err != nil {
-	// 		return common.CodeMysqlFailed
-	// 	}
-	// }
-	// //判断是否评论
-	// if p.CommentNum > 0 {
-	// 	for _, commentText := range p.CommentTexts {
-	// 		comment := dao.CommentList{
-	// 			CommentID:   snowflake.GenID(),
-	// 			UserID:      claim.UserID,
-	// 			VideoID:     videoID,
-	// 			CommentText: commentText,
-	// 			CommentTime: GetNowTime(),
-	// 		}
-	// 		if err := mysql.InsertVideoComment(ctx, comment); err != nil {
-	// 			return common.CodeMysqlFailed
-	// 		}
-	// 	}
-	// }
+	//判断是否点赞 0:未进行操作 1:点赞操作 -1:取消点赞操作
+	if p.IsFavorite > 0 {
+		if err := mysql.InsertUserLikeVedio(ctx, dao.Favorite{
+			UserID:  claim.UserID,
+			VideoID: videoID,
+		}); err != nil {
+			return common.CodeMysqlFailed
+		}
+	}
+	if p.IsFavorite < 0 {
+		if err := mysql.DeleteUserLikeVedio(ctx, dao.Favorite{
+			UserID:  claim.UserID,
+			VideoID: videoID,
+		}); err != nil {
+			return common.CodeMysqlFailed
+		}
+	}
+	//判断是否评论
+	if p.CommentNum > 0 {
+		for _, commentText := range p.CommentTexts {
+			comment := dao.CommentList{
+				CommentID:   snowflake.GenID(),
+				UserID:      claim.UserID,
+				VideoID:     videoID,
+				CommentText: commentText,
+				CommentTime: GetNowTime(),
+			}
+			if err := mysql.InsertVideoComment(ctx, comment); err != nil {
+				return common.CodeMysqlFailed
+			}
+		}
+	}
 	return common.CodeSuccess
 }
 

@@ -41,12 +41,14 @@ func OpenRoute() {
 
 		videoRouter := apiRouter.Group("/video")
 		{
-			videoRouter.GET("/top", service.TopVideo)               //获取热点视频
-			videoRouter.GET("/care", service.CareVideo)             //获取关注视频
-			videoRouter.GET("/referee", service.RefereeVideo)       //获取推荐视频
+			videoRouter.GET("/top", service.TopVideo)         //获取热点视频
+			videoRouter.GET("/care", service.CareVideo)       //获取关注视频
+			videoRouter.GET("/referee", service.RefereeVideo) //获取推荐视频
+
 			videoRouter.GET("/getsign", service.GetSign)            //获取上传签名
 			videoRouter.GET("/getcomment", service.GetVideoComment) //获取视频评论
 
+			videoRouter.POST("/info", service.VideoOperateInfo)            //获取视频操作信息
 			videoRouter.POST("/upload", service.UpLoadVideo)               //上传视频
 			videoRouter.POST("/search", service.SearchVideo)               //模糊查询视频
 			videoRouter.POST("/favorite", service.FavoriteVideo)           //视频点赞

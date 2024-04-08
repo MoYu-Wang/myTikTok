@@ -97,6 +97,13 @@ function UserInfoParam(Token,uID){
   }
 }
 
+function VideoOperateInfoParam(Token,uID){
+  return {
+    userID:uID,
+    token:Token
+  }
+}
+
 function UpLoadVideoParam(Token,vName,vTags,vLink){
   return {
     token:Token,
