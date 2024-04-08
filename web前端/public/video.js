@@ -199,7 +199,7 @@ function VideoLoadOperate(){
     .catch(error => {
         console.error('Error:', error);
     });
-    POST_Req("/video/info",VideoOperateInfoParam(userData.token,videoInfo.userID))
+    POST_Req("/video/info",VideoOperateInfoParam(userData.token,videoInfo.videoID))
     .then(data => {
         if(data.status_code != 0){
             alert(data.status_msg);
