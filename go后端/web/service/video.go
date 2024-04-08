@@ -100,22 +100,29 @@ func OperateVideo(ctx *gin.Context) {
 func TopVideo(ctx *gin.Context) {
 	//1.获取参数和参数校验
 	token := ctx.DefaultQuery("token", "")
-	//登录校验,解析Token里的参数
 	var claim *jwt.MyClaims
-	claim, err := jwt.ParseToken(token)
-	if err != nil {
-		claim.UserID = 0
-		claim.UserName = "0"
+	var userID int64
+	if token != "" {
+		//登录校验,解析Token里的参数
+		var err error
+		claim, err = jwt.ParseToken(token)
+		if err != nil {
+			io.ResponseError(ctx, common.CodeNeedLogin)
+			return
+		}
+		userID = claim.UserID
+	} else {
+		userID = 0
 	}
 	//2.服务调用
-	vids, code := logic.GetTopVideoIDs(ctx, claim.UserID)
+	vids, code := logic.GetTopVideoIDs(ctx, userID)
 	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
 		return
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, userID)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
