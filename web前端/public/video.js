@@ -231,14 +231,6 @@ function VideoCloseOperate(vID){
     }
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
-    var test = [{
-        token:userData.token,
-        videoID:vID,
-        time:videoWatchTime,
-        isf:isfav,
-        cnum:comNum,
-        cTexts:comTexts
-    }]
     POST_Req("/video/operate",OperateVideoParam(userData.token,vID,videoWatchTime,isfav,comNum,comTexts))
     .then(data => {
         if(data.status_code != 0){
@@ -278,22 +270,44 @@ document.getElementById("topVideo").addEventListener("click", function() {
     initVideo();
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
-    //发送get请求获取top视频信息数组
-    GET_Req("/video/top","token",userData.token)
-    .then(data => {
-        if(data.status_code != 0){
-            alert(data.status_msg);
-            return
-        }
-        console.log(data);
-        videoInfos = videoInfos.concat(data.videoInfos)
-        //嵌入视频
-        VideoLoadOperate();
-        listIndex = 1;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+    if (JSON.stringify(userData) !== "{}"){
+        //发送get请求获取top视频信息数组
+        GET_Req("/video/top","token",userData.token)
+        .then(data => {
+            if(data.status_code != 0){
+                alert(data.status_msg);
+                return
+            }
+            console.log(data);
+            videoInfos = videoInfos.concat(data.videoInfos)
+            //嵌入视频
+            VideoLoadOperate();
+            listIndex = 1;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+    }else{
+        //发送get请求获取top视频信息数组
+        GET_Req("/video/top")
+        .then(data => {
+            if(data.status_code != 0){
+                alert(data.status_msg);
+                return
+            }
+            console.log(data);
+            videoInfos = videoInfos.concat(data.videoInfos)
+            //嵌入视频
+            VideoLoadOperate();
+            listIndex = 1;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+    }
+    
 });
 
 //关注点击事件

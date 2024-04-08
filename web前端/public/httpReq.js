@@ -35,8 +35,13 @@ function POST_Req(route,jsondata){
 
 //strdata  =  "/key?value"
 function GET_Req(route,key,value){
-    // 构建完整的 URL
-    const url = `${myURL}${route}?${key}=${value}`;
+    var url;
+    if (null != key && null != value){
+      // 构建完整的 URL
+      url = `${myURL}${route}?${key}=${value}`;
+    }else{
+      url = `${myURL}${route}`;
+    }
     return fetch(url)
     .then(response => {
       if (!response.ok) {

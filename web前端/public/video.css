@@ -119,6 +119,10 @@ body {
     margin-bottom: 10px;
 }
 
+#publicUser1 {
+    font-size: 25px; /* 设置字体大小为 16 像素 */
+}
+
 .video-controls {
     position: absolute;
     top: 50%; /* 位于垂直中间 */
