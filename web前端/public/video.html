@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级页面</title>
+    
+    <link rel="stylesheet" href="video.css" type="text/css"/>
+</head>
+<body>
+    <div class="sidebar">
+        <h1>TikTok</h1>
+        <ul>
+            <li><button id="home">首页</button></li>
+            <li><button id="topVideo">热点</button></li>  
+            <li><button id="careVideo">关注</button></li>
+            <li><button id="refereeVideo">推荐</button></li>
+            <li><button id="userCenter">我的</button></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="search-box">
+            <input  id="searchText" type="text" placeholder="搜索">
+            <button id="search">搜索</button>
+        </div>
+        <div class="video-player-container">
+            <video id="video" class="video-player" controls autoplay loop>
+                <source src="" type="video/mp4">
+            </video>
+            <div class="video-info">
+                <div id="publicUser1">用户名</div>
+                <div id="vName">视频名称</div>
+                <div id="vTags">视频标签</div>
+            </div>
+            <div class="video-controls">
+                <button class="btn" id="publicUser2">发布人</button>
+                <button class="btn" id="careUser">+</button>
+                <button class="btn" id="favorite">点赞</button>
+                <div id="favoriteNum">0</div>
+                <button class="btn" id="comment">评论</button>
+                <div id="commentNum">0</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="header">
+        <div id="user_avatar"></div>
+        <div id="user_menu">
+            <h1 id="user_name">未登录</h1>
+            <input type="menu_item" value="个人中心" readonly onclick="UserInfo()">
+            <input type="menu_item" value="上传视频" readonly onclick="UpLoadVideo()">
+            <input type="menu_item" id="userlogin" value="退出登录" readonly onclick="UserExit()">
+            <input type="menu_item" value="注销账户" readonly onclick="UserDelete()">
+        </div>
+    </div>
+</body>
+
+<script src="httpReq.js"></script>
+<script src="video.js"></script>
+</html>

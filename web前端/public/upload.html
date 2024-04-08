@@ -98,18 +98,30 @@
         <p id="message"></p> 
     </div>
     
+    <script src="httpReq.js"></script>
     <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        myURL =  "http://150.158.115.140:11316/myTikTok";
-        //获取登录用户信息
-        var userData = JSON.parse(localStorage.getItem("userData"));
         //页面初始化
         window.onload = function() {
             // 在这里进行你的判断操作
             //获取token信息
             var userData = JSON.parse(localStorage.getItem("userData"));
-            if (userData == ""){
+            if (JSON.stringify(userData) == "{}"){
+                 //判断用户登录信息是否过期
+                GET_Req("/user/updatetoken","token",userData.token)
+                .then(data => {
+                    if(data.status_code != 0){
+                        alert(data.status_msg);
+                        return
+                    }
+                    console.log(data);
+                    userData.token = data.token;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
                 alert("用户未登录或登录信息已过期,正在为您跳转登录界面")
                 window.location.href = "login.html"
                 return 
@@ -152,9 +164,8 @@
             // 这里添加上传到腾讯云点播的代码
             // new TcVod.default(opts) 是 script 引入 的用法
             const tcVod = new TcVod.default({
-              getSignature: getSignature // 获取上传签名的函数,需要自己定义
+              getSignature: getSign // 获取上传签名的函数,需要自己定义
             })
-
 
             const uploader = tcVod.upload({
                 mediaFile: file, // 媒体文件（视频或音频或图片），类型为 File
@@ -197,64 +208,38 @@
                 // 获取上传后生成的视频链接
                 var videoURL = info.video.url;
                 console.log("视频链接：" + videoURL);
-
+                
+                //获取token信息
+                var userData = JSON.parse(localStorage.getItem("userData"));
                 //上传视频到后端
-                fetch(myURL+'/video/upload', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        userID: userData.userID,
-                        userName: userData.userName,
-                        token: userData.token,
-                        videoName:vName,
-                        videoTags:vTags,
-                        videoLink:videoURL
-                    }),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        alert("服务器未响应")
-                        throw new Error('Network response was not ok');
-                    }   
-                    return response.json();
-                })
-                .then(data => {
-                    if(data.status_code != 1101){
-                        alert(data.status_msg);
-                        return
-                    }
-                    alert(data.status_msg + "您的视频链接为:" + videoURL);
-                    window.location.reload()
-                })
-                .catch(error => {
-                    alert("您的登录信息可能已过期,请重新登录");
-                    console.error('Error:', error);
-                });
-
-            // deal with doneResult
+                POST_Req("/video/upload",UpLoadVideoParam(userData.token,vName,vTags,videoURL))
+                    .then(data => {
+                        if(data.status_code != 1101){
+                            alert(data.status_msg);
+                            return
+                        }
+                        alert(data.status_msg + "您的视频链接为:" + videoURL);
+                        window.location.reload()
+                    })
+                    .catch(error => {
+                        alert("您的登录信息可能已过期,请重新登录");
+                        console.error('Error:', error);
+                    });
             })
         }
         //获取签名
-        function getSignature() {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", myURL+'/video/getsign/?token="' + userData.token +'"', true);
-            xhr.onreadystatechange = function () {
-                if(xhr.readyState == 4 ){
-                    arr = [];
-                    if (xhr.status == 200) {
-                        // 处理成功的响应
-                        console.log("服务器响应:\n"+xhr.responseText);
-                        return JSON.stringify(xhr.responseText).mysign
-                    }else{
-                        console.log("服务器未响应,http状态码: " + xhr.status + " 请求当前状态: " + xhr.readyState);
-                        alert("请求超时,服务器未响应")
-                        return;
-                    }
-                }
-            };
-            xhr.send();
+        function getSign() {
+            //获取token信息
+            var userData = JSON.parse(localStorage.getItem("userData"));
+            return GET_Req("/video/getsign", "token" , userData.token)
+            .then(data => {
+                console.log(data.mysign);
+                return data.mysign
+            })
+            .catch(error => {
+                alert("您的登录信息可能已过期,请重新登录");
+                console.error('Error:', error);
+            });
         };
         //
         function showMessage(message) {

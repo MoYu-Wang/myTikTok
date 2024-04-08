@@ -1,0 +1,195 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+}
+
+.sidebar h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    margin-bottom: 10px;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 10px;
+    background-color: #666;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: left;
+    color: #fff;
+}
+
+.sidebar button:hover {
+    background-color: #999;
+}
+
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    position: relative; /* 设置相对定位 */
+}
+
+.content-main {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+.search-box {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.search-box input[type="text"] {
+    padding: 10px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+}
+
+.search-box button {
+    padding: 10px 20px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.search-box button:hover {
+    background-color: #555;
+}
+
+.video-player-container {
+    position: relative;
+    padding-top: 56.25%; /* 16:9 视频播放器比例 */
+    overflow: hidden;
+    background-color: #000;
+}
+
+.video-player {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.video-info {
+    position: absolute;
+    top: 78%; /* 位于视频的上下位置70%左右 */
+    left: 10px;
+    color: #fff;
+}
+
+.video-info div {
+    margin-bottom: 10px;
+}
+
+.video-controls {
+    position: absolute;
+    top: 50%; /* 位于垂直中间 */
+    right: 10px; /* 靠右 */
+    transform: translateY(-50%); /* 上移一半高度，实现垂直居中 */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 水平居中 */
+}
+
+.btn {
+    background-color: #666;
+    color: #fff;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 5px; /* 按钮间距 */
+}
+
+.video-controls div {
+    color: white;
+    font-size: 20px; 
+}
+
+
+#header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 20px;
+    position: fixed;
+    width: 50px;
+    top: 0;
+    right: 0;
+}
+#user_avatar {
+    width: 50px;
+    height: 50px;
+    background-color: rgb(60, 240, 99);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#user_menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: calc(100vh);
+    background-color: #888888; 
+    transform: translateX(100%);
+    transition: transform 0.5s ease-in-out;
+    padding-top: 50px;
+    padding-left: 20px;
+    padding-right: 40px;
+    box-sizing: border-box;
+}
+
+#user_menu.active {
+    transform: translateX(0);
+}
+
+input[type="menu_item"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}

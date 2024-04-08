@@ -50,6 +50,7 @@
             <input type="submit" value="找回密码" placeholder="center" onclick="Forgetpwd()">
         </form>
     </div>
+    <script src="httpReq.js"></script>
     <script>
         function Forgetpwd(){
             event.preventDefault(); // 阻止表单默认提交行为
@@ -70,20 +71,7 @@
                 return
             }
 
-            fetch(myURL+'/user/forgetpwd', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ userID: uid,iphoneID: iphoneid}),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        alert("服务器未响应")
-                        throw new Error('Network response was not ok');
-                    }   
-                    return response.json();
-                })
+            POST_Req("/user/forgetpwd",ForgetPwdParam(uid,iphoneid))
                 .then(data => {
                     if(data.status_code != 0){
                         alert(data.status_msg);
@@ -96,8 +84,6 @@
                 .catch(error => {
                     console.error('Error:', error);
                 });
-          
-
             return true;
         }
         

@@ -53,58 +53,52 @@
         </form>
     </div>
 
+    <script src="httpReq.js"></script>
     <script>
-        var myURL = "http://150.158.115.140:11316/myTikTok";
         //页面初始化
         window.onload = function() {
+            checkID();
             // 在这里进行你的判断操作
             //获取token信息
             var userData = JSON.parse(localStorage.getItem("userData"));
-            if (userData != ""){
-                TokenLogin()
+            if (JSON.stringify(userData) !== "{}"){
+                checkToken()
             }else{
-                IDLogin()
+                checkID()
             }
         };
 
-        function IDLogin(){
+        function checkID(){
             document.getElementById("loginForm").innerHTML = `
             <label for="ID">用户ID(或手机号):</label>
             <input type="text" id="ID" name="ID" required><br>
             <label for="password">密码:</label>
             <input type="password" id="password" name="password" required><br>
-            <input type="submit" value="登录" placeholder="center" onclick="Login()">
-            <input type="submit" value="使用曾经登录账号" onclick="TokenLogin()">
+            <input type="submit" value="登录" placeholder="center" onclick="IDLogin()">
+            <input type="submit" value="使用曾经登录账号" onclick="checkToken()">
             `;
-
         }
-        function TokenLogin(){
+        function checkToken(){
             //获取token信息
             var userData = JSON.parse(localStorage.getItem("userData"));
-            if (userData != "") {
+            if (JSON.stringify(userData) !== "{}") {
                 //存在用户登录信息
                 name = userData.userName;
                 document.getElementById("loginForm").innerHTML = `
                 <h1>用户昵称:`+name+`</h1>
-                <input type="submit" value="登录" placeholder="center" onclick="Login()">
-                <input type="submit" value="切换账号" onclick="IDLogin()">
+                <input type="submit" value="登录" placeholder="center" onclick="TokenLogin()">
+                <input type="submit" value="切换账号" onclick="checkID()">
                 `;
             }else{
                 alert("曾经没有账号登录或账号已退出")
             }
         }
 
-        function Login() {
+        //用户ID登录
+        function IDLogin(){
             event.preventDefault(); // 阻止表单默认提交行为
 
-            
-            //获取token信息
-            var userData = JSON.parse(localStorage.getItem("userData"));
-            if(userData != ""){
-                //先这样写
-                alert("登录成功,正在为您跳转页面!")
-                window.location.href = "video.html"
-            }
+            var userData = {};
 
             var id = document.getElementById("ID").value;
             var pwd = document.getElementById("password").value;
@@ -122,20 +116,8 @@
                 alert("用户ID(或手机号)格式不正确")
                 return
             }
-            fetch(myURL+'/user/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ userID: uid,  password: pwd ,iphoneID: iphoneid}),
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        alert("服务器未响应")
-                        throw new Error('Network response was not ok');
-                    }   
-                    return response.json();
-                })
+
+            POST_Req("/user/login",LoginParam(uid,pwd,iphoneid))
                 .then(data => {
                     if(data.status_code != 0){
                         if(data.status_code == 1042){
@@ -147,25 +129,47 @@
                         alert(data.status_msg);
                         return
                     }
-                    localStorage.setItem("userData", JSON.stringify(data));
+                    userData.token = data.token
+                    localStorage.setItem("userData", JSON.stringify(userData));
 
                     alert("登录成功,正在为您跳转页面!")
                     window.location.href = "video.html"
                 })
                 .catch(error => {
-                
                     alert("服务器未启动")
                     console.error('Error:', error);
                 });
-          
 
-            return true;
+
+        }
+        //用户token登录
+        function TokenLogin(){
+            event.preventDefault(); // 阻止表单默认提交行为
+            //获取token信息
+            var userData = JSON.parse(localStorage.getItem("userData"));
+            // 如果 userData 不存在，可以初始化为一个空对象
+            if (JSON.stringify(userData) !== "{}"){
+                //先这样写
+                //判断用户登录信息是否过期
+                GET_Req("/user/updatetoken","token",userData.token)
+                .then(data => {
+                    if(data.status_code != 0){
+                        alert("用户未登录或登录信息已过期");
+                        return
+                    }
+                    alert("登录成功,正在为您跳转页面!")
+                    window.location.href = "video.html"
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
         }
 
         function Watch() {
             event.preventDefault(); // 阻止表单默认提交行为
             if(confirm("注意,游客登录会导致您退出登录原有账号\n会消除您的历史登录,请问您是否还要进行游客登录?")){
-                var data = "";
+                var data = {};
                 localStorage.setItem("userData", JSON.stringify(data)); 
                 window.location.href = "video.html"
             }
