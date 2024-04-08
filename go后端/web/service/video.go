@@ -101,6 +101,7 @@ func TopVideo(ctx *gin.Context) {
 	//1.获取参数和参数校验
 	token := ctx.DefaultQuery("token", "")
 	//登录校验,解析Token里的参数
+	var claim *jwt.MyClaims
 	claim, err := jwt.ParseToken(token)
 	if err != nil {
 		claim.UserID = 0
