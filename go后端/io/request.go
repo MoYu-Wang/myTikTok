@@ -79,12 +79,12 @@ type DeleteCommentReq struct {
 
 //用户操作视频请求参数
 type OperateVideoReq struct {
-	Token     string `json:"token"`
-	VideoID   string `json:"videoID"`
-	WatchTime int64  `json:"watchTime"`
-	// IsFavorite   int64    `json:"isFavorite"`
-	// CommentNum   int64    `json:"commentNum"`
-	// CommentTexts []string `json:"commentTexts"`
+	Token        string   `json:"token"`
+	VideoID      string   `json:"videoID"`
+	WatchTime    int64    `json:"watchTime"`
+	IsFavorite   int64    `json:"isFavorite"`
+	CommentNum   int64    `json:"commentNum"`
+	CommentTexts []string `json:"commentTexts"`
 }
 
 //模糊查询视频请求
