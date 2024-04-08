@@ -279,7 +279,7 @@ func UserWorks(ctx *gin.Context) {
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
@@ -318,7 +318,7 @@ func UserHistory(ctx *gin.Context) {
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
@@ -357,7 +357,7 @@ func UserFavorite(ctx *gin.Context) {
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return

@@ -89,7 +89,7 @@ func TimeToWeight(Vediotime int64) float64 {
 }
 
 // 热点推送算法
-func GetTopVideoIDs(ctx *gin.Context, claim *jwt.MyClaims) ([]int64, common.ResCode) {
+func GetTopVideoIDs(ctx *gin.Context, userID int64) ([]int64, common.ResCode) {
 	//获取所有视频VID
 	AllVID, err := mysql.QueryAllVID(ctx)
 	if err != nil {
@@ -102,10 +102,13 @@ func GetTopVideoIDs(ctx *gin.Context, claim *jwt.MyClaims) ([]int64, common.ResC
 
 		weight, _ := mysql.QueryWeightByVID(ctx, val)
 		stime, _ := mysql.QueryStartTimeByVID(ctx, val)
-		cnt, _ := mysql.QueryUserWatchCount(ctx, claim.UserID, val)
-
+		if userID == 0 {
+			flag.Cnt = 0
+		} else {
+			cnt, _ := mysql.QueryUserWatchCount(ctx, userID, val)
+			flag.Cnt = cnt
+		}
 		flag.VID = val
-		flag.Cnt = cnt
 		flag.Value = weight * TimeToWeight(GetNowTime()-stime)
 		vv = append(vv, flag)
 	}

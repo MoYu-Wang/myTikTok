@@ -108,14 +108,14 @@ func TopVideo(ctx *gin.Context) {
 		claim.UserName = "0"
 	}
 	//2.服务调用
-	vids, code := logic.GetTopVideoIDs(ctx, claim)
+	vids, code := logic.GetTopVideoIDs(ctx, claim.UserID)
 	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
 		return
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
@@ -153,7 +153,7 @@ func RefereeVideo(ctx *gin.Context) {
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
@@ -191,7 +191,7 @@ func CareVideo(ctx *gin.Context) {
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
@@ -227,7 +227,7 @@ func SearchVideo(ctx *gin.Context) {
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return

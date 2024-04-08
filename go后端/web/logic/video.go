@@ -14,7 +14,7 @@ import (
 )
 
 // 根据视频id获取视频信息
-func GetVideoInfoByVID(ctx *gin.Context, videoID int64, claim *jwt.MyClaims) (*io.VideoInfo, common.ResCode) {
+func GetVideoInfoByVID(ctx *gin.Context, videoID int64, userID int64) (*io.VideoInfo, common.ResCode) {
 	ret, err := mysql.QueryVideoInfoByVID(ctx, videoID)
 	if err != nil {
 		return nil, common.CodeMysqlFailed
@@ -27,7 +27,7 @@ func GetVideoInfoByVID(ctx *gin.Context, videoID int64, claim *jwt.MyClaims) (*i
 	if err != nil {
 		return nil, common.CodeMysqlFailed
 	}
-	isf, err := mysql.QueryUserIsLikeVedio(ctx, claim.UserID, videoID)
+	isf, err := mysql.QueryUserIsLikeVedio(ctx, userID, videoID)
 	if err != nil {
 		return nil, common.CodeMysqlFailed
 	}
