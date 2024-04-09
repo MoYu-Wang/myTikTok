@@ -8,7 +8,7 @@ var isfav = 0;//点赞操作缓存
 var comNum = 0;//评论数量缓存
 var comTexts = [];//评论文本缓存
 var listIndex = 1;
-var listValue = ["","top","care","referee","search"];
+var listValue = ["","top","care","referee","works",""];
 
 //初始加载事件
 //频道显示
@@ -397,8 +397,8 @@ document.getElementById("refereeVideo").addEventListener("click",function(){
     });
 });
 
-//我的点击事件
-document.getElementById("userCenter").addEventListener("click",function(){
+//我的作品点击事件
+document.getElementById("myWorks").addEventListener("click",function(){
     if(!UserIsLogin()){
         alert("用户未登录或登录信息已过期")
         return
@@ -409,7 +409,28 @@ document.getElementById("userCenter").addEventListener("click",function(){
         button.style.backgroundColor = '#666';
     });
     this.style.backgroundColor = '#5a8dd9';
-    window.location.href = "userCenter.html";
+    //获取我的作品
+    //初始化videoinfos数组和index
+    initVideo();
+    //获取登录用户信息
+    var userData = JSON.parse(localStorage.getItem("userData"));
+    //发送post请求获取works视频信息数组
+    POST_Req("/user/works",UserWorksParam(userData.token,userData.userID))
+    .then(data => {
+        if(data.status_code != 0){
+            alert(data.status_msg);
+            return
+        }
+        console.log(data);
+        videoInfos = videoInfos.concat(data.videoInfos)
+        //嵌入视频
+        VideoLoadOperate();
+        listIndex = 4;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
 });
 
 //发布人点击事件
@@ -530,12 +551,11 @@ document.querySelector('body').addEventListener('wheel', function(event) {
         if (null != videoInfos[index] && null != userData.token){
             VideoCloseOperate(videoInfos[index].videoID)
         }
-        //切换下个视频
-        index += 1;
-        if (index < 0 || index >= videoInfos.length){
-            if(index >= videoInfos.length){
+        //判断下个index合不合法
+        if (index + 1 < 0 || index + 1 >= videoInfos.length){
+            if(index + 1 >= videoInfos.length){
                 //再次调用获取视频添加到videoInfos后面
-                if (listIndex < 4 || listIndex > 0){
+                if (listIndex < 4 && listIndex > 0){
                     GET_Req("/video/"+listValue[listIndex] , "token" , userData.token)
                     .then(data => {
                         if(data.status_code != 0){
@@ -548,37 +568,47 @@ document.querySelector('body').addEventListener('wheel', function(event) {
                     .catch(error => {
                         console.error('Error:', error);
                     });
+                }else if(listIndex == 4){
+                    alert("已经是最后一个视频了")
+                    return 
                 }
             }
         }else{
+            //切换下个视频
+            index += 1;
             VideoLoadOperate();
         }
     } else if (deltaY < 0) {
         if (null != videoInfos[index] && null != userData.token){
             VideoCloseOperate(videoInfos[index].videoID)
         }
-        //切换上个视频
-        index -= 1
-        if (index < 0 || index >= videoInfos.length){
-            if(index < 0){
-                alert("前面已经没有视频了,正在为您刷新页面");
-                //刷新videoInfos
-                initVideo();
-                GET_Req("/video/"+listValue[listIndex] , "token" , userData.token)
-                .then(data => {
-                    if(data.status_code != 0){
-                        alert(data.status_msg);
-                        return
-                    }
-                    console.log(data);
-                    videoInfos = videoInfos.concat(data.videoInfos)
-                    VideoLoadOperate();
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+        if (index - 1 < 0 || index - 1 >= videoInfos.length){
+            if(index - 1 < 0){
+                if (listIndex < 4 && listIndex > 0){
+                    alert("前面已经没有视频了,正在为您刷新页面");
+                    //刷新videoInfos
+                    initVideo();
+                    GET_Req("/video/"+listValue[listIndex] , "token" , userData.token)
+                    .then(data => {
+                        if(data.status_code != 0){
+                            alert(data.status_msg);
+                            return
+                        }
+                        console.log(data);
+                        videoInfos = videoInfos.concat(data.videoInfos)
+                        VideoLoadOperate();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                }else if(listIndex == 4){
+                    alert("已经是第一个视频了!")
+                    return
+                }
             }
         }else{
+            //切换上个视频
+            index -= 1
             VideoLoadOperate();
         }
     }

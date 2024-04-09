@@ -268,8 +268,14 @@ func UserWorks(ctx *gin.Context) {
 		io.ResponseError(ctx, common.CodeInvalidParam)
 		return
 	}
-	//登录校验,解析Token里的参数
-	claim, _ := jwt.ParseToken(p.Token)
+	//登录校验
+	var userID int64
+	claim, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		userID = 0
+	} else {
+		userID = claim.UserID
+	}
 	//2.服务调用
 	//获取用户发布的所有视频
 	vids, code := logic.GetUserVideoIDs(ctx, p.UserID)
@@ -279,7 +285,7 @@ func UserWorks(ctx *gin.Context) {
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, userID)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
