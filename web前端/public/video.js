@@ -423,6 +423,11 @@ document.getElementById("myWorks").addEventListener("click",function(){
         }
         console.log(data);
         videoInfos = videoInfos.concat(data.videoInfos)
+        if(null == videoInfos[0]){
+            alert("您好像还没有发布过视频,正在为您跳转热点频道")
+            document.getElementById("topVideo").click();
+            return
+        }
         //嵌入视频
         VideoLoadOperate();
         listIndex = 4;
