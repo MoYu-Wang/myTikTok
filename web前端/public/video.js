@@ -52,17 +52,19 @@ window.onload = function(){
         //
         document.getElementById("userlogin").value = "退出登录";
         document.getElementById("userlogin").setAttribute("onclick", "UserExit()");
+        //登录情况默认进入推荐页面
+        document.getElementById("refereeVideo").click();
     } else {
         //游客登录的情况
         document.getElementById("user_name").innerText = "未登录"
 
         document.getElementById("userlogin").value = "登录账号";
         document.getElementById("userlogin").setAttribute("onclick", "UserLogin()");
+        //未登录情况默认进入热点页面
+        document.getElementById("topVideo").click();
     }
     
 
-    //默认进入热点页面
-    document.getElementById("topVideo").click();
 }
 
 
