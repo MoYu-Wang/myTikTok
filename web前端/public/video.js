@@ -137,7 +137,7 @@ function UserDelete(){
         // 用户取消了对话框
         console.log('用户取消了输入');
     }
-    if(confirm("注销用户会导致您的用户所有信息全都删除,请问您真的要注销您的账户吗?")){
+    if(confirm("注销用户会导致您的用户所有信息全部删除,\n请问您真的要注销您的账户吗?")){
         POST_Req("/user/delete",DeleteUserParam(userData.token,userInput))
         .then(data => {
             if(data.status_code != 1100){
@@ -273,7 +273,7 @@ document.getElementById("home").addEventListener("click", function() {
     });
     this.style.backgroundColor = '#5a8dd9';
 
-    alert("首页内容暂未实现,正在为您跳转热点内容")
+    alert("首页内容暂未实现,\n正在为您跳转热点内容")
     document.getElementById("topVideo").click()
 });
 
@@ -332,7 +332,7 @@ document.getElementById("topVideo").addEventListener("click", function() {
 //关注点击事件
 document.getElementById("careVideo").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录或登录信息已过期")
+        alert("用户未登录\n或登录信息已过期")
         return
     }
     //设置按钮颜色
@@ -366,7 +366,7 @@ document.getElementById("careVideo").addEventListener("click",function(){
 //推荐点击事件
 document.getElementById("refereeVideo").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录或登录信息已过期")
+        alert("用户未登录\n或登录信息已过期")
         return
     }
     //设置按钮颜色
@@ -400,7 +400,7 @@ document.getElementById("refereeVideo").addEventListener("click",function(){
 //我的作品点击事件
 document.getElementById("myWorks").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录或登录信息已过期")
+        alert("用户未登录\n或登录信息已过期")
         return
     }
     //设置按钮颜色
@@ -424,8 +424,8 @@ document.getElementById("myWorks").addEventListener("click",function(){
         console.log(data);
         videoInfos = videoInfos.concat(data.videoInfos)
         if(null == videoInfos[0]){
-            alert("您好像还没有发布过视频,正在为您跳转热点频道")
-            document.getElementById("topVideo").click();
+            alert("您好像还没有发布过视频,\n快来发布您的第一条视频吧!")
+            UpLoadVideo()
             return
         }
         //嵌入视频
@@ -446,7 +446,7 @@ document.getElementById("publicUser2").addEventListener("click",function(){
 //关注发布人点击事件
 document.getElementById("careUser").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录或登录信息已过期")
+        alert("用户未登录\n或登录信息已过期")
         return
     }
     if(null != videoInfos[index]){
@@ -477,7 +477,7 @@ document.getElementById("careUser").addEventListener("click",function(){
 //点赞点击事件
 document.getElementById("favorite").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录或登录信息已过期")
+        alert("用户未登录\n或登录信息已过期")
         return
     }
     isfav ^= 1;
@@ -493,7 +493,7 @@ document.getElementById("favorite").addEventListener("click",function(){
 //评论点击事件
 document.getElementById("comment").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录或登录信息已过期")
+        alert("用户未登录\n或登录信息已过期")
         return
     }
 
@@ -590,7 +590,7 @@ document.querySelector('body').addEventListener('wheel', function(event) {
         if (index - 1 < 0 || index - 1 >= videoInfos.length){
             if(index - 1 < 0){
                 if (listIndex < 4 && listIndex > 0){
-                    alert("前面已经没有视频了,正在为您刷新页面");
+                    alert("前面已经没有视频了,\n正在为您刷新页面");
                     //刷新videoInfos
                     initVideo();
                     GET_Req("/video/"+listValue[listIndex] , "token" , userData.token)
