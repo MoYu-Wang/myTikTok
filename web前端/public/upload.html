@@ -146,6 +146,9 @@
                 showMessage("请选择一个视频文件");
                 return;
             }
+            if(!confirm("目前版本上传成功视频之后无法更改视频信息,请问您是否要以该名称和标签上传?")){
+                return
+            }
 
             var vName = document.getElementById('videoName').value;
             var vTags = document.getElementById('videoTags').value;
