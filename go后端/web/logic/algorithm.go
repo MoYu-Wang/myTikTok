@@ -59,22 +59,22 @@ func SortCareVID(v []CareVideo) {
 // 时间占权重比例
 func TimeToWeight(Vediotime int64) float64 {
 	if Vediotime < 3*60*60*1000 {
-		return 10000
-	}
-	if Vediotime < 6*60*60*1000 {
-		return 5000
-	}
-	if Vediotime < 12*60*60*1000 {
-		return 1000
-	}
-	if Vediotime < 24*60*60*1000 {
 		return 500
 	}
-	if Vediotime < 2*24*60*60*1000 {
+	if Vediotime < 6*60*60*1000 {
 		return 100
 	}
-	if Vediotime < 5*24*60*60*1000 {
+	if Vediotime < 12*60*60*1000 {
+		return 50
+	}
+	if Vediotime < 24*60*60*1000 {
+		return 30
+	}
+	if Vediotime < 2*24*60*60*1000 {
 		return 10
+	}
+	if Vediotime < 5*24*60*60*1000 {
+		return 5
 	}
 	if Vediotime < 10*24*60*60*1000 {
 		return 1

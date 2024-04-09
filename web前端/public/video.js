@@ -5,11 +5,11 @@ var videoOperateInfo = {};
 let current = 0;
 var userData = {};
 var videoWatchTime = 0;//视频播放时间(ms)
-var isfav = 0;//点赞操作缓存
+var favIsClick = 0;//点赞操作缓存
 var comNum = 0;//评论数量缓存
 var comTexts = [];//评论文本缓存
 var listIndex = 1;
-var listValue = ["","top","care","referee","works",""];
+var listValue = ["search","top","care","referee","works","favorite","history",""];
 
 //初始加载事件
 //频道显示
@@ -213,10 +213,8 @@ function VideoLoadOperate(){
         //是否点赞视频
         if (data.isFavorite){
             document.getElementById("favorite").innerHTML = `取消点赞`;
-            isfav = 1;
         }else{
             document.getElementById("favorite").innerHTML = `点赞`;
-            isfav = 0;
         }
         //点赞数量
         document.getElementById("favoriteNum").innerHTML = data.videoFavoriteNum;
@@ -240,6 +238,7 @@ function VideoLoadOperate(){
     document.getElementById("video").load();
 
     //重置操作
+    favIsClick = 0;
     comNum = 0;
     comText = [];
 }
@@ -248,8 +247,11 @@ function VideoLoadOperate(){
 function VideoCloseOperate(vID){
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
+    var isfav = 0
     if(videoOperateInfo.isFavorite){
-        isfav = isfav - 1;
+        isfav = -1 * favIsClick;
+    }else{
+        isfav = favIsClick;
     }
     POST_Req("/video/operate",OperateVideoParam(userData.token,vID,videoWatchTime,isfav,comNum,comTexts))
     .then(data => {
@@ -439,6 +441,88 @@ document.getElementById("myWorks").addEventListener("click",function(){
 
 });
 
+//我的喜爱
+document.getElementById("myFavorite").addEventListener("click",function(){
+    if(!UserIsLogin()){
+        alert("用户未登录\n或登录信息已过期")
+        return
+    }
+    //设置按钮颜色
+    var buttons = document.querySelectorAll('.sidebar button');
+    buttons.forEach(function(button){
+        button.style.backgroundColor = '#666';
+    });
+    this.style.backgroundColor = '#5a8dd9';
+    //获取我的喜爱
+    //初始化videoinfos数组和index
+    initVideo();
+    //获取登录用户信息
+    var userData = JSON.parse(localStorage.getItem("userData"));
+    //发送post请求获取favorite视频信息数组
+    GET_Req("/user/favorite","token",userData.token)
+    .then(data => {
+        if(data.status_code != 0){
+            alert(data.status_msg);
+            return
+        }
+        console.log(data);
+        videoInfos = videoInfos.concat(data.videoInfos)
+        if(null == videoInfos[0]){
+            alert("您没有点赞过的视频!\n正在为您跳转热点频道观看视频")
+            document.getElementById("topVideo").click();
+            return
+        }
+        //嵌入视频
+        VideoLoadOperate();
+        listIndex = 5;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+});
+
+//历史记录
+document.getElementById("myHistory").addEventListener("click",function(){
+    if(!UserIsLogin()){
+        alert("用户未登录\n或登录信息已过期")
+        return
+    }
+    //设置按钮颜色
+    var buttons = document.querySelectorAll('.sidebar button');
+    buttons.forEach(function(button){
+        button.style.backgroundColor = '#666';
+    });
+    this.style.backgroundColor = '#5a8dd9';
+    //获取历史记录
+    //初始化videoinfos数组和index
+    initVideo();
+    //获取登录用户信息
+    var userData = JSON.parse(localStorage.getItem("userData"));
+    //发送post请求获取works视频信息数组
+    GET_Req("/user/history","token",userData.token)
+    .then(data => {
+        if(data.status_code != 0){
+            alert(data.status_msg);
+            return
+        }
+        console.log(data);
+        videoInfos = videoInfos.concat(data.videoInfos)
+        if(null == videoInfos[0]){
+            alert("您还未观看过视频,正在为您跳转热点频道")
+            document.getElementById("topVideo").click();
+            return
+        }
+        //嵌入视频
+        VideoLoadOperate();
+        listIndex = 6;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+});
+
 //发布人点击事件
 document.getElementById("publicUser2").addEventListener("click",function(){
 
@@ -481,8 +565,8 @@ document.getElementById("favorite").addEventListener("click",function(){
         alert("用户未登录\n或登录信息已过期")
         return
     }
-    isfav ^= 1;
-    if(isfav){
+    favIsClick ^= 1;
+    if(favIsClick){
         document.getElementById("favorite").innerHTML = `取消点赞`;
         document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) + 1);
     }else{
@@ -516,7 +600,7 @@ document.getElementById("search").addEventListener("click",function(){
         videoInfos = videoInfos.concat(data.videoInfos)
         //嵌入视频
         VideoLoadOperate();
-        listIndex = 4;
+        listIndex = 0;
     })
     .catch(error => {
         console.error('Error:', error);
@@ -574,7 +658,7 @@ document.querySelector('body').addEventListener('wheel', function(event) {
                     .catch(error => {
                         console.error('Error:', error);
                     });
-                }else if(listIndex == 4){
+                }else{
                     alert("已经是最后一个视频了")
                     return 
                 }
@@ -607,7 +691,7 @@ document.querySelector('body').addEventListener('wheel', function(event) {
                     .catch(error => {
                         console.error('Error:', error);
                     });
-                }else if(listIndex == 4){
+                }else{
                     alert("已经是第一个视频了!")
                     return
                 }

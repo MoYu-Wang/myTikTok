@@ -45,6 +45,13 @@ body {
     background-color: #999;
 }
 
+.sidebar .dividerLine {
+    height: 1px;
+    background-color: #555; /* 分割线颜色 */
+    margin: 20px 0; /* 分割线上下的间距 */
+}
+
+
 
 .container {
     display: flex;
