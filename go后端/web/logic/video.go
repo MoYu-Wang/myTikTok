@@ -65,7 +65,7 @@ func GetUserVideoIDs(ctx *gin.Context, userID int64) ([]int64, common.ResCode) {
 // 排序历史记录(根据上次观看时间排序)
 func SortHistory(v []dao.History) {
 	sort.Slice(v, func(i, j int) bool {
-		return v[i].LastTime < v[j].LastTime
+		return v[i].LastTime > v[j].LastTime
 	})
 }
 
