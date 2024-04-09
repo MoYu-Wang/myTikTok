@@ -1,3 +1,4 @@
+alert("请根据鼠标滚轮上下滑动切换视频!")
 var index = 0;
 var videoInfos = [];
 var videoOperateInfo = {};
