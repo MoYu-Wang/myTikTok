@@ -102,6 +102,8 @@ func GetTopVideoIDs(ctx *gin.Context, userID int64) ([]int64, common.ResCode) {
 
 		weight, _ := mysql.QueryWeightByVID(ctx, val)
 		stime, _ := mysql.QueryStartTimeByVID(ctx, val)
+		likenum, _ := mysql.QueryVideoFavoriteNum(ctx, val)
+		comnum, _ := mysql.QueryVideoCommentNum(ctx, val)
 		if userID == 0 {
 			flag.Cnt = 0
 		} else {
@@ -109,7 +111,7 @@ func GetTopVideoIDs(ctx *gin.Context, userID int64) ([]int64, common.ResCode) {
 			flag.Cnt = cnt
 		}
 		flag.VID = val
-		flag.Value = weight * TimeToWeight(GetNowTime()-stime)
+		flag.Value = (weight + float64(30000*likenum) + float64(10000*comnum)) * TimeToWeight(GetNowTime()-stime)
 		vv = append(vv, flag)
 	}
 	SortTopVID(vv)
@@ -137,6 +139,8 @@ func GetRefereeVideoIDs(ctx *gin.Context, claim *jwt.MyClaims) ([]int64, common.
 		weight, _ := mysql.QueryWeightByVID(ctx, val)
 		stime, _ := mysql.QueryStartTimeByVID(ctx, val)
 		cnt, _ := mysql.QueryUserWatchCount(ctx, claim.UserID, val)
+		likenum, _ := mysql.QueryVideoFavoriteNum(ctx, val)
+		comnum, _ := mysql.QueryVideoCommentNum(ctx, val)
 
 		tagsWeight, code := GetWeightByUserLookVideo(ctx, claim.UserID, val)
 		if code != common.CodeSuccess {
@@ -145,7 +149,7 @@ func GetRefereeVideoIDs(ctx *gin.Context, claim *jwt.MyClaims) ([]int64, common.
 
 		flag.VID = val
 		flag.Cnt = cnt
-		flag.Value = (weight + float64(tagsWeight)) * TimeToWeight(GetNowTime()-stime)
+		flag.Value = (weight + float64(tagsWeight) + (float64(likenum * 10000)) + float64(comnum*3000)) * TimeToWeight(GetNowTime()-stime)
 
 		vv = append(vv, flag)
 	}
