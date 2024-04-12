@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>抖音(AHUT低仿版)</title>
     
+    <link rel="stylesheet" href="channelBar.css" type="text/css"/>
     <link rel="stylesheet" href="video.css" type="text/css"/>
+    <link rel="stylesheet" href="comment.css" type="text/css"/>
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <h1>my_TikTok</h1>
         <ul>
             <li><button id="home">首页</button></li>
@@ -48,9 +50,62 @@
             </div>
         </div>
     </div>
+    <div class="video-comments" id="video-comments"  style="display: none;">
+        <ul class="comments">
+            <li class="comment">
+                <span class="user">User1:</span>
+                <p class="comment-text">这是第一条评论。</p>
+                <span class="timestamp">12分钟前</span>
+            </li>
+            <li class="comment">
+                <span class="user">User2:</span>
+                <p class="comment-text">这是第二条评论。</p>
+                <span class="timestamp">1小时前</span>
+            </li>
+            <li class="comment">
+                <span class="user">User3:</span>
+                <p class="comment-text">这是第三条评论。</p>
+                <span class="timestamp">昨天</span>
+            </li>
+            <li class="comment">
+                <span class="user">User4:</span>
+                <p class="comment-text">这是第四条评论。</p>
+                <span class="timestamp">昨天</span>
+            </li>
+            <li class="comment">
+                <span class="user">User5:</span>
+                <p class="comment-text">这是第五条评论。</p>
+                <span class="timestamp">昨天</span>
+            </li>
+            <li class="comment">
+                <span class="user">User6:</span>
+                <p class="comment-text">这是第六条评论。</p>
+                <span class="timestamp">昨天</span>
+            </li>
+            <li class="comment">
+                <span class="user">User7:</span>
+                <p class="comment-text">这是第七条评论。</p>
+                <span class="timestamp">昨天</span>
+            </li>
+            <li class="comment">
+                <span class="user">User8:</span>
+                <p class="comment-text">这是第八条评论。</p>
+                <span class="timestamp">昨天</span>
+            </li>
+            <li class="comment">
+                <span class="user">User9:</span>
+                <p class="comment-text">这是第九条评论。</p>
+                <span class="timestamp">昨天</span>
+            </li>
+        </ul>
+        <div class="comment-input">
+            <textarea id="commentText" placeholder="在这里写评论..."></textarea>
+            <button id="publishComment">发布评论</button>
+        </div>
+    </div>
 
     <div id="header">
-        <div id="user_avatar"></div>
+        <div id="user_avatar">我</div>
         <div id="user_menu">
             <h1 id="user_name">未登录</h1>
             <input type="menu_item" value="个人中心" readonly onclick="UserInfo()">

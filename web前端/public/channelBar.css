@@ -1,0 +1,48 @@
+/*  频道栏  */
+.sidebar {
+    width: 200px;
+    background-color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+}
+
+.sidebar h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar li {
+    margin-bottom: 10px;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 10px;
+    background-color: #666;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: left;
+    color: #fff;
+}
+
+.sidebar button:hover {
+    background-color: #999;
+}
+
+.sidebar .dividerLine {
+    height: 1px;
+    background-color: #555; /* 分割线颜色 */
+    margin: 20px 0; /* 分割线上下的间距 */
+}
+
+

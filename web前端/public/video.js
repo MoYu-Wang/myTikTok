@@ -577,9 +577,30 @@ document.getElementById("favorite").addEventListener("click",function(){
 
 //评论点击事件
 document.getElementById("comment").addEventListener("click",function(){
-    if(!UserIsLogin()){
-        alert("用户未登录\n或登录信息已过期")
-        return
+    //设置频道栏
+    var sidebar = document.getElementById('sidebar');
+    // 检查当前频道栏的显示状态
+    if (sidebar.style.display === 'none') {
+        // 如果当前是隐藏状态，则显示频道栏
+        sidebar.style.display = 'block';
+        addScrollEventListener();
+    } else {
+        // 如果当前是显示状态，则隐藏频道栏
+        sidebar.style.display = 'none';
+        removeScrollEventListener();
+    }
+    //设置评论区
+    var commentSection = document.getElementById("video-comments");
+    if (commentSection) { // 检查commentSection是否存在
+        if (commentSection.style.display === "none") {
+            commentSection.style.display = "block";
+            // 可以在这里添加加载评论的逻辑，例如发送请求获取评论数据并填充到评论区域
+            // loadComments();
+        } else {
+            commentSection.style.display = "none";
+        }
+    } else {
+        console.error("commentSection is null or undefined");
     }
 
 });
@@ -608,6 +629,15 @@ document.getElementById("search").addEventListener("click",function(){
 });
 
 
+// 添加鼠标滚轮事件监听器
+function addScrollEventListener() {
+    document.querySelector('body').addEventListener('wheel', scrollEventHandler);
+}
+
+// 移除鼠标滚轮事件监听器
+function removeScrollEventListener() {
+    document.querySelector('body').removeEventListener('wheel', scrollEventHandler);
+}
 
 
 //各种监听事件
@@ -621,9 +651,9 @@ window.onkeydown = function (e)
        
     }
 }
-
-//监听鼠标滚轮
-document.querySelector('body').addEventListener('wheel', function(event) {
+// 定义滚轮事件处理函数
+function scrollEventHandler(event) {
+    // 你的滚轮事件处理逻辑
     // 阻止默认的滚动行为
     // event.preventDefault();
     //获取登录用户信息
@@ -702,7 +732,9 @@ document.querySelector('body').addEventListener('wheel', function(event) {
             VideoLoadOperate();
         }
     }
-});
+}
+//监听鼠标滚轮
+document.querySelector('body').addEventListener('wheel', scrollEventHandler);
 
 //监听视频播放时长
 document.getElementById("video").addEventListener("timeupdate", function() {

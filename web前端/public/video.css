@@ -1,65 +1,71 @@
+/*  主页面  */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
+    
+    width: 100vw; /* 将页面宽度设置为屏幕宽度 */
+    height: 100vh; /* 将页面高度设置为屏幕高度 */
 }
 
-.sidebar {
-    width: 200px;
-    background-color: #333;
-    padding: 20px;
-    border-radius: 10px;
-    color: #fff;
-    text-align: center;
-}
-
-.sidebar h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.sidebar li {
-    margin-bottom: 10px;
-}
-
-.sidebar button {
-    width: 100%;
+/*  右上角个人中心部分  */
+#header {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
     padding: 10px;
-    background-color: #666;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-align: left;
-    color: #fff;
+    position: fixed;
+    width: 40px;
+    top: 0;
+    right: 0;
 }
 
-.sidebar button:hover {
-    background-color: #999;
-}
-
-.sidebar .dividerLine {
-    height: 1px;
-    background-color: #555; /* 分割线颜色 */
-    margin: 20px 0; /* 分割线上下的间距 */
-}
-
-
-
-.container {
+#user_avatar {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    width: 40px;
+    height: 40px;
+    background-color: rgb(233, 74, 46);
+    border-radius: 50%;
+    cursor: pointer;
 }
 
+
+#user_menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: calc(100vh);
+    background-color: #888888; 
+    transform: translateX(100%);
+    transition: transform 0.5s ease-in-out;
+    padding-top: 50px;
+    padding-left: 20px;
+    padding-right: 40px;
+    box-sizing: border-box;
+}
+
+#user_menu.active {
+    transform: translateX(0);
+}
+
+input[type="menu_item"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+}
+
+
+/*  主体部分  */
 .content {
     flex: 1;
     padding: 20px;
@@ -153,54 +159,4 @@ body {
 .video-controls div {
     color: white;
     font-size: 20px; 
-}
-
-
-#header {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    padding: 20px;
-    position: fixed;
-    width: 50px;
-    top: 0;
-    right: 0;
-}
-#user_avatar {
-    width: 50px;
-    height: 50px;
-    background-color: rgb(60, 240, 99);
-    border-radius: 50%;
-    cursor: pointer;
-}
-
-#user_menu {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 200px;
-    height: calc(100vh);
-    background-color: #888888; 
-    transform: translateX(100%);
-    transition: transform 0.5s ease-in-out;
-    padding-top: 50px;
-    padding-left: 20px;
-    padding-right: 40px;
-    box-sizing: border-box;
-}
-
-#user_menu.active {
-    transform: translateX(0);
-}
-
-input[type="menu_item"] {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #4CAF50;
-    color: white;
-    cursor: pointer;
 }
