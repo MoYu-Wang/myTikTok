@@ -211,7 +211,12 @@ func GetVideoComment(ctx *gin.Context, videoID int64) ([]io.VideoComment, common
 		}
 		vcomments = append(vcomments, *vcomment)
 	}
-	return vcomments, common.CodeSuccess
+	// 使用切片进行倒序
+	reversedSlice := make([]io.VideoComment, len(vcomments))
+	for i, v := range vcomments {
+		reversedSlice[len(vcomments)-1-i] = v
+	}
+	return reversedSlice, common.CodeSuccess
 }
 
 // 视频点赞
