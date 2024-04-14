@@ -191,9 +191,12 @@ func GetVideoComment(ctx *gin.Context, videoID int64) ([]io.VideoComment, common
 	}
 	var vcomments []io.VideoComment
 	for _, val := range comments {
+		//查询评论人昵称
+		userName, _ := mysql.QueryUserName(ctx, val.UserID)
 		vcomment := &io.VideoComment{
 			CommentID:  strconv.FormatInt(val.CommentID, 10),
 			UserID:     val.UserID,
+			UserName:   userName,
 			CommitTime: val.CommentTime,
 			CommitText: val.CommentText,
 		}
