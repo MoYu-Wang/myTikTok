@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const MAX_VedioLink = 10 //最大缓存视频链接
+const MAX_VedioLink = 100 //最大缓存视频链接
 
 type TopVideo struct {
 	VID   int64
