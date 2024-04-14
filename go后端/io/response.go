@@ -58,11 +58,11 @@ type VideoOperateInfo struct {
 }
 
 type VideoComment struct {
-	CommentID  string `json:"commentID"`  //评论ID
-	UserID     int64  `json:"userID"`     //评论人ID
-	UserName   string `json:"userName"`   //评论人昵称
-	CommitText string `json:"commitText"` //评论文本
-	CommitTime int64  `json:"commitTime"` //评论时间
+	CommentID   string `json:"commentID"`   //评论ID
+	UserID      int64  `json:"userID"`      //评论人ID
+	UserName    string `json:"userName"`    //评论人昵称
+	CommentText string `json:"commentText"` //评论文本
+	CommentTime int64  `json:"commentTime"` //评论时间
 }
 
 type UserBase struct {
