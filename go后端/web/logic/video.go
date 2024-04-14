@@ -176,11 +176,20 @@ func OperateVideo(ctx *gin.Context, p *io.OperateVideoReq, claim *jwt.MyClaims) 
 
 // 获取模糊搜索视频id列表
 func GetSearchVideoIDs(ctx *gin.Context, searchText string) ([]int64, common.ResCode) {
-	searchIDs, err := mysql.QueryVIDByVName(ctx, searchText)
+	searchIDs, err := mysql.QueryVIDByName(ctx, searchText)
 	if err != nil {
 		return nil, common.CodeMysqlFailed
 	}
-	return searchIDs, common.CodeSuccess
+	//去重
+	encountered := map[int64]bool{}
+	result := []int64{}
+	for _, v := range searchIDs {
+		if !encountered[v] {
+			encountered[v] = true
+			result = append(result, v)
+		}
+	}
+	return result, common.CodeSuccess
 }
 
 // 获取视频评论

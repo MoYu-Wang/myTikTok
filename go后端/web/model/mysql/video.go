@@ -46,10 +46,25 @@ func QueryVideoInfoByVID(ctx context.Context, videoID int64) (*dao.Video, error)
 }
 
 // 根据视频名称模糊查找类似视频所有VID(暂时这样写,不确定对不对)
-func QueryVIDByVName(ctx context.Context, videoName string) ([]int64, error) {
+func QueryVIDByName(ctx context.Context, Name string) ([]int64, error) {
 	db := GetDB(ctx)
-	var ret []int64
-	err := db.Table("Video").Where("VideoName LIKE ?", "%"+videoName+"%").Find(&ret).Error
+
+	var vIDs1 []int64
+	err := db.Table("Video").Select("VideoID").Where("VideoName LIKE ?", "%"+Name+"%").Find(&vIDs1).Error
+	if err != nil {
+		return nil, err
+	}
+	var uIDs []int64
+	err = db.Table("User").Where("UserName LIKE ?", "%"+Name+"%").Find(&uIDs).Error
+	if err != nil {
+		return nil, err
+	}
+	var vIDs2 []int64
+	for _, uID := range uIDs {
+		vids, _ := QueryVideoIDByUserID(ctx, uID)
+		vIDs2 = append(vIDs2, vids...)
+	}
+	ret := append(vIDs1, vIDs2...)
 	return ret, err
 }
 
