@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>抖音(AHUT低仿版)</title>
     
+    <link rel="stylesheet" href="message.css" type="text/css"/>
     <link rel="stylesheet" href="channelBar.css" type="text/css"/>
     <link rel="stylesheet" href="video.css" type="text/css"/>
     <link rel="stylesheet" href="comment.css" type="text/css"/>
 </head>
 <body>
+    <div id="messageBox" class="hidden"></div>
     <div class="sidebar" id="sidebar">
         <h1>my_TikTok</h1>
         <ul>
@@ -55,47 +57,74 @@
             <li class="comment">
                 <span class="user">User1:</span>
                 <p class="comment-text">这是第一条评论。</p>
-                <span class="timestamp">12分钟前</span>
+                <div class="comment-footer">
+                    <span class="timestamp">12分钟前</span>
+                    <button class="comment-delete">删除评论</button>
+                </div>
             </li>
             <li class="comment">
                 <span class="user">User2:</span>
                 <p class="comment-text">这是第二条评论。</p>
-                <span class="timestamp">1小时前</span>
+                <div class="comment-footer">
+                    <span class="timestamp">12分钟前</span>
+                    <button class="comment-delete">删除评论</button>
+                </div>
             </li>
             <li class="comment">
                 <span class="user">User3:</span>
                 <p class="comment-text">这是第三条评论。</p>
-                <span class="timestamp">昨天</span>
+                <div class="comment-footer">
+                    <span class="timestamp">12分钟前</span>
+                    <button class="comment-delete">删除评论</button>
+                </div>
             </li>
             <li class="comment">
                 <span class="user">User4:</span>
                 <p class="comment-text">这是第四条评论。</p>
-                <span class="timestamp">昨天</span>
+                <div class="comment-footer">
+                    <span class="timestamp">12分钟前</span>
+                    <button class="comment-delete">删除评论</button>
+                </div>
             </li>
             <li class="comment">
                 <span class="user">User5:</span>
                 <p class="comment-text">这是第五条评论。</p>
-                <span class="timestamp">昨天</span>
+                <div class="comment-footer">
+                    <span class="timestamp">12分钟前</span>
+                    <button class="comment-delete">删除评论</button>
+                </div>
             </li>
             <li class="comment">
                 <span class="user">User6:</span>
                 <p class="comment-text">这是第六条评论。</p>
-                <span class="timestamp">昨天</span>
+                <div class="comment-footer">
+                    <span class="timestamp">12分钟前</span>
+                    <button class="comment-delete">删除评论</button>
+                </div>
             </li>
             <li class="comment">
                 <span class="user">User7:</span>
                 <p class="comment-text">这是第七条评论。</p>
-                <span class="timestamp">昨天</span>
+                <div class="comment-footer">
+                    <span class="timestamp">12分钟前</span>
+                    <button class="comment-delete">删除评论</button>
+                </div>
             </li>
             <li class="comment">
                 <span class="user">User8:</span>
                 <p class="comment-text">这是第八条评论。</p>
-                <span class="timestamp">昨天</span>
+                <div class="comment-footer">
+                    <span class="timestamp">12分钟前</span>
+                    <button class="comment-delete">删除评论</button>
+                </div>
             </li>
             <li class="comment">
                 <span class="user">User9:</span>
                 <p class="comment-text">这是第九条评论。</p>
-                <span class="timestamp">昨天</span>
+                <div class="comment-footer">
+                    <span class="timestamp">12分钟前</span>
+                    <button class="comment-delete">删除评论</button>
+                </div>
             </li>
         </ul>
         <div class="comment-input">
@@ -115,7 +144,8 @@
         </div>
     </div>
 </body>
-
+<script src="message.js"></script>
 <script src="httpReq.js"></script>
 <script src="video.js"></script>
+<script src="comment.js"></script>
 </html>

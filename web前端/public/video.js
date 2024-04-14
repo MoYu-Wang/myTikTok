@@ -1,4 +1,4 @@
-alert("请根据鼠标滚轮上下滑动切换视频!")
+showMessage("请根据鼠标滚轮上下滑动切换视频!")
 var index = 0;
 var videoInfos = [];
 var videoOperateInfo = {};
@@ -10,6 +10,8 @@ var comNum = 0;//评论数量缓存
 var comTexts = [];//评论文本缓存
 var listIndex = 1;
 var listValue = ["search","top","care","referee","works","favorite","history",""];
+var videoComments = [];//视频评论
+
 
 //初始加载事件
 //频道显示
@@ -24,7 +26,7 @@ window.onload = function(){
         GET_Req("/user/updatetoken","token",userData.token)
         .then(data => {
             if(data.status_code != 0){
-                alert(data.status_msg);
+                showMessage(data.status_msg);
                 return
             }
             console.log(data);
@@ -37,7 +39,7 @@ window.onload = function(){
         GET_Req("/user/base","token" , userData.token)
         .then(data => {
             if(data.status_code != 0){
-                alert(data.status_msg);
+                showMessage(data.status_msg);
                 return
             }
             console.log(data);
@@ -68,7 +70,6 @@ window.onload = function(){
 
 }
 
-
 //右上角用户信息
 const userAvatar = document.getElementById('user_avatar');
 const userMenu = document.getElementById('user_menu');
@@ -90,7 +91,7 @@ document.addEventListener('click', () => {
 //个人中心
 function UserInfo(){
     if(!UserIsLogin()){
-        alert("用户未登录")
+        showMessage("用户未登录")
         return 
     }
 }
@@ -100,6 +101,7 @@ function initVideo(){
     index = 0;
     videoInfos = [];
     videoOperateInfo = {};
+    videoComments = [];
 }
 
 
@@ -111,7 +113,7 @@ function UserLogin(){
 //退出登录
 function UserExit(){
     if(!UserIsLogin()){
-        alert("用户未登录")
+        showMessage("用户未登录")
         return 
     }
     if(confirm("请问是否退出登录")){
@@ -124,7 +126,7 @@ function UserExit(){
 //注销用户
 function UserDelete(){
     if(!UserIsLogin()){
-        alert("用户未登录")
+        showMessage("用户未登录")
         return 
     }
     // 弹出可输入的对话框
@@ -142,10 +144,10 @@ function UserDelete(){
         POST_Req("/user/delete",DeleteUserParam(userData.token,userInput))
         .then(data => {
             if(data.status_code != 1100){
-                alert(data.status_msg);
+                showMessage(data.status_msg);
                 return
             }
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             nowData = {};
             localStorage.setItem("userData", JSON.stringify(nowData));
             window.location.reload();
@@ -167,10 +169,68 @@ function UserIsLogin(){
 //上传视频
 function UpLoadVideo(){
     if(!UserIsLogin()){
-        alert("用户未登录")
+        showMessage("用户未登录")
         return 
     }
     window.location.href = "upload.html";
+}
+
+//更改评论区
+function UpdateComment(){
+    //初始化评论区信息
+    videoComments = [];
+    //获取视频信息
+    var videoInfo = videoInfos[index];
+    //获取评论
+    GET_Req("/video/getcomment","videoID",videoInfo.videoID)
+    .then(data => {
+        if (data.status_code != 0) {
+            showMessage(data.status_msg);
+            return;
+        }
+        videoComments = data.videoComments; // 假设返回的数据中包含一个评论数组
+        const commentsContainer = document.querySelector('.comments');
+        commentsContainer.innerHTML = ''; // 清空现有评论
+        if(!videoComments)return;
+        videoComments.forEach(comment => {
+            // 创建评论元素
+            const li = document.createElement('li');
+            li.className = 'comment';
+            li.innerHTML = `
+                <span class="user">${comment.userName}:</span>
+                <p class="comment-text">${comment.commentText}</p>
+                <div class="comment-footer">
+                    <span class="timestamp">${Math.trunc((Date.now() - comment.commentTime/1e6)/(1000*60))}分钟前</span>
+                </div>
+            `;
+            // 检查用户是否登录且为评论者
+            if (UserIsLogin()) {
+                var userData = JSON.parse(localStorage.getItem("userData"));
+                if (userData && userData.userID === comment.userID) {
+                    const deleteButton = document.createElement('button');
+                    deleteButton.className = 'comment-delete';
+                    deleteButton.textContent = '删除评论';
+                    deleteButton.onclick = function() {
+                        // 添加删除评论的功能，例如通过API请求
+                        POST_Req("/video/deletecomment", DeleteCommentParam(userData.token,videoInfo.videoID,comment.commentID))
+                        .then(response => {
+                            li.remove(); // 或重新加载评论
+                            showMessage("删除成功");
+                        })
+                        .catch(error => {
+                            console.error('Delete error:', error);
+                        });
+                    };
+                    li.querySelector('.comment-footer').appendChild(deleteButton);
+                }
+            }
+            commentsContainer.appendChild(li);
+        });
+
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
 
 //视频嵌入之后的操作
@@ -183,7 +243,7 @@ function VideoLoadOperate(){
     POST_Req("/user/info",UserInfoParam(userData.token,videoInfo.userID))
     .then(data => {
         if(data.status_code != 0){
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             return
         }
         console.log(data);
@@ -205,7 +265,7 @@ function VideoLoadOperate(){
     POST_Req("/video/info",VideoOperateInfoParam(userData.token,videoInfo.videoID))
     .then(data => {
         if(data.status_code != 0){
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             return
         }
         console.log(data);
@@ -237,6 +297,9 @@ function VideoLoadOperate(){
     `;
     document.getElementById("video").load();
 
+    //更新评论区
+    UpdateComment();
+
     //重置操作
     favIsClick = 0;
     comNum = 0;
@@ -256,7 +319,7 @@ function VideoCloseOperate(vID){
     POST_Req("/video/operate",OperateVideoParam(userData.token,vID,videoWatchTime,isfav,comNum,comTexts))
     .then(data => {
         if(data.status_code != 0){
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             return
         }
     })
@@ -276,7 +339,7 @@ document.getElementById("home").addEventListener("click", function() {
     });
     this.style.backgroundColor = '#5a8dd9';
 
-    alert("首页内容暂未实现,\n正在为您跳转热点内容")
+    showMessage("首页内容暂未实现,\n正在为您跳转热点内容")
     document.getElementById("topVideo").click()
 });
 
@@ -297,7 +360,7 @@ document.getElementById("topVideo").addEventListener("click", function() {
         GET_Req("/video/top","token",userData.token)
         .then(data => {
             if(data.status_code != 0){
-                alert(data.status_msg);
+                showMessage(data.status_msg);
                 return
             }
             console.log(data);
@@ -315,7 +378,7 @@ document.getElementById("topVideo").addEventListener("click", function() {
         GET_Req("/video/top")
         .then(data => {
             if(data.status_code != 0){
-                alert(data.status_msg);
+                showMessage(data.status_msg);
                 return
             }
             console.log(data);
@@ -335,7 +398,7 @@ document.getElementById("topVideo").addEventListener("click", function() {
 //关注点击事件
 document.getElementById("careVideo").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录\n或登录信息已过期")
+        showMessage("用户未登录\n或登录信息已过期")
         return
     }
     //设置按钮颜色
@@ -352,7 +415,7 @@ document.getElementById("careVideo").addEventListener("click",function(){
     GET_Req("/video/care","token",userData.token)
     .then(data => {
         if(data.status_code != 0){
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             return
         }
         console.log(data);
@@ -369,7 +432,7 @@ document.getElementById("careVideo").addEventListener("click",function(){
 //推荐点击事件
 document.getElementById("refereeVideo").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录\n或登录信息已过期")
+        showMessage("用户未登录\n或登录信息已过期")
         return
     }
     //设置按钮颜色
@@ -386,7 +449,7 @@ document.getElementById("refereeVideo").addEventListener("click",function(){
     GET_Req("/video/referee","token",userData.token)
     .then(data => {
         if(data.status_code != 0){
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             return
         }
         console.log(data);
@@ -403,7 +466,7 @@ document.getElementById("refereeVideo").addEventListener("click",function(){
 //我的作品点击事件
 document.getElementById("myWorks").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录\n或登录信息已过期")
+        showMessage("用户未登录\n或登录信息已过期")
         return
     }
     //设置按钮颜色
@@ -421,13 +484,13 @@ document.getElementById("myWorks").addEventListener("click",function(){
     POST_Req("/user/works",UserWorksParam(userData.token,userData.userID))
     .then(data => {
         if(data.status_code != 0){
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             return
         }
         console.log(data);
         videoInfos = videoInfos.concat(data.videoInfos)
         if(null == videoInfos[0]){
-            alert("您好像还没有发布过视频,\n快来发布您的第一条视频吧!")
+            showMessage("您好像还没有发布过视频,\n快来发布您的第一条视频吧!")
             UpLoadVideo()
             return
         }
@@ -444,7 +507,7 @@ document.getElementById("myWorks").addEventListener("click",function(){
 //我的喜爱
 document.getElementById("myFavorite").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录\n或登录信息已过期")
+        showMessage("用户未登录\n或登录信息已过期")
         return
     }
     //设置按钮颜色
@@ -462,13 +525,13 @@ document.getElementById("myFavorite").addEventListener("click",function(){
     GET_Req("/user/favorite","token",userData.token)
     .then(data => {
         if(data.status_code != 0){
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             return
         }
         console.log(data);
         videoInfos = videoInfos.concat(data.videoInfos)
         if(null == videoInfos[0]){
-            alert("您没有点赞过的视频!\n正在为您跳转热点频道观看视频")
+            showMessage("您没有点赞过的视频!\n正在为您跳转热点频道观看视频")
             document.getElementById("topVideo").click();
             return
         }
@@ -485,7 +548,7 @@ document.getElementById("myFavorite").addEventListener("click",function(){
 //历史记录
 document.getElementById("myHistory").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录\n或登录信息已过期")
+        showMessage("用户未登录\n或登录信息已过期")
         return
     }
     //设置按钮颜色
@@ -503,13 +566,13 @@ document.getElementById("myHistory").addEventListener("click",function(){
     GET_Req("/user/history","token",userData.token)
     .then(data => {
         if(data.status_code != 0){
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             return
         }
         console.log(data);
         videoInfos = videoInfos.concat(data.videoInfos)
         if(null == videoInfos[0]){
-            alert("您还未观看过视频,正在为您跳转热点频道")
+            showMessage("您还未观看过视频,正在为您跳转热点频道")
             document.getElementById("topVideo").click();
             return
         }
@@ -531,7 +594,7 @@ document.getElementById("publicUser2").addEventListener("click",function(){
 //关注发布人点击事件
 document.getElementById("careUser").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录\n或登录信息已过期")
+        showMessage("用户未登录\n或登录信息已过期")
         return
     }
     if(null != videoInfos[index]){
@@ -541,10 +604,10 @@ document.getElementById("careUser").addEventListener("click",function(){
             POST_Req("/user/care",CareUserParam(userData.token,videoInfos[index].userID,1))
             .then(data => {
                 if(data.status_code != 0){
-                    alert(data.status_msg);
+                    showMessage(data.status_msg);
                     return
                 }
-                alert("成功关注");
+                showMessage("成功关注");
                 this.innerHTML = `√`;
             })
             .catch(error => {
@@ -552,17 +615,17 @@ document.getElementById("careUser").addEventListener("click",function(){
             });
         }
         else if(this.innerText == "√"){
-            alert("您已经关注了该用户")
+            showMessage("您已经关注了该用户")
         }
     }else{
-        alert("发布人信息获取失败")
+        showMessage("发布人信息获取失败")
     }
 });
 
 //点赞点击事件
 document.getElementById("favorite").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录\n或登录信息已过期")
+        showMessage("用户未登录\n或登录信息已过期")
         return
     }
     favIsClick ^= 1;
@@ -614,7 +677,7 @@ document.getElementById("search").addEventListener("click",function(){
     POST_Req("video/search",SearchVideoParam(userData.token,searchText))
     .then(data => {
         if(data.status_code != 0){
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             return
         }
         console.log(data);
@@ -679,7 +742,7 @@ function scrollEventHandler(event) {
                     GET_Req("/video/"+listValue[listIndex] , "token" , userData.token)
                     .then(data => {
                         if(data.status_code != 0){
-                            alert(data.status_msg);
+                            showMessage(data.status_msg);
                             return
                         }
                         console.log(data);
@@ -689,7 +752,7 @@ function scrollEventHandler(event) {
                         console.error('Error:', error);
                     });
                 }else{
-                    alert("已经是最后一个视频了")
+                    showMessage("已经是最后一个视频了")
                     return 
                 }
             }
@@ -705,13 +768,13 @@ function scrollEventHandler(event) {
         if (index - 1 < 0 || index - 1 >= videoInfos.length){
             if(index - 1 < 0){
                 if (listIndex < 4 && listIndex > 0){
-                    alert("前面已经没有视频了,\n正在为您刷新页面");
+                    showMessage("前面已经没有视频了,\n正在为您刷新页面");
                     //刷新videoInfos
                     initVideo();
                     GET_Req("/video/"+listValue[listIndex] , "token" , userData.token)
                     .then(data => {
                         if(data.status_code != 0){
-                            alert(data.status_msg);
+                            showMessage(data.status_msg);
                             return
                         }
                         console.log(data);
@@ -722,7 +785,7 @@ function scrollEventHandler(event) {
                         console.error('Error:', error);
                     });
                 }else{
-                    alert("已经是第一个视频了!")
+                    showMessage("已经是第一个视频了!")
                     return
                 }
             }
