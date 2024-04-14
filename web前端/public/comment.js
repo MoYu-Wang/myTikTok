@@ -1,7 +1,7 @@
 //点击发布评论
 document.getElementById("publishComment").addEventListener("click",function(){
     if(!UserIsLogin()){
-        alert("用户未登录\n或登录信息已过期")
+        showMessage("用户未登录\n或登录信息已过期")
         return
     }
     //获取登录用户信息
@@ -14,11 +14,11 @@ document.getElementById("publishComment").addEventListener("click",function(){
     POST_Req("/video/comment",CommentVideoParam(userData.token,videoInfo.videoID,textareaContent))
     .then(data => {
         if (data.status_code != 0) {
-            alert(data.status_msg);
+            showMessage(data.status_msg);
             return;
         }
         UpdateComment()
-        alert("评论成功")
+        showMessage("评论成功")
         document.getElementById('commentText').value = '';
     })
     .catch(error => {
