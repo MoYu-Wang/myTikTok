@@ -45,12 +45,14 @@ window.onload = function(){
             userData.userName = data.userName
             userData.iphoneID = data.iphoneID
             document.getElementById("user_name").innerText = data.userName;
+            document.getElementById("user_id").innerText = "抖音(低仿版)ID号:\n" + data.userID;
             localStorage.setItem("userData", JSON.stringify(userData));
         })
         .catch(error => {
             console.error('Error:', error);
         });
         //
+        
         document.getElementById("userlogin").value = "退出登录";
         document.getElementById("userlogin").setAttribute("onclick", "UserExit()");
         //登录情况默认进入推荐页面
@@ -58,7 +60,7 @@ window.onload = function(){
     } else {
         //游客登录的情况
         document.getElementById("user_name").innerText = "未登录"
-
+        document.getElementById("user_id").innerText = "";
         document.getElementById("userlogin").value = "登录账号";
         document.getElementById("userlogin").setAttribute("onclick", "UserLogin()");
         //未登录情况默认进入热点页面

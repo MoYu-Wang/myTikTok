@@ -64,6 +64,9 @@ input[type="menu_item"] {
     cursor: pointer;
 }
 
+#downloadPC {
+    background-color:red;
+}
 
 /*  主体部分  */
 .content {

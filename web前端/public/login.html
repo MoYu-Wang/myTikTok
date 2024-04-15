@@ -83,9 +83,9 @@
             var userData = JSON.parse(localStorage.getItem("userData"));
             if (JSON.stringify(userData) !== "{}") {
                 //存在用户登录信息
-                name = userData.userName;
                 document.getElementById("loginForm").innerHTML = `
-                <h1>用户昵称:`+name+`</h1>
+                <h1>用户昵称:`+userData.userName+`</h1>
+                <h4>用户ID:`+userData.userID+`</h4>
                 <input type="submit" value="登录" placeholder="center" onclick="TokenLogin()">
                 <input type="submit" value="切换账号" onclick="checkID()">
                 `;
