@@ -123,7 +123,7 @@ input[type="menu_item"] {
 
 .video-info {
     position: absolute;
-    top: 78%; /* 位于视频的上下位置70%左右 */
+    top:75%; /* 位于视频的上下位置70%左右 */
     left: 10px;
     color: #fff;
 }

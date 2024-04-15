@@ -137,14 +137,12 @@ function DeleteCommentParam(Token,vID,cID){
   }
 }
 
-function OperateVideoParam(Token,vID,wTime,isF,cNum,cTexts){
+function OperateVideoParam(Token,vID,wTime,isF){
   return {
     token:Token,
     videoID:vID,
     watchTime:wTime,
     isFavorite:isF,
-    commentNum:cNum,
-    commentTexts: cTexts
   }
 }
 

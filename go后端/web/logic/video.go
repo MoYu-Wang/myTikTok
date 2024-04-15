@@ -59,7 +59,12 @@ func GetUserVideoIDs(ctx *gin.Context, userID int64) ([]int64, common.ResCode) {
 	if err != nil {
 		return nil, common.CodeMysqlFailed
 	}
-	return ret, common.CodeSuccess
+	// 使用切片进行倒序
+	reversedSlice := make([]int64, len(ret))
+	for i, v := range ret {
+		reversedSlice[len(ret)-1-i] = v
+	}
+	return reversedSlice, common.CodeSuccess
 }
 
 // 排序历史记录(根据上次观看时间排序)
@@ -89,7 +94,12 @@ func GetUserFavoriteVideoIDs(ctx *gin.Context, claim *jwt.MyClaims) ([]int64, co
 	if err != nil {
 		return nil, common.CodeMysqlFailed
 	}
-	return ret, common.CodeSuccess
+	// 使用切片进行倒序
+	reversedSlice := make([]int64, len(ret))
+	for i, v := range ret {
+		reversedSlice[len(ret)-1-i] = v
+	}
+	return reversedSlice, common.CodeSuccess
 }
 
 // 获取用户观看视频标签总权值
@@ -156,21 +166,21 @@ func OperateVideo(ctx *gin.Context, p *io.OperateVideoReq, claim *jwt.MyClaims) 
 			return common.CodeMysqlFailed
 		}
 	}
-	//判断是否评论
-	if p.CommentNum > 0 {
-		for _, commentText := range p.CommentTexts {
-			comment := dao.CommentList{
-				CommentID:   snowflake.GenID(),
-				UserID:      claim.UserID,
-				VideoID:     videoID,
-				CommentText: commentText,
-				CommentTime: GetNowTime(),
-			}
-			if err := mysql.InsertVideoComment(ctx, comment); err != nil {
-				return common.CodeMysqlFailed
-			}
-		}
-	}
+	// //判断是否评论
+	// if p.CommentNum > 0 {
+	// 	for _, commentText := range p.CommentTexts {
+	// 		comment := dao.CommentList{
+	// 			CommentID:   snowflake.GenID(),
+	// 			UserID:      claim.UserID,
+	// 			VideoID:     videoID,
+	// 			CommentText: commentText,
+	// 			CommentTime: GetNowTime(),
+	// 		}
+	// 		if err := mysql.InsertVideoComment(ctx, comment); err != nil {
+	// 			return common.CodeMysqlFailed
+	// 		}
+	// 	}
+	// }
 	return common.CodeSuccess
 }
 
