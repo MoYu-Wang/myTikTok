@@ -4,7 +4,7 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    
+    background-color: #999;
     width: 100vw; /* 将页面宽度设置为屏幕宽度 */
     height: 100vh; /* 将页面高度设置为屏幕高度 */
 }
@@ -28,7 +28,8 @@ body {
     align-items: center;
     width: 40px;
     height: 40px;
-    background-color: rgb(233, 74, 46);
+    background-color: #333;
+    color: white;
     border-radius: 50%;
     cursor: pointer;
 }
@@ -40,7 +41,8 @@ body {
     right: 0;
     width: 200px;
     height: calc(100vh);
-    background-color: #888888; 
+    background-color: #333; 
+    color: white;
     transform: translateX(100%);
     transition: transform 0.5s ease-in-out;
     padding-top: 50px;
@@ -59,7 +61,7 @@ input[type="menu_item"] {
     margin: 10px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
-    background-color: #4CAF50;
+    background-color: #999;
     color: white;
     cursor: pointer;
 }

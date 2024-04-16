@@ -4,7 +4,7 @@
     
     flex-direction: column; /* 设置为垂直方向的列布局 */
     justify-content: center; /* 在垂直方向上居中 */
-    background-color: #19e7c8; /* 设置背景颜色 */
+    background-color: #ccc; /* 设置背景颜色 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
     padding: 10px; /* 增加内边距 */
     width: 25%; /* 设置宽度为主窗口宽度的 1/3 */
