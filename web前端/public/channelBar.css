@@ -1,7 +1,7 @@
 /*  频道栏  */
 .sidebar {
     width: 200px;
-    background-color: #333;
+    background: linear-gradient(to right, #666, #333); /* 蓝色到绿色的水平渐变 */
     padding: 20px;
     border-radius: 10px;
     color: #fff;
@@ -41,7 +41,7 @@
 
 .sidebar .dividerLine {
     height: 1px;
-    background-color: #555; /* 分割线颜色 */
+    background-color: #000000; /* 分割线颜色 */
     margin: 20px 0; /* 分割线上下的间距 */
 }
 

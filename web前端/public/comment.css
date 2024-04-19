@@ -4,7 +4,7 @@
     
     flex-direction: column; /* 设置为垂直方向的列布局 */
     justify-content: center; /* 在垂直方向上居中 */
-    background-color: #ccc; /* 设置背景颜色 */
+    background: radial-gradient(ellipse at center, #adf391 0%, #8ac1f5 100%); /* 蓝色到绿色的横向径向渐变 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
     padding: 10px; /* 增加内边距 */
     width: 25%; /* 设置宽度为主窗口宽度的 1/3 */
@@ -47,7 +47,7 @@
 
 /* 评论样式 */
 .comment {
-    background-color: #ffffff; /* 设置背景颜色 */
+    background: radial-gradient(circle, #bdb5f0 0%, #a1e1e5 100%); /* 蓝色到绿色的横向径向渐变 */
     border-radius: 8px; /* 设置边框圆角 */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影效果 */
     padding: 15px; /* 设置内边距 */
