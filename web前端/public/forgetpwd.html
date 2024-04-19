@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f1f1f1;
+            background: radial-gradient(ellipse at center, #adf391 0%, #8ac1f5 100%); /* 蓝色到绿色的横向径向渐变 */
             margin: 0;
             padding: 0;
             display: flex;
@@ -48,10 +48,16 @@
             <input type="text" id="ID" name="ID" required><br>
 
             <input type="submit" value="找回密码" placeholder="center" onclick="Forgetpwd()">
+            <input type="submit" value="返回登录界面" placeholder="center" onclick="Reback()">
         </form>
     </div>
     <script src="httpReq.js"></script>
     <script>
+        function Reback(){
+            event.preventDefault(); // 阻止表单默认提交行为
+            window.location.href = "login.html"
+        }
+
         function Forgetpwd(){
             event.preventDefault(); // 阻止表单默认提交行为
 
