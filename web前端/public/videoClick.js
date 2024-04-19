@@ -399,5 +399,7 @@ document.addEventListener('click', function(event) {
     if (!isClickInside) {
         // 如果点击的不是浮窗区域，则隐藏浮窗
         floatWindow.style.display = 'none';
+        
     }
+
 });

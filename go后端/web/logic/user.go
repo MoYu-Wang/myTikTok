@@ -307,7 +307,7 @@ func DeleteUser(ctx *gin.Context, userID int64, password string) common.ResCode 
 		}
 		//删除video表中Video=vid数据
 		if err := mysql.DeleteVideoByVID(ctx, vid); err != nil {
-			return common.CodeInvalidLoginInfo
+			return common.CodeMysqlFailed
 		}
 	}
 

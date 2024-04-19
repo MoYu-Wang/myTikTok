@@ -148,18 +148,22 @@ function UserDelete(){
         showMessage("用户未登录")
         return 
     }
-    // 弹出可输入的对话框
-    const userInput = window.prompt('请输入你的密码:', '');
-
-    // 检查用户是否输入了内容
-    if (userInput !== null) {
-        // 用户输入了内容，你可以在这里处理用户的输入
-        console.log('你输入的密码是:', userInput);
-    } else {
-        // 用户取消了对话框
-        console.log('用户取消了输入');
-    }
+    
     if(confirm("注销用户会导致您的用户所有信息全部删除,\n请问您真的要注销您的账户吗?")){
+        //获取登录用户信息
+        var userData = JSON.parse(localStorage.getItem("userData"));
+        // 弹出可输入的对话框
+        const userInput = window.prompt('请输入你的密码:', '');
+
+        // 检查用户是否输入了内容
+        if (userInput !== null) {
+            // 用户输入了内容，你可以在这里处理用户的输入
+            console.log('你输入的密码是:', userInput);
+        } else {
+            // 用户取消了对话框
+            console.log('用户取消了输入');
+            return
+        }
         POST_Req("/user/delete",DeleteUserParam(userData.token,userInput))
         .then(data => {
             if(data.status_code != 1100){

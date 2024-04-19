@@ -7,11 +7,16 @@
     transform: translate(-50%, -50%);
     width: 400px;          /* 修改宽度为400px */
     padding: 20px;
-    background-color: #81faee;
+    background: linear-gradient(45deg, #de99f3, #8ef0d3);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     border: 2px solid #333333; /* 添加黑色边框 */
     border-radius: 8px;
     z-index: 1000;
+}
+
+/* 设置标题居中 */
+#floatWindow-title {
+    text-align: center;
 }
 
 /* 标签样式 */
