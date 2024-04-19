@@ -19,7 +19,6 @@ type ParamLogin struct {
 //修改个人信息参数
 type ParamUpdate struct {
 	UserName string `json:"userName"`
-	PassWord string `json:"password"`
 	IphoneID string `json:"iphoneID"`
 	Token    string `json:"token"`
 }
@@ -28,6 +27,13 @@ type ParamUpdate struct {
 type ParamForgetpwd struct {
 	UserID   int64  `json:"userID"`
 	IphoneID string `json:"iphoneID"`
+}
+
+//修改密码参数
+type ParamUpdatepwd struct {
+	Token       string `json:"token"`
+	PassWord    string `json:"password"`
+	NewPassWord string `json:"newPassword"`
 }
 
 //用户注销请求

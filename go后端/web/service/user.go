@@ -141,7 +141,7 @@ func UserBase(ctx *gin.Context) {
 }
 
 // 修改用户基本信息
-func UserUpdate(ctx *gin.Context) {
+func UserUpdateInfo(ctx *gin.Context) {
 	//1.获取参数和参数校验
 	p := new(io.ParamUpdate)
 	//绑定Query参数
@@ -172,6 +172,40 @@ func UserUpdate(ctx *gin.Context) {
 	}
 	//3.返回成功响应
 	io.ResponseSuccess(ctx, common.CodeUpdateUserInfoSuccess)
+}
+
+// 修改密码
+func UserUpdatePassword(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	p := new(io.ParamUpdatepwd)
+	//绑定Query参数
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	fmt.Println("请求参数:")
+	fmt.Println(p)
+	//登录校验,解析Token里的参数
+	claim, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	//2.服务调用
+	//更新用户基本信息
+	code := logic.UpdateUserPassword(ctx, p, claim)
+	if code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	//3.返回成功响应
+	io.ResponseSuccess(ctx, common.CodeSuccess)
 }
 
 // 找回密码

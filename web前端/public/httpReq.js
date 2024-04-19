@@ -167,3 +167,11 @@ function SearchVideoParam(Token,sText){
     searchText:sText
   }
 }
+
+function UpdatePasswordParam(Token,pwd,newpwd){
+  return {
+    token:Token,
+    password:pwd,
+    newPassword:newpwd
+  }
+}

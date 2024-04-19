@@ -1,0 +1,50 @@
+/* 浮窗整体样式 */
+.floatWindow {
+    display: none;          /* 默认不可见 */
+    position: fixed;       /* 固定位置，浮动效果 */
+    top: 50%;              /* 居中显示 */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;          /* 修改宽度为400px */
+    padding: 20px;
+    background-color: #81faee;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border: 2px solid #333333; /* 添加黑色边框 */
+    border-radius: 8px;
+    z-index: 1000;
+}
+
+/* 标签样式 */
+.floatWindow label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333333;
+    font-size: 14px;
+}
+
+/* 输入框样式 */
+.floatWindow input[type="password"] {
+    width: calc(100% - 12px); /* 减去padding的宽度 */
+    padding: 6px;
+    margin-bottom: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 按钮样式 */
+.floatWindow button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+/* 按钮在悬停时的效果 */
+.floatWindow button:hover {
+    background-color: #45a049;
+}

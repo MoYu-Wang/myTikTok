@@ -22,9 +22,13 @@ func OpenRoute() {
 	{
 		userRouter := apiRouter.Group("/user")
 		{
-			userRouter.POST("/register", service.UserRegister)    //注册用户
-			userRouter.POST("/login", service.UserLogin)          //用户登录
-			userRouter.POST("/update", service.UserUpdate)        //用户修改信息
+			userRouter.POST("/register", service.UserRegister) //注册用户
+			userRouter.POST("/login", service.UserLogin)       //用户登录
+			updateRouter := userRouter.Group("/update")
+			{
+				updateRouter.POST("/info", service.UserUpdateInfo)         //用户修改信息
+				updateRouter.POST("/password", service.UserUpdatePassword) //用户修改密码
+			}
 			userRouter.POST("/info", service.UserInfo)            //获取用户信息
 			userRouter.POST("/forgetpwd", service.PasswordForget) //找回密码
 			userRouter.POST("/delete", service.UserDelete)        //用户注销

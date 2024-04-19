@@ -205,13 +205,13 @@ func UpdateUserBase(ctx *gin.Context, p *io.ParamUpdate, claim *jwt.MyClaims) co
 		}
 		user.UserName = p.UserName
 	}
-	//修改密码
-	if p.PassWord != "" {
-		if err := mysql.UpdateUserPassword(ctx, claim.UserID, p.PassWord); err != nil {
-			return common.CodeMysqlFailed
-		}
-		user.PassWord = p.PassWord
-	}
+	// //修改密码
+	// if p.PassWord != "" {
+	// 	if err := mysql.UpdateUserPassword(ctx, claim.UserID, p.PassWord); err != nil {
+	// 		return common.CodeMysqlFailed
+	// 	}
+	// 	user.PassWord = p.PassWord
+	// }
 	//修改手机号
 	if p.IphoneID != "" {
 		if err := mysql.UpdateIphoneID(ctx, claim.UserID, p.IphoneID); err != nil {
@@ -220,6 +220,23 @@ func UpdateUserBase(ctx *gin.Context, p *io.ParamUpdate, claim *jwt.MyClaims) co
 		user.IphoneID = p.IphoneID
 	}
 
+	return common.CodeSuccess
+}
+
+// 修改密码
+func UpdateUserPassword(ctx *gin.Context, p *io.ParamUpdatepwd, claim *jwt.MyClaims) common.ResCode {
+	//判断密码是否正确
+	pwd, err := mysql.QueryPasswordByUID(ctx, claim.UserID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	if pwd != p.PassWord {
+		return common.CodeInvalidLoginPassword
+	}
+	err = mysql.UpdateUserPassword(ctx, claim.UserID, p.NewPassWord)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
 	return common.CodeSuccess
 }
 

@@ -55,12 +55,16 @@ window.onload = function(){
         
         document.getElementById("userlogin").value = "退出登录";
         document.getElementById("userlogin").setAttribute("onclick", "UserExit()");
+        
+        document.getElementById("user_id").style.display = "block";
+        document.getElementById("updatePassword").style.display = "block";
         //登录情况默认进入推荐页面
         document.getElementById("refereeVideo").click();
     } else {
         //游客登录的情况
         document.getElementById("user_name").innerText = "未登录"
-        document.getElementById("user_id").innerText = "";
+        document.getElementById("user_id").style.display = "none";
+        document.getElementById("updatePassword").style.display = "none";
         document.getElementById("userlogin").value = "登录账号";
         document.getElementById("userlogin").setAttribute("onclick", "UserLogin()");
         //未登录情况默认进入热点页面
@@ -108,6 +112,21 @@ function initVideo(){
 //用户登录页面跳转
 function UserLogin(){
     window.location.href = "login.html";
+}
+
+//修改密码
+function UpdatePassword(){
+    if(!UserIsLogin()){
+        showMessage("用户未登录")
+        return 
+    }
+    //设置浮窗可见
+    document.getElementById("floatWindow").style.display = "block";
+    //获取登录用户信息
+    var userData = JSON.parse(localStorage.getItem("userData"));
+    document.getElementById("float-userName").innerText = userData.userName
+    document.getElementById("float-userID").innerText = "ID:" + userData.userID
+    
 }
 
 //退出登录

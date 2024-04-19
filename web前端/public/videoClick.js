@@ -362,3 +362,42 @@ document.getElementById("search").addEventListener("click",function(){
     });
 });
 
+//点击确认修改密码
+document.getElementById("submitUpdate").addEventListener("click",function(){
+    var pwd = document.getElementById("").value;
+    var newpwd = document.getElementById("").value;
+    var newpwd2 = document.getElementById("").value;
+    //获取登录用户信息
+    var userData = JSON.parse(localStorage.getItem("userData"));
+    if (newpwd != newpwd2){
+        showMessage("两次输入的新密码不同")
+        return;
+    }
+    POST_Req("/user/update/password",UpdatePasswordParam(userData.token,pwd,newpwd))
+    .then(data => {
+        if(data.status_code != 0){
+            showMessage(data.status_msg);
+            return
+        }
+        alert("修改密码成功,请重新登录")
+        nowData = {};
+        localStorage.setItem("userData", JSON.stringify(nowData));
+        window.location.href = "login.html";
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+});
+
+
+// 检查点击事件并隐藏浮窗
+document.addEventListener('click', function(event) {
+    // 检查点击的元素是否是浮窗或其子元素
+    var isClickInside = floatWindow.contains(event.target);
+
+    if (!isClickInside) {
+        // 如果点击的不是浮窗区域，则隐藏浮窗
+        floatWindow.style.display = 'none';
+    }
+});
