@@ -31,8 +31,8 @@
             <li><button id="myHistory">历史记录</button></li>
         </ul>
     </div>
-    <!-- 视频区域 -->
-    <div class="content">
+    <!-- 视频主体区域 -->
+    <div class="content" id="content">
         <div class="search-box">
             <input  id="searchText" type="text" placeholder="搜索">
             <button id="search">搜索</button>
@@ -54,6 +54,26 @@
                 <button class="btn" id="comment">评论</button>
                 <div id="commentNum">0</div>
             </div>
+        </div>
+    </div>
+    <!-- 视频发布人信息区 -->
+    <div class="video-publicUser" id="video-publicUser"  style="display: none;">
+        <button id="rebackVideo">返回</button>
+        <h1 id="publicUserName">未登录</h1>
+        <h5 id="publicUserID">抖音(低仿版)ID号:</h5>
+        <button id="careInfo" value="关注"></button>
+        <div class="publicUserInfo">
+            <span>获赞 <span class="count">X</span></span>
+            <span>关注 <span class="count">X</span></span>
+            <span>粉丝 <span class="count">X</span></span>
+        </div>
+        <div>用户作品↓</div>
+        <div id="publicUserWorks">
+            <div id="work-videoName">视频名称</div>
+            <div id="work-videoTags">视频标签</div>
+            <div id="work-videoPublicTime">视频发布时间</div>
+            <div id="work-videoLikeNum">视频获赞数</div>
+            <div id="work-videoCommentNum">视频评论数</div>
         </div>
     </div>
     <!-- 视频评论区 -->

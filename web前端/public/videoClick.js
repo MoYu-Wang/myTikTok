@@ -22,6 +22,7 @@ document.getElementById("topVideo").addEventListener("click", function() {
         button.style.backgroundColor = '#666';
     });
     this.style.backgroundColor = '#5a8dd9';
+
     //初始化videoinfos数组和index
     initVideo();
     //获取登录用户信息
@@ -67,11 +68,12 @@ document.getElementById("topVideo").addEventListener("click", function() {
 });
 
 //关注点击事件
-document.getElementById("careVideo").addEventListener("click",function(){
-    if(!UserIsLogin()){
+document.getElementById("careVideo").addEventListener("click",async function(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录\n或登录信息已过期")
         return
     }
+    
     //设置按钮颜色
     var buttons = document.querySelectorAll('.sidebar button');
     buttons.forEach(function(button){
@@ -101,11 +103,12 @@ document.getElementById("careVideo").addEventListener("click",function(){
 });
 
 //推荐点击事件
-document.getElementById("refereeVideo").addEventListener("click",function(){
-    if(!UserIsLogin()){
+document.getElementById("refereeVideo").addEventListener("click",async function(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录\n或登录信息已过期")
         return
     }
+   
     //设置按钮颜色
     var buttons = document.querySelectorAll('.sidebar button');
     buttons.forEach(function(button){
@@ -135,11 +138,12 @@ document.getElementById("refereeVideo").addEventListener("click",function(){
 });
 
 //我的作品点击事件
-document.getElementById("myWorks").addEventListener("click",function(){
-    if(!UserIsLogin()){
+document.getElementById("myWorks").addEventListener("click",async function(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录\n或登录信息已过期")
         return
     }
+    
     //设置按钮颜色
     var buttons = document.querySelectorAll('.sidebar button');
     buttons.forEach(function(button){
@@ -176,11 +180,12 @@ document.getElementById("myWorks").addEventListener("click",function(){
 });
 
 //我的喜爱
-document.getElementById("myFavorite").addEventListener("click",function(){
-    if(!UserIsLogin()){
+document.getElementById("myFavorite").addEventListener("click",async function(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录\n或登录信息已过期")
         return
     }
+   
     //设置按钮颜色
     var buttons = document.querySelectorAll('.sidebar button');
     buttons.forEach(function(button){
@@ -217,11 +222,12 @@ document.getElementById("myFavorite").addEventListener("click",function(){
 });
 
 //历史记录
-document.getElementById("myHistory").addEventListener("click",function(){
-    if(!UserIsLogin()){
+document.getElementById("myHistory").addEventListener("click",async function(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录\n或登录信息已过期")
         return
     }
+    
     //设置按钮颜色
     var buttons = document.querySelectorAll('.sidebar button');
     buttons.forEach(function(button){
@@ -259,12 +265,12 @@ document.getElementById("myHistory").addEventListener("click",function(){
 
 //发布人点击事件
 document.getElementById("publicUser2").addEventListener("click",function(){
-
+    
 });
 
 //关注发布人点击事件
-document.getElementById("careUser").addEventListener("click",function(){
-    if(!UserIsLogin()){
+document.getElementById("careUser").addEventListener("click",async function(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录\n或登录信息已过期")
         return
     }
@@ -294,8 +300,8 @@ document.getElementById("careUser").addEventListener("click",function(){
 });
 
 //点赞点击事件
-document.getElementById("favorite").addEventListener("click",function(){
-    if(!UserIsLogin()){
+document.getElementById("favorite").addEventListener("click",async function(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录\n或登录信息已过期")
         return
     }

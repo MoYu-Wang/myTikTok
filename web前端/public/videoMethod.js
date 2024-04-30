@@ -14,25 +14,12 @@ var videoComments = [];//视频评论
 //初始加载事件
 //频道显示
 //视频切换源
-window.onload = function(){
+window.onload = async function(){
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
     console.log(userData)
     //判断是否登录
-    if (JSON.stringify(userData) !== "{}") {
-        //判断用户登录信息是否过期
-        GET_Req("/user/updatetoken","token",userData.token)
-        .then(data => {
-            if(data.status_code != 0){
-                showMessage(data.status_msg);
-                return
-            }
-            console.log(data);
-            userData.token = data.token;
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    if (await UserIsLogin()) {
         //获取基本信息
         GET_Req("/user/base","token" , userData.token)
         .then(data => {
@@ -71,7 +58,6 @@ window.onload = function(){
         document.getElementById("topVideo").click();
     }
     
-
 }
 
 //右上角用户信息
@@ -93,11 +79,12 @@ document.addEventListener('click', () => {
 
 
 //个人中心
-function UserInfo(){
-    if(!UserIsLogin()){
+async function UserInfo(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录")
         return 
     }
+    showMessage("暂未实现");
 }
 
 //视频初始化
@@ -115,8 +102,8 @@ function UserLogin(){
 }
 
 //修改密码
-function UpdatePassword(){
-    if(!UserIsLogin()){
+async function UpdatePassword(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录")
         return 
     }
@@ -130,8 +117,8 @@ function UpdatePassword(){
 }
 
 //退出登录
-function UserExit(){
-    if(!UserIsLogin()){
+async function UserExit(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录")
         return 
     }
@@ -143,8 +130,8 @@ function UserExit(){
 }
 
 //注销用户
-function UserDelete(){
-    if(!UserIsLogin()){
+async function UserDelete(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录")
         return 
     }
@@ -181,17 +168,34 @@ function UserDelete(){
     }
 }
 
-//判断用户是否登录
-function UserIsLogin(){
-    //获取登录用户信息
+async function UserIsLogin() {
+    // 获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
-    if (JSON.stringify(userData) !== "{}")return true;
-    return false;
+    console.log(userData);
+    
+    // 判断是否登录
+    if (JSON.stringify(userData) !== "{}") {
+        try {
+            // 判断用户登录信息是否过期
+            const data = await GET_Req("/user/updatetoken", "token", userData.token);
+            if (data.status_code != 0) {
+                showMessage(data.status_msg);
+                return false;
+            }
+            console.log(data);
+            userData.token = data.token;
+            return true;
+        } catch (error) {
+            console.error('Error:', error);
+            return false;
+        }
+    }
+    return false; // 添加这一行以处理未登录情况
 }
 
 //上传视频
-function UpLoadVideo(){
-    if(!UserIsLogin()){
+async function UpLoadVideo(){
+    if(await UserIsLogin()==false){
         showMessage("用户未登录")
         return 
     }
@@ -199,7 +203,7 @@ function UpLoadVideo(){
 }
 
 //更改评论区
-function UpdateComment(){
+async function UpdateComment(){
     //初始化评论区信息
     videoComments = [];
     //获取视频信息
@@ -215,7 +219,7 @@ function UpdateComment(){
         const commentsContainer = document.querySelector('.comments');
         commentsContainer.innerHTML = ''; // 清空现有评论
         if(!videoComments)return;
-        videoComments.forEach(comment => {
+        videoComments.forEach(async comment => {
             // 创建评论元素
             const li = document.createElement('li');
             li.className = 'comment';
@@ -227,7 +231,7 @@ function UpdateComment(){
                 </div>
             `;
             // 检查用户是否登录且为评论者
-            if (UserIsLogin()) {
+            if (await UserIsLogin()) {
                 var userData = JSON.parse(localStorage.getItem("userData"));
                 if (userData && userData.userID === comment.userID) {
                     const deleteButton = document.createElement('button');
@@ -372,14 +376,14 @@ window.onkeydown = function (e)
     }
 }
 // 定义滚轮事件处理函数
-function scrollEventHandler(event) {
+async function scrollEventHandler(event) {
     // 你的滚轮事件处理逻辑
     // 阻止默认的滚动行为
     // event.preventDefault();
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
     if(listIndex != 1){
-        if(!UserIsLogin()){
+        if(await UserIsLogin()==false){
             return
         }
     }
