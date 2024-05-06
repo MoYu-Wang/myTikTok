@@ -324,6 +324,11 @@ func DeleteVideo(ctx *gin.Context, p *io.DeleteVideoReq, claim *jwt.MyClaims) co
 	if err != nil {
 		return common.CodeMysqlFailed
 	}
+	//删除该视频历史记录
+	err = mysql.DeleteVideoALLHistory(ctx, videoID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
 	//删除视频
 	err = mysql.DeleteVideoByVID(ctx, videoID)
 	if err != nil {
