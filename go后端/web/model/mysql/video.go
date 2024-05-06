@@ -120,3 +120,11 @@ func QueryTagArrByVideoID(ctx context.Context, videoID int64) ([]string, error) 
 	}
 	return tagArrs, nil
 }
+
+// 根据视频id查找视频发布人
+func QueryPublicUserIDByVideoID(ctx context.Context, videoID int64) (int64, error) {
+	db := GetDB(ctx)
+	var ret int64
+	err := db.Table("Video").Select("UserID").Where("VideoID=?", videoID).Find(&ret).Error
+	return ret, err
+}

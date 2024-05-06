@@ -52,6 +52,7 @@ func OpenRoute() {
 			videoRouter.GET("/getsign", service.GetSign)            //获取上传签名
 			videoRouter.GET("/getcomment", service.GetVideoComment) //获取视频评论
 
+			videoRouter.POST("/delete", service.DeleteVideo)               //删除视频
 			videoRouter.POST("/info", service.VideoOperateInfo)            //获取视频操作信息
 			videoRouter.POST("/upload", service.UpLoadVideo)               //上传视频
 			videoRouter.POST("/search", service.SearchVideo)               //模糊查询视频

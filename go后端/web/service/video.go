@@ -410,3 +410,35 @@ func VideoOperateInfo(ctx *gin.Context) {
 	//3.返回响应
 	io.ResponseSuccessVideoOperate(ctx, resp)
 }
+
+func DeleteVideo(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	p := new(io.DeleteVideoReq)
+	if err := ctx.ShouldBindJSON(&p); err != nil {
+		// 请求参数有误，直接返回响应
+		io.ResponseError(ctx, common.CodeInvalidParam)
+		return
+	}
+	fmt.Printf("请求参数:")
+	fmt.Println(p)
+	//登录校验,解析Token里的参数
+	claim, err := jwt.ParseToken(p.Token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	//2.服务调用
+	if code := logic.DeleteVideo(ctx, p, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+
+	//3.返回成功响应
+	io.ResponseSuccess(ctx, common.CodeSuccess)
+}

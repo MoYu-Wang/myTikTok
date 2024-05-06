@@ -298,3 +298,36 @@ func DeleteComment(ctx *gin.Context, p *io.DeleteCommentReq, claim *jwt.MyClaims
 	}
 	return common.CodeSuccess
 }
+
+func DeleteVideo(ctx *gin.Context, p *io.DeleteVideoReq, claim *jwt.MyClaims) common.ResCode {
+	//将videoID转化为int64
+	videoID, err := strconv.ParseInt(p.VideoID, 10, 64)
+	if err != nil {
+		return common.CodeDataTypeChangeError
+	}
+	//删除视频操作
+	//判断该视频是否是自己的
+	uid, err := mysql.QueryPublicUserIDByVideoID(ctx, videoID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	if uid != claim.UserID {
+		return common.CodeVideoNotOwn
+	}
+	//删除视频所有点赞
+	err = mysql.DeleteVideoALLFavorite(ctx, videoID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	//删除视频所有评论
+	err = mysql.DeleteVideoALLComment(ctx, videoID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	//删除视频
+	err = mysql.DeleteVideoByVID(ctx, videoID)
+	if err != nil {
+		return common.CodeMysqlFailed
+	}
+	return common.CodeSuccess
+}
