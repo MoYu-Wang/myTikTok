@@ -82,6 +82,16 @@ type CareListResp struct {
 	CareList []CareUser `json:"careList"`
 }
 
+type FansUser struct {
+	UserID   int64  `json:"userID"`
+	UserName string `json:"userName"`
+}
+
+type FansListResp struct {
+	Response
+	FansList []FansUser `json:"fansList"`
+}
+
 // ResponseData 通用的响应内容
 type ResponseData struct {
 	Response
@@ -285,6 +295,11 @@ func ResponseSuccessGetVideoComments(c *gin.Context, resp *VideoCommentResp) {
 
 // 返回关注列表
 func ResponseSuccessCareList(c *gin.Context, resp *CareListResp) {
+	fmt.Println(resp)
+	c.JSON(http.StatusOK, resp)
+}
+
+func ResponseSuccessFansList(c *gin.Context, resp *FansListResp) {
 	fmt.Println(resp)
 	c.JSON(http.StatusOK, resp)
 }

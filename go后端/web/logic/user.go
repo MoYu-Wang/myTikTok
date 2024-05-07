@@ -453,3 +453,23 @@ func GetUserCareList(ctx *gin.Context, claim *jwt.MyClaims) ([]io.CareUser, comm
 
 	return ret, common.CodeSuccess
 }
+
+// 获取粉丝列表
+func GetUserFansList(ctx *gin.Context, claim *jwt.MyClaims) ([]io.FansUser, common.ResCode) {
+	var ret []io.FansUser
+	fansIDs, err := mysql.QueryUserFansList(ctx, claim.UserID)
+	if err != nil {
+		return nil, common.CodeMysqlFailed
+	}
+	for _, fansID := range fansIDs {
+		var fansUser io.FansUser
+		fansUser.UserID = fansID
+		fansUser.UserName, err = mysql.QueryUserName(ctx, fansID)
+		if err != nil {
+			return nil, common.CodeMysqlFailed
+		}
+		ret = append(ret, fansUser)
+	}
+
+	return ret, common.CodeSuccess
+}

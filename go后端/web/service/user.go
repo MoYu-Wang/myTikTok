@@ -472,3 +472,31 @@ func CareList(ctx *gin.Context) {
 	//3.返回响应
 	io.ResponseSuccessCareList(ctx, resp)
 }
+
+func FansList(ctx *gin.Context) {
+	//1.获取参数和参数校验
+	token := ctx.DefaultQuery("token", "")
+	//登录校验,解析Token里的参数
+	claim, err := jwt.ParseToken(token)
+	if err != nil {
+		fmt.Println("token解析失败")
+		io.ResponseError(ctx, common.CodeNeedLogin)
+		return
+	}
+	//判断token解析出来的用户信息是否正确
+	if code := logic.UserIsExist(ctx, claim); code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+	}
+	//2.服务调用
+	fansList, code := logic.GetUserFansList(ctx, claim)
+	if code != common.CodeSuccess {
+		io.ResponseError(ctx, code)
+		return
+	}
+	resp := &io.FansListResp{
+		Response: io.Response{StatusCode: 0, StatusMsg: "success"},
+		FansList: fansList,
+	}
+	//3.返回响应
+	io.ResponseSuccessFansList(ctx, resp)
+}

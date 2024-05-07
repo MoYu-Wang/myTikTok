@@ -36,6 +36,7 @@ func OpenRoute() {
 			userRouter.POST("/care", service.CareUser)            //关注用户
 
 			userRouter.GET("/carelist", service.CareList)       //关注列表
+			userRouter.GET("/fanslist", service.FansList)       //粉丝列表
 			userRouter.GET("/updatetoken", service.UpdateToken) //更新用户登录信息
 			userRouter.GET("/base", service.UserBase)           //获取本用户基本信息
 			userRouter.GET("/favorite", service.UserFavorite)   //用户点赞视频列表
