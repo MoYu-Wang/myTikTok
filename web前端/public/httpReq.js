@@ -175,3 +175,10 @@ function UpdatePasswordParam(Token,pwd,newpwd){
     newPassword:newpwd
   }
 }
+
+function DeleteVideoParam(Token,vID){
+  return {
+    videoID:vID,
+    token:Token
+  }
+}

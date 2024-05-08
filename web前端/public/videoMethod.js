@@ -2,6 +2,10 @@ showMessage("请根据鼠标滚轮上下滑动切换视频!")
 var index = 0;
 var videoInfos = [];
 var videoOperateInfo = {};
+var userVideoIndex = 0;
+var userVideoInfos = [];
+var videoORUserVideo = false;//false:正常视频表,true:用户中心视频表
+
 let current = 0;
 var userData = {};
 var videoWatchTime = 0;//视频播放时间(ms)
@@ -17,7 +21,6 @@ var videoComments = [];//视频评论
 window.onload = async function(){
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
-    console.log(userData)
     //判断是否登录
     if (await UserIsLogin()) {
         //获取基本信息
@@ -27,12 +30,11 @@ window.onload = async function(){
                 showMessage(data.status_msg);
                 return
             }
-            console.log(data);
             userData.userID = data.userID
             userData.userName = data.userName
             userData.iphoneID = data.iphoneID
             document.getElementById("user_name").innerText = data.userName;
-            document.getElementById("user_id").innerText = "抖音(低仿版)ID号:\n" + data.userID;
+            document.getElementById("user_id").innerText = "AHUT_TikTok  ID号:\n" + data.userID;
             localStorage.setItem("userData", JSON.stringify(userData));
         })
         .catch(error => {
@@ -77,14 +79,338 @@ document.addEventListener('click', () => {
     userMenu.classList.remove('active');
 });
 
+//切换主体 0:视频主体 1:个人中心主体
+function checkBody(checkEnum){
+    switch(checkEnum){
+        case 0:
+            // 切换视频主体
+            document.getElementById("content").style.display = 'block';
+            document.getElementById("user-profile").style.display = 'none';
+            //添加滚轮监听切换视频
+            addScrollEventListener();
+            break;
+        case 1:
+            // 切换个人中心主体
+            //暂停播放
+            document.getElementById("video").pause();
+            document.getElementById("content").style.display = 'none';
+            document.getElementById("user-profile").style.display = 'flex';
+            //移除滚轮监听
+            removeScrollEventListener();
+            break;
+        default:
+            break;
+    }
+}
 
-//个人中心
-async function UserInfo(){
+async function UserCenter(){
     if(await UserIsLogin()==false){
         showMessage("用户未登录")
         return 
     }
-    showMessage("暂未实现");
+    // 获取登录用户信息
+    var userData = JSON.parse(localStorage.getItem("userData"));
+    ToUserCenter(userData.userID);
+
+}
+
+//去到uID用户中心
+async function ToUserCenter(uID){
+    if(await UserIsLogin()==false){
+        showMessage("用户未登录")
+        return 
+    }
+    //重置频道栏按钮颜色
+    var buttons = document.querySelectorAll('.sidebar button');
+    buttons.forEach(function(button){
+        button.style.backgroundColor = '#666';
+    });
+    //设置个人中心主体
+    checkBody(1);
+    // 获取登录用户信息
+    var userData = JSON.parse(localStorage.getItem("userData"));
+    //获取个人信息
+    POST_Req("/user/info",UserInfoParam(userData.token,uID))
+    .then(data => {
+        if(data.status_code != 0){
+            showMessage(data.status_msg);
+            return
+        }
+        document.getElementById("profile-userName").innerText = data.name;
+        document.getElementById("profile-userID").innerText = "AHUT_TikTok  ID号:"+ data.id;
+        document.getElementById("profile-getLikes").innerText = "获赞 " + data.getLikes;
+        document.getElementById("profile-careCount").innerText = "关注 " + data.careCount;
+        document.getElementById("profile-fansCount").innerText = "粉丝 " + data.fansCount;
+        document.getElementById("user-works").onclick = function(){
+            //更新用户中心视频内容
+            UpdateUserCenterVideo(0,uID);
+        }
+        if(data.id === userData.userID){
+            //本人主页
+            //点击关注显示关注列表
+            document.getElementById("profile-careCount").onclick = function(){
+
+            }
+            //点击粉丝显示粉丝列表
+            document.getElementById("profile-fansCount").onclick = function(){
+
+            }
+
+            document.getElementById("user-careOperate").style.display = 'none';
+            document.getElementById("user-baseInfo-edit").style.display = 'block';
+            document.getElementById("user-baseInfo-edit").onclick = function(){
+
+            }
+            document.getElementById("user-likes").style.display = 'block';
+            document.getElementById("user-likes").onclick = function(){
+                //更新用户中心视频内容
+                UpdateUserCenterVideo(1,uID);
+            }
+            document.getElementById("user-history").style.display = 'block';
+            document.getElementById("user-history").onclick = function(){
+                //更新用户中心视频内容
+                UpdateUserCenterVideo(2,uID);
+            }
+        }else{
+            document.getElementById("user-careOperate").style.display = 'flex';
+            document.getElementById("user-careOperate").onclick = function(){
+                var f;
+                if(data.isCare){
+                    f = -1
+                }else{
+                    f = 1
+                }
+                POST_Req("/user/care",CareUserParam(userData.token,uID,f))
+                .then(response => {
+                    if(response.status_code != 0){
+                        showMessage(response.status_msg);
+                        return
+                    }
+                    if(data.isCare){
+                        showMessage("取消关注")
+                        document.getElementById("user-careOperate").innerText = "关注";
+                        data.isCare = false;
+                    }else{
+                        showMessage("关注成功")
+                        document.getElementById("user-careOperate").innerText = "取消关注";
+                        data.isCare = true;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+            document.getElementById("user-baseInfo-edit").style.display = 'none';
+            document.getElementById("user-likes").style.display = 'none';
+            document.getElementById("user-history").style.display = 'none';
+            if(data.isCare){
+                //已关注
+                document.getElementById("user-careOperate").innerText = "取消关注";
+            }else{
+                //未关注
+                document.getElementById("user-careOperate").innerText = "关注";
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+    //更新用户中心视频内容
+    UpdateUserCenterVideo(0,uID);
+}
+
+async function UpdateUserCenterVideo(videoEnum,uID){
+    if(await UserIsLogin()==false){
+        showMessage("用户未登录")
+        return 
+    }
+    // 获取登录用户信息
+    var userData = JSON.parse(localStorage.getItem("userData"));
+    var UrlStr;
+    switch(videoEnum){
+        case 0:
+            UrlStr = "/user/works";
+            document.getElementById("user-works").style.color = 'red';
+            document.getElementById("user-likes").style.color = 'white';
+            document.getElementById("user-history").style.color = 'white';
+            break;
+        case 1:
+            UrlStr = "/user/favorite";
+            document.getElementById("user-works").style.color = 'white';
+            document.getElementById("user-likes").style.color = 'red';
+            document.getElementById("user-history").style.color = 'white';
+            break;
+        case 2:
+            UrlStr = "/user/history";
+            document.getElementById("user-works").style.color = 'white';
+            document.getElementById("user-likes").style.color = 'white';
+            document.getElementById("user-history").style.color = 'red';
+            break;
+    }
+    
+    //初始化videoinfos数组和index
+    initUserVideo()
+    //查询videoInfos
+    if(videoEnum == 0){
+        POST_Req(UrlStr,UserWorksParam(userData.token,uID))
+        .then(data => {
+            if(data.status_code != 0){
+                showMessage(data.status_msg);
+                return
+            }
+            userVideoInfos = userVideoInfos.concat(data.videoInfos)
+            if(null == userVideoInfos[0]){
+                //没有作品
+                const videoContainer = document.querySelector('.user-videoInfo');
+                videoContainer.innerHTML = ''; // 清空现有视频
+                return;
+            }else{
+                //显示作品
+                const videoContainer = document.querySelector('.user-videoInfo');
+                videoContainer.innerHTML = ''; // 清空现有视频
+                userVideoInfos.forEach(async videoInfo => {
+                    if (videoInfo == null){
+                        return;
+                    }
+                    // 创建视频元素
+                    const li = document.createElement('li');
+                    li.className = 'user-videoInfo-data';
+                    li.onclick = function(){
+                        videoORUserVideo = true;
+                        userVideoIndex = userVideoInfos.indexOf(videoInfo);
+                        checkBody(0);
+                        VideoLoadOperate();
+                    }
+                    videoContainer.appendChild(li);
+                    //获取单个视频信息
+                    POST_Req("/video/info",VideoOperateInfoParam(userData.token,videoInfo.videoID))
+                    .then(async data => {
+                        if(data.status_code != 0){
+                            showMessage(data.status_msg);
+                            return
+                        }
+                        // <div>${videoInfo.videoLink}</div>
+                        li.innerHTML = `
+                            <div>${videoInfo.videoName}</div>
+                            <div>${videoInfo.videoTags}</div>
+                            <div>点赞数    ${data.videoFavoriteNum}</div>
+                            <div>评论数    ${data.videoCommitNum}</div>
+                            <div class="deleteVideoDIV"></div>
+                        `;
+                        // 检查用户是否登录且为视频发布人
+                        if (await UserIsLogin()) {
+                            if (userData && userData.userID === videoInfo.userID) {
+                                const deleteButton = document.createElement('button');
+                                deleteButton.className = 'deleteVideo';
+                                deleteButton.textContent = '删除视频';
+                                deleteButton.onclick = function() {
+                                    // 添加删除视频的功能，例如通过API请求
+                                    POST_Req("/video/delete", DeleteVideoParam(userData.token,videoInfo.videoID))
+                                    .then(async response => {
+                                        if(response.status_code != 0){
+                                            showMessage(response.status_msg);
+                                            return;
+                                        }
+                                        li.remove(); // 或重新加载视频
+                                        showMessage("删除成功");
+                                    })
+                                    .catch(error => {
+                                        console.error('Delete error:', error);
+                                    });
+                                };
+                                li.querySelector('.deleteVideoDIV').appendChild(deleteButton);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                   
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }else{
+        GET_Req(UrlStr,"token",userData.token)
+        .then(data => {
+            if(data.status_code != 0){
+                showMessage(data.status_msg);
+                return
+            }
+            userVideoInfos = userVideoInfos.concat(data.videoInfos)
+            if(null == userVideoInfos[0]){
+                //没有作品
+                const videoContainer = document.querySelector('.user-videoInfo');
+                videoContainer.innerHTML = ''; // 清空现有视频
+                return;
+            }else{
+                //显示作品
+                const videoContainer = document.querySelector('.user-videoInfo');
+                videoContainer.innerHTML = ''; // 清空现有视频
+                userVideoInfos.forEach(async videoInfo => {
+                    // 创建视频元素
+                    const li = document.createElement('li');
+                    li.className = 'user-videoInfo-data';
+                    li.onclick = function(){
+                        videoORUserVideo = true;
+                        userVideoIndex = userVideoInfos.indexOf(videoInfo);
+                        checkBody(0);
+                        VideoLoadOperate();
+                    }
+                    videoContainer.appendChild(li);
+                    //获取单个视频信息
+                    POST_Req("/video/info",VideoOperateInfoParam(userData.token,videoInfo.videoID))
+                    .then(async data => {
+                        if(data.status_code != 0){
+                            showMessage(data.status_msg);
+                            return
+                        }
+                        // <div>${videoInfo.videoLink}</div>
+                        li.innerHTML = `
+                            <div>${videoInfo.videoName}</div>
+                            <div>${videoInfo.videoTags}</div>
+                            <div>点赞数    ${data.videoFavoriteNum}</div>
+                            <div>评论数    ${data.videoCommitNum}</div>
+                            <div class="deleteVideoDIV"></div>
+                        `;
+                        // 检查用户是否登录且为视频发布人
+                        if (await UserIsLogin()) {
+                            if (userData && userData.userID === videoInfo.userID) {
+                                const deleteButton = document.createElement('button');
+                                deleteButton.className = 'deleteVideo';
+                                deleteButton.textContent = '删除视频';
+                                deleteButton.onclick = function() {
+                                    // 添加删除视频的功能，例如通过API请求
+                                    POST_Req("/video/delete", DeleteVideoParam(userData.token,videoInfo.videoID))
+                                    .then(async response => {
+                                        if(response.status_code != 0){
+                                            showMessage(response.status_msg);
+                                            return;
+                                        }
+                                        li.remove(); // 或重新加载视频
+                                        showMessage("删除成功");
+                                    })
+                                    .catch(error => {
+                                        console.error('Delete error:', error);
+                                    });
+                                };
+                                li.querySelector('.deleteVideoDIV').appendChild(deleteButton);
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            }
+
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 }
 
 //视频初始化
@@ -93,6 +419,14 @@ function initVideo(){
     videoInfos = [];
     videoOperateInfo = {};
     videoComments = [];
+    videoORUserVideo = false;
+}
+
+//用户中心视频初始化
+function initUserVideo(){
+    userVideoIndex = 0;
+    userVideoInfos = [];
+    videoORUserVideo = true;
 }
 
 
@@ -143,12 +477,7 @@ async function UserDelete(){
         const userInput = window.prompt('请输入你的密码:', '');
 
         // 检查用户是否输入了内容
-        if (userInput !== null) {
-            // 用户输入了内容，你可以在这里处理用户的输入
-            console.log('你输入的密码是:', userInput);
-        } else {
-            // 用户取消了对话框
-            console.log('用户取消了输入');
+        if (userInput === null) {
             return
         }
         POST_Req("/user/delete",DeleteUserParam(userData.token,userInput))
@@ -171,7 +500,6 @@ async function UserDelete(){
 async function UserIsLogin() {
     // 获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
-    console.log(userData);
     
     // 判断是否登录
     if (JSON.stringify(userData) !== "{}") {
@@ -182,7 +510,6 @@ async function UserIsLogin() {
                 showMessage(data.status_msg);
                 return false;
             }
-            console.log(data);
             userData.token = data.token;
             return true;
         } catch (error) {
@@ -207,7 +534,12 @@ async function UpdateComment(){
     //初始化评论区信息
     videoComments = [];
     //获取视频信息
-    var videoInfo = videoInfos[index];
+    var videoInfo
+    if(!videoORUserVideo){
+        videoInfo = videoInfos[index];
+    }else{
+        videoInfo = userVideoInfos[userVideoIndex];
+    }
     //获取评论
     GET_Req("/video/getcomment","videoID",videoInfo.videoID)
     .then(data => {
@@ -222,12 +554,23 @@ async function UpdateComment(){
         videoComments.forEach(async comment => {
             // 创建评论元素
             const li = document.createElement('li');
+            var str = ''
+            coms = Math.trunc((Date.now() - comment.commentTime/1e6)/1000)
+            if(coms < 60){
+                str = Math.trunc(coms) + '秒前';
+            }else if(coms < 60*60){
+                str = Math.trunc(coms/60) + '分钟前';
+            }else if(coms < 60*60*24){
+                str = Math.trunc(coms/(60*60)) + '小时前';
+            }else{
+                str = Math.trunc(coms/(60*60*24)) + '天前'; 
+            }
             li.className = 'comment';
             li.innerHTML = `
                 <span class="user">${comment.userName}:</span>
                 <p class="comment-text">${comment.commentText}</p>
                 <div class="comment-footer">
-                    <span class="timestamp">${Math.trunc((Date.now() - comment.commentTime/1e6)/(1000*60))}分钟前</span>
+                    <span class="timestamp">${str}</span>
                 </div>
             `;
             // 检查用户是否登录且为评论者
@@ -241,6 +584,10 @@ async function UpdateComment(){
                         // 添加删除评论的功能，例如通过API请求
                         POST_Req("/video/deletecomment", DeleteCommentParam(userData.token,videoInfo.videoID,comment.commentID))
                         .then(response => {
+                            if(response.status_code != 0){
+                                showMessage(response.status_msg);
+                                return;
+                            }
                             li.remove(); // 或重新加载评论
                             showMessage("删除成功");
                         })
@@ -265,7 +612,12 @@ function VideoLoadOperate(){
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
     //获取视频信息
-    var videoInfo = videoInfos[index];
+    var videoInfo
+    if(!videoORUserVideo){
+        videoInfo = videoInfos[index];
+    }else{
+        videoInfo = userVideoInfos[userVideoIndex];
+    }
     //获取视频发布人与当前用户关系信息
     POST_Req("/user/info",UserInfoParam(userData.token,videoInfo.userID))
     .then(data => {
@@ -273,8 +625,6 @@ function VideoLoadOperate(){
             showMessage(data.status_msg);
             return
         }
-        console.log(data);
-        
         //更改发布人1
         document.getElementById("publicUser1").innerHTML = data.name;
         //更改发布人2
@@ -295,13 +645,14 @@ function VideoLoadOperate(){
             showMessage(data.status_msg);
             return
         }
-        console.log(data);
         videoOperateInfo = data;
         //是否点赞视频
         if (data.isFavorite){
             document.getElementById("favorite").innerHTML = `取消点赞`;
+            document.getElementById("favorite").style.backgroundColor = 'red';
         }else{
             document.getElementById("favorite").innerHTML = `点赞`;
+            document.getElementById("favorite").style.backgroundColor = '#fff';
         }
         //点赞数量
         document.getElementById("favoriteNum").innerHTML = data.videoFavoriteNum;
@@ -329,6 +680,10 @@ function VideoLoadOperate(){
 
     //重置操作
     favIsClick = 0;
+}
+
+function userVideoLoadOperate(){
+
 }
 
 //视频划走之后的操作
@@ -382,7 +737,7 @@ async function scrollEventHandler(event) {
     // event.preventDefault();
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
-    if(listIndex != 1){
+    if(listIndex != 1 && !videoORUserVideo){
         if(await UserIsLogin()==false){
             return
         }
@@ -393,69 +748,119 @@ async function scrollEventHandler(event) {
     // 输出滚动方向
     if (deltaY > 0) {
         //如果以及登录以及链入视频
-        if (null != videoInfos[index] && null != userData.token){
-            VideoCloseOperate(videoInfos[index].videoID)
+        var videoInfo;
+        var videoIndex;
+        var videolen;
+        if(!videoORUserVideo){
+            videoInfo = videoInfos[index];
+            videoIndex = index;
+            videolen = videoInfos.length;
+        }else{
+            videoInfo = userVideoInfos[userVideoIndex];
+            videoIndex = userVideoIndex;
+            videolen = userVideoInfos.length;
+        }
+
+        if (null != videoInfo && null != userData.token){
+            VideoCloseOperate(videoInfo.videoID)
         }
         //判断下个index合不合法
-        if (index + 1 < 0 || index + 1 >= videoInfos.length){
-            if(index + 1 >= videoInfos.length){
-                //再次调用获取视频添加到videoInfos后面
-                if (listIndex < 4 && listIndex > 0){
-                    GET_Req("/video/"+listValue[listIndex] , "token" , userData.token)
-                    .then(data => {
-                        if(data.status_code != 0){
-                            showMessage(data.status_msg);
-                            return
-                        }
-                        console.log(data);
-                        videoInfos = videoInfos.concat(data.videoInfos)
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                }else{
-                    showMessage("已经是最后一个视频了")
-                    return 
+        if (videoIndex + 1 < 0 || videoIndex + 1 >= videolen){
+            //不合法
+            if(!videoORUserVideo){
+                //如果为频道视频
+                if(videoIndex + 1 >= videolen){
+                    //再次调用获取视频添加到videoInfos后面
+                    if (listIndex < 4 && listIndex > 0){
+                        GET_Req("/video/"+listValue[listIndex] , "token" , userData.token)
+                        .then(data => {
+                            if(data.status_code != 0){
+                                showMessage(data.status_msg);
+                                return
+                            }
+                            videoInfos = videoInfos.concat(data.videoInfos)
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }else{
+                        showMessage("已经是最后一个视频了")
+                        return 
+                    }
                 }
+            }else{
+                //如果不是频道视频
+                showMessage("已经是最后一个视频了")
+                return
             }
         }else{
+            //合法
             //切换下个视频
-            index += 1;
+            if(!videoORUserVideo){
+                index += 1;
+            }else{
+                userVideoIndex += 1;
+            }
             VideoLoadOperate();
         }
     } else if (deltaY < 0) {
-        if (null != videoInfos[index] && null != userData.token){
-            VideoCloseOperate(videoInfos[index].videoID)
+        var videoInfo;
+        var videoIndex;
+        var videolen;
+        if(!videoORUserVideo){
+            videoInfo = videoInfos[index];
+            videoIndex = index;
+            videolen = videoInfos.length;
+        }else{
+            videoInfo = userVideoInfos[userVideoIndex];
+            videoIndex = userVideoIndex;
+            videolen = userVideoInfos.length;
         }
-        if (index - 1 < 0 || index - 1 >= videoInfos.length){
-            if(index - 1 < 0){
-                if (listIndex < 4 && listIndex > 0){
-                    showMessage("前面已经没有视频了,\n正在为您刷新页面");
-                    //刷新videoInfos
-                    initVideo();
-                    GET_Req("/video/"+listValue[listIndex] , "token" , userData.token)
-                    .then(data => {
-                        if(data.status_code != 0){
-                            showMessage(data.status_msg);
-                            return
-                        }
-                        console.log(data);
-                        videoInfos = videoInfos.concat(data.videoInfos)
-                        VideoLoadOperate();
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                }else{
-                    showMessage("已经是第一个视频了!")
-                    return
+
+        if (null != videoInfo && null != userData.token){
+            VideoCloseOperate(videoInfo.videoID)
+        }
+        if (videoIndex - 1 < 0 || videoIndex - 1 >= videolen){
+            //如果不合法
+            if(!videoORUserVideo){
+                //如果为频道视频
+                if(videoIndex - 1 < 0){
+                    if (listIndex < 4 && listIndex > 0){
+                        showMessage("前面已经没有视频了,\n正在为您刷新页面");
+                        //刷新videoInfos
+                        initVideo();
+                        GET_Req("/video/"+listValue[listIndex] , "token" , userData.token)
+                        .then(data => {
+                            if(data.status_code != 0){
+                                showMessage(data.status_msg);
+                                return
+                            }
+                            videoInfos = videoInfos.concat(data.videoInfos)
+                            VideoLoadOperate();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                    }else{
+                        showMessage("已经是第一个视频了!")
+                        return
+                    }
                 }
+            }else{
+                //如果不是频道视频
+                showMessage("已经是第一个视频了!")
+                return
             }
         }else{
-            //切换上个视频
-            index -= 1
+            //合法
+            if(!videoORUserVideo){
+                index -= 1
+            }else{
+                userVideoIndex -= 1
+            }
             VideoLoadOperate();
         }
+            
     }
 }
 //监听鼠标滚轮

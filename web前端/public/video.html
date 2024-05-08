@@ -10,15 +10,16 @@
     <link rel="stylesheet" href="video.css" type="text/css"/>
     <link rel="stylesheet" href="comment.css" type="text/css"/>
     <link rel="stylesheet" href="floatWindow.css" type="text/css"/>
+    <link rel="stylesheet" href="userInfo.css" type="text/css"/>
 </head>
 <body>
     <!-- 信息显示区 -->
     <div id="messageBox" class="hidden"></div>
     <!-- 频道栏区 -->
     <div class="sidebar" id="sidebar">
-        <h1>my_TikTok</h1>
+        <h1>AHUT_TikTok</h1>
         <ul>
-            <li><button id="home">首页</button></li>
+            <!-- <li><button id="home">首页</button></li> -->
             <li><button id="topVideo">热点</button></li>  
             <li><button id="careVideo">关注</button></li>
             <li><button id="refereeVideo">推荐</button></li>
@@ -56,11 +57,49 @@
             </div>
         </div>
     </div>
+    <!-- 用户个人中心主体区域 -->
+    <div class="user-profile" id="user-profile">
+        <button id="user-rebackVideo">◀返回</button>
+        <div id="user-baseInfo">
+            <div class="profile-picture">假装有头像</div>
+            <div  class="profile-info">
+                <h1 id="profile-userName">用户昵称区</h1>
+                <h5 id="profile-userID">用户ID区</h5>
+                <div class="profile-counts">
+                    <span id="profile-getLikes">X</span>
+                    <span id="profile-careCount">X</span>
+                    <span id="profile-fansCount">X</span>
+                </div>
+                <div class="edit-button">
+                    <button id="user-careOperate">关注</button>
+                    <button id="user-baseInfo-edit">编辑资料</button>
+                </div>
+            </div>
+            <div id="user-videoInfo-bar">
+                <button id="user-works">用户作品</button>
+                <button id="user-likes">用户喜爱🔒</button>
+                <button id="user-history">用户历史记录🔒</button>
+            </div>
+        </div>
+        <ul class="user-videoInfo">
+            <li class="user-videoInfo-data">
+                <div>视频名称</div>
+                <div>视频标签</div>
+                <div>视频链接</div>
+                <div>视频点赞数</div>
+                <div>视频评论数</div>
+                <div class="deleteVideoDIV">
+                    <button class="deleteVideo">删除视频</button>
+                </div>
+                
+            </li>
+        </ul>
+    </div>
     <!-- 视频发布人信息区 -->
     <div class="video-publicUser" id="video-publicUser"  style="display: none;">
         <button id="rebackVideo">返回</button>
         <h1 id="publicUserName">未登录</h1>
-        <h5 id="publicUserID">抖音(低仿版)ID号:</h5>
+        <h5 id="publicUserID">AHUT_TikTok  ID:</h5>
         <button id="careInfo" value="关注"></button>
         <div class="publicUserInfo">
             <span>获赞 <span class="count">X</span></span>
@@ -98,8 +137,8 @@
         <div id="user_avatar">我</div>
         <div id="user_menu">
             <h1 id="user_name">未登录</h1>
-            <h5 id="user_id">抖音(低仿版)ID号:</h5>
-            <input type="menu_item" value="个人中心" readonly onclick="UserInfo()">
+            <h5 id="user_id">AHUT_TikTok  ID号:</h5>
+            <input type="menu_item" value="个人中心" readonly onclick="UserCenter()">
             <input type="menu_item" value="上传视频" readonly onclick="UpLoadVideo()">
             <input type="menu_item" id="updatePassword" value="修改密码" readonly onclick="UpdatePassword()">
             <input type="menu_item" id="userlogin" value="退出登录" readonly onclick="UserExit()">
@@ -110,7 +149,6 @@
         </div>
     </div>
     <!-- 浮窗 -->
-    <div class="overlay" id="overlay"></div>
     <div class="floatWindow" id="floatWindow">
         <h1 id="floatWindow-title">修改密码界面</h1>
 
@@ -126,7 +164,7 @@
         <label for="newPassword">再次输入新密码:</label>
         <input type="password" id="newPassword2" minlength="5" maxlength="18" required title="密码必须与上一次输入密码相同" required><br>
 
-        <button id="submitUpdate">确认修改</button>
+        <button id="submitUpdatePwd">确认修改</button>
     </div>
 </body>
 <script src="message.js"></script>

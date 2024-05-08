@@ -55,7 +55,7 @@ func QueryVIDByName(ctx context.Context, Name string) ([]int64, error) {
 		return nil, err
 	}
 	var uIDs []int64
-	err = db.Table("User").Where("UserName LIKE ?", "%"+Name+"%").Find(&uIDs).Error
+	err = db.Table("User").Select("UserID").Where("UserName LIKE ?", "%"+Name+"%").Find(&uIDs).Error
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,12 @@ func QueryVIDByName(ctx context.Context, Name string) ([]int64, error) {
 		vids, _ := QueryVideoIDByUserID(ctx, uID)
 		vIDs2 = append(vIDs2, vids...)
 	}
-	ret := append(vIDs1, vIDs2...)
+	var vIDs3 []int64
+	err = db.Table("Video").Select("VideoId").Where("Tags LIKE ?", "%"+Name+"%").Find(&vIDs3).Error
+	if err != nil {
+		return nil, err
+	}
+	ret := append(append(vIDs1, vIDs2...), vIDs3...)
 	return ret, err
 }
 

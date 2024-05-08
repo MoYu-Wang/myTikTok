@@ -151,14 +151,26 @@ input[type="menu_item"] {
     align-items: center; /* 水平居中 */
 }
 
+
 .btn {
-    background-color: #666;
-    color: #fff;
+    background-color: #fff;
+    color: black;
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 5px; /* 按钮间距 */
+}
+
+
+#publicUser2 {
+    
+    width: 75px; /* 设置宽度 */
+    height: 75px; /* 设置高度 */
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 .video-controls div {

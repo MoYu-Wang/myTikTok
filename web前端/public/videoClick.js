@@ -1,18 +1,18 @@
 
 //各种点击事件
-//首页点击事件
-document.getElementById("home").addEventListener("click", function() {
-    // 在此处添加您想要执行的操作
-    //设置按钮颜色
-    var buttons = document.querySelectorAll('.sidebar button');
-    buttons.forEach(function(button){
-        button.style.backgroundColor = '#666';
-    });
-    this.style.backgroundColor = '#5a8dd9';
+// //首页点击事件
+// document.getElementById("home").addEventListener("click", function() {
+//     // 在此处添加您想要执行的操作
+//     //设置按钮颜色
+//     var buttons = document.querySelectorAll('.sidebar button');
+//     buttons.forEach(function(button){
+//         button.style.backgroundColor = '#666';
+//     });
+//     this.style.backgroundColor = '#5a8dd9';
 
-    showMessage("首页内容暂未实现,\n正在为您跳转热点内容")
-    document.getElementById("topVideo").click()
-});
+//     showMessage("首页内容暂未实现,\n正在为您跳转热点内容")
+//     document.getElementById("topVideo").click()
+// });
 
 //热点点击事件
 document.getElementById("topVideo").addEventListener("click", function() {
@@ -22,7 +22,8 @@ document.getElementById("topVideo").addEventListener("click", function() {
         button.style.backgroundColor = '#666';
     });
     this.style.backgroundColor = '#5a8dd9';
-
+    //切换视频主体
+    checkBody(0);
     //初始化videoinfos数组和index
     initVideo();
     //获取登录用户信息
@@ -80,6 +81,8 @@ document.getElementById("careVideo").addEventListener("click",async function(){
         button.style.backgroundColor = '#666';
     });
     this.style.backgroundColor = '#5a8dd9';
+    //切换视频主体
+    checkBody(0);
     //初始化videoinfos数组和index
     initVideo();
     //获取登录用户信息
@@ -93,6 +96,11 @@ document.getElementById("careVideo").addEventListener("click",async function(){
         }
         console.log(data);
         videoInfos = videoInfos.concat(data.videoInfos)
+        if(videoInfos[0] == null){
+            showMessage("您未关注过用户,自动为您跳转至热点频道")
+            document.getElementById("topVideo").click();
+            return;
+        }
         //嵌入视频
         VideoLoadOperate();
         listIndex = 2;
@@ -115,6 +123,8 @@ document.getElementById("refereeVideo").addEventListener("click",async function(
         button.style.backgroundColor = '#666';
     });
     this.style.backgroundColor = '#5a8dd9';
+    //切换视频主体
+    checkBody(0);
     //初始化videoinfos数组和index
     initVideo();
     //获取登录用户信息
@@ -150,6 +160,8 @@ document.getElementById("myWorks").addEventListener("click",async function(){
         button.style.backgroundColor = '#666';
     });
     this.style.backgroundColor = '#5a8dd9';
+    //切换视频主体
+    checkBody(0);
     //获取我的作品
     //初始化videoinfos数组和index
     initVideo();
@@ -165,7 +177,7 @@ document.getElementById("myWorks").addEventListener("click",async function(){
         console.log(data);
         videoInfos = videoInfos.concat(data.videoInfos)
         if(null == videoInfos[0]){
-            showMessage("您好像还没有发布过视频,\n快来发布您的第一条视频吧!")
+            alert("您好像还没有发布过视频,\n快来发布您的第一条视频吧!")
             UpLoadVideo()
             return
         }
@@ -192,6 +204,8 @@ document.getElementById("myFavorite").addEventListener("click",async function(){
         button.style.backgroundColor = '#666';
     });
     this.style.backgroundColor = '#5a8dd9';
+    //切换视频主体
+    checkBody(0);
     //获取我的喜爱
     //初始化videoinfos数组和index
     initVideo();
@@ -234,6 +248,8 @@ document.getElementById("myHistory").addEventListener("click",async function(){
         button.style.backgroundColor = '#666';
     });
     this.style.backgroundColor = '#5a8dd9';
+    //切换视频主体
+    checkBody(0);
     //获取历史记录
     //初始化videoinfos数组和index
     initVideo();
@@ -265,7 +281,8 @@ document.getElementById("myHistory").addEventListener("click",async function(){
 
 //发布人点击事件
 document.getElementById("publicUser2").addEventListener("click",function(){
-    
+    //转到用户中心
+    ToUserCenter(videoInfos[index].userID)
 });
 
 //关注发布人点击事件
@@ -309,9 +326,13 @@ document.getElementById("favorite").addEventListener("click",async function(){
     if(favIsClick){
         document.getElementById("favorite").innerHTML = `取消点赞`;
         document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) + 1);
+        
+        document.getElementById("favorite").style.backgroundColor = 'red';
     }else{
         document.getElementById("favorite").innerHTML = `点赞`;
         document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) - 1);
+        
+        document.getElementById("favorite").style.backgroundColor = '#fff';
     }
 });
 
@@ -323,10 +344,16 @@ document.getElementById("comment").addEventListener("click",function(){
     if (sidebar.style.display === 'none') {
         // 如果当前是隐藏状态，则显示频道栏
         sidebar.style.display = 'block';
+        //设置评论按钮颜色
+        document.getElementById("comment").style.backgroundColor = '#fff'
+        //添加鼠标滚轮监听切换视频
         addScrollEventListener();
     } else {
         // 如果当前是显示状态，则隐藏频道栏
         sidebar.style.display = 'none';
+        //设置评论按钮颜色
+        document.getElementById("comment").style.backgroundColor = 'skyblue'
+        //移除鼠标滚轮监听切换视频
         removeScrollEventListener();
     }
     //设置评论区
@@ -351,7 +378,7 @@ document.getElementById("search").addEventListener("click",function(){
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
     //发送get请求获取查找的视频信息数组
-    POST_Req("video/search",SearchVideoParam(userData.token,searchText))
+    POST_Req("/video/search",SearchVideoParam(userData.token,searchText))
     .then(data => {
         if(data.status_code != 0){
             showMessage(data.status_msg);
@@ -369,10 +396,10 @@ document.getElementById("search").addEventListener("click",function(){
 });
 
 //点击确认修改密码
-document.getElementById("submitUpdate").addEventListener("click",function(){
-    var pwd = document.getElementById("").value;
-    var newpwd = document.getElementById("").value;
-    var newpwd2 = document.getElementById("").value;
+document.getElementById("submitUpdatePwd").addEventListener("click",function(){
+    var pwd = document.getElementById("password").value;
+    var newpwd = document.getElementById("newPassword").value;
+    var newpwd2 = document.getElementById("newPassword2").value;
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
     if (newpwd != newpwd2){
@@ -395,6 +422,46 @@ document.getElementById("submitUpdate").addEventListener("click",function(){
     });
 
 });
+
+
+//点击返回
+document.getElementById("user-rebackVideo").addEventListener("click",async function(){
+    checkBody(0)
+    VideoLoadOperate();
+    //设置按钮颜色
+    var buttons = document.querySelectorAll('.sidebar button');
+    var cnt = 0;
+    buttons.forEach(function(button){
+        cnt++;
+        if(cnt == listIndex){
+            button.style.backgroundColor = '#5a8dd9';
+        }else{
+            button.style.backgroundColor = '#666';
+        }
+    });
+
+});
+
+//点击修改资料
+document.getElementById("user-baseInfo-edit").addEventListener("click",async function(){
+    if(await UserIsLogin()==false){
+        showMessage("用户未登录\n或登录信息已过期")
+        return
+    }
+    
+
+});
+
+//点击用户作品
+document.getElementById("user-works").addEventListener("click",async function(){
+    if(await UserIsLogin()==false){
+        showMessage("用户未登录\n或登录信息已过期")
+        return
+    }
+    UpdateUserCenterVideo(0,)
+
+});
+
 
 
 // 检查点击事件并隐藏浮窗

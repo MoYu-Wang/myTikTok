@@ -1,7 +1,7 @@
 /*  频道栏  */
 .sidebar {
     width: 200px;
-    background: linear-gradient(to right, #666, #333); /* 蓝色到绿色的水平渐变 */
+    background: linear-gradient(to right, #666, #333); /* 水平渐变 */
     padding: 20px;
     border-radius: 10px;
     color: #fff;

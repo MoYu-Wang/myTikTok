@@ -1,30 +1,57 @@
 /* 个人中心 */
-.user-profile {
-    display: none;
-    align-items: center;
+#user-profile {
+    margin: 10px;
+    width: calc(100%);
+    flex-direction: column; /* 设置为垂直方向的列布局 */
+}
+
+#user-rebackVideo{
+    width: calc(5%);
+    height: calc(5%);
+    color: #fff;
+    background-color: #ff3852;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    outline: none;
+}
+
+#user-baseInfo{
     padding: 20px;
+    width: calc(100%) - 40px;
+    background: linear-gradient(to right, #8ac1f5, #adf391); /* 蓝色到绿色的水平渐变 */
+    align-items: center;
+    /* margin-top: calc(3%); 将位置往下移动 20 像素 */
     border-bottom: 1px solid #ccc;
+    border-radius: 10px;
+    height: calc(25%);
 }
 
 .profile-picture {
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    background-color: #eee;
+    background-color: white; /* 将背景颜色改为白色 */
     margin-right: 20px;
+    float: left;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 }
 
 .profile-info {
     flex: 1;
 }
 
-.profile-info h2 {
+.profile-info h1 {
     margin: 0;
-    font-size: 18px;
+    font-size: 36px;
     color: #333;
 }
 
-.profile-info p {
+.profile-info h5 {
     margin: 5px 0;
     color: #666;
 }
@@ -46,6 +73,7 @@
 }
 
 .edit-button button {
+    margin-left: calc(90%);
     padding: 8px 16px;
     font-size: 14px;
     color: #fff;
@@ -54,4 +82,73 @@
     border-radius: 20px;
     cursor: pointer;
     outline: none;
+}
+
+#user-videoInfo-bar button{
+    background-color: #4CAF50;
+    float: left;
+    margin:10px 10px auto;
+    font-size: 16px;
+    color: blue;
+    cursor: pointer;
+}
+
+/* 视频区域 */
+.user-videoInfo{
+    padding: 20px;
+    width: calc(100%) - 40px;
+    background: linear-gradient(to right, #8ac1f5, #adf391); /* 蓝色到绿色的水平渐变 */
+    align-items: center;
+    overflow-y: auto; /* 如果评论内容超出评论区域的高度，启用垂直滚动条 */
+    border-radius: 10px;
+    margin: 0;
+    height: calc(100%);
+}
+
+/* 定制滚动条样式 */
+#user-videoInfo::-webkit-scrollbar {
+    width: 12px; /* 设置滚动条宽度 */
+}
+
+/* 滚动条轨道 */
+#user-videoInfo::-webkit-scrollbar-track {
+    background-color: #f7c29c; /* 设置滚动条轨道背景颜色 */
+}
+
+/* 滚动条滑块 */
+#user-videoInfo::-webkit-scrollbar-thumb {
+    background-color: #888; /* 设置滚动条滑块颜色 */
+    border-radius: 6px; /* 设置滑块圆角 */
+}
+
+/* 滚动条滑块悬停样式 */
+#user-videoInfo::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* 设置滑块悬停时的颜色 */
+}
+
+.user-videoInfo-data{
+    background-color: white;
+    border-radius: 30px;
+    width: calc(23%);
+    height: calc(50%);
+    float: left; /* 设置左浮动 */
+    margin:10px 10px auto;
+    text-align: center; /* 设置文字居中 */
+    cursor: pointer; /* 鼠标指针样式变为手形，表示可点击 */
+}
+
+.user-videoInfo-data div {
+    word-wrap: break-word; /* 兼容性更好 */
+    overflow-wrap: break-word; /* 新er的名称 */
+}
+
+.deleteVideo{
+    /* display: none; /*默认不显示删除按钮 */
+    padding: 5px 10px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
