@@ -607,6 +607,21 @@ async function UpdateComment(){
     });
 }
 
+//更新频道栏
+function updateBar(){
+    //设置按钮颜色
+    var buttons = document.querySelectorAll('.sidebar button');
+    var cnt = 0;
+    buttons.forEach(function(button){
+        cnt++;
+        if(cnt == listIndex){
+            button.style.backgroundColor = '#5a8dd9';
+        }else{
+            button.style.backgroundColor = '#666';
+        }
+    });
+}
+
 //视频嵌入之后的操作
 function VideoLoadOperate(){
     //获取登录用户信息

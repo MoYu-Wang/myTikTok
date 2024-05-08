@@ -102,12 +102,6 @@ type OperateVideoReq struct {
 	IsFavorite int64  `json:"isFavorite"`
 }
 
-//模糊查询视频请求
-type SearchVideoReq struct {
-	SearchText string `json:"searchText"`
-	Token      string `json:"token"`
-}
-
 //用户作品请求
 type UserWorkReq struct {
 	Token  string `json:"token"`

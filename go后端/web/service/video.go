@@ -122,7 +122,7 @@ func TopVideo(ctx *gin.Context) {
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, userID)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
@@ -160,7 +160,7 @@ func RefereeVideo(ctx *gin.Context) {
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
@@ -198,7 +198,7 @@ func CareVideo(ctx *gin.Context) {
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return
@@ -216,25 +216,17 @@ func CareVideo(ctx *gin.Context) {
 // 模糊查询视频
 func SearchVideo(ctx *gin.Context) {
 	//1.获取参数和参数校验
-	p := new(io.SearchVideoReq)
-	if err := ctx.ShouldBindJSON(&p); err != nil {
-		//请求参数有误,直接返回响应
-		io.ResponseError(ctx, common.CodeInvalidParam)
-		return
-	}
-	fmt.Println("请求参数:")
-	fmt.Println(p)
-	//登录校验
-	claim, _ := jwt.ParseToken(p.Token)
+
+	searchText := ctx.DefaultQuery("searchText", "")
 	//2.服务调用
-	vids, code := logic.GetSearchVideoIDs(ctx, p.SearchText)
+	vids, code := logic.GetSearchVideoIDs(ctx, searchText)
 	if code != common.CodeSuccess {
 		io.ResponseError(ctx, code)
 		return
 	}
 	var videoInfos []io.VideoInfo
 	for _, vid := range vids {
-		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid, claim.UserID)
+		videoInfo, code := logic.GetVideoInfoByVID(ctx, vid)
 		if code != common.CodeSuccess {
 			io.ResponseError(ctx, code)
 			return

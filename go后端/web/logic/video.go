@@ -14,7 +14,7 @@ import (
 )
 
 // 根据视频id获取视频信息
-func GetVideoInfoByVID(ctx *gin.Context, videoID int64, userID int64) (*io.VideoInfo, common.ResCode) {
+func GetVideoInfoByVID(ctx *gin.Context, videoID int64) (*io.VideoInfo, common.ResCode) {
 	ret, err := mysql.QueryVideoInfoByVID(ctx, videoID)
 	if err != nil {
 		return nil, common.CodeMysqlFailed

@@ -1,27 +1,7 @@
 
 //各种点击事件
-// //首页点击事件
-// document.getElementById("home").addEventListener("click", function() {
-//     // 在此处添加您想要执行的操作
-//     //设置按钮颜色
-//     var buttons = document.querySelectorAll('.sidebar button');
-//     buttons.forEach(function(button){
-//         button.style.backgroundColor = '#666';
-//     });
-//     this.style.backgroundColor = '#5a8dd9';
-
-//     showMessage("首页内容暂未实现,\n正在为您跳转热点内容")
-//     document.getElementById("topVideo").click()
-// });
-
 //热点点击事件
 document.getElementById("topVideo").addEventListener("click", function() {
-    //设置按钮颜色
-    var buttons = document.querySelectorAll('.sidebar button');
-    buttons.forEach(function(button){
-        button.style.backgroundColor = '#666';
-    });
-    this.style.backgroundColor = '#5a8dd9';
     //切换视频主体
     checkBody(0);
     //初始化videoinfos数组和index
@@ -41,6 +21,8 @@ document.getElementById("topVideo").addEventListener("click", function() {
             //嵌入视频
             VideoLoadOperate();
             listIndex = 1;
+            //更新频道栏
+            updateBar();
         })
         .catch(error => {
             console.error('Error:', error);
@@ -75,12 +57,6 @@ document.getElementById("careVideo").addEventListener("click",async function(){
         return
     }
     
-    //设置按钮颜色
-    var buttons = document.querySelectorAll('.sidebar button');
-    buttons.forEach(function(button){
-        button.style.backgroundColor = '#666';
-    });
-    this.style.backgroundColor = '#5a8dd9';
     //切换视频主体
     checkBody(0);
     //初始化videoinfos数组和index
@@ -104,6 +80,8 @@ document.getElementById("careVideo").addEventListener("click",async function(){
         //嵌入视频
         VideoLoadOperate();
         listIndex = 2;
+        //更新频道栏
+        updateBar();
     })
     .catch(error => {
         console.error('Error:', error);
@@ -117,12 +95,6 @@ document.getElementById("refereeVideo").addEventListener("click",async function(
         return
     }
    
-    //设置按钮颜色
-    var buttons = document.querySelectorAll('.sidebar button');
-    buttons.forEach(function(button){
-        button.style.backgroundColor = '#666';
-    });
-    this.style.backgroundColor = '#5a8dd9';
     //切换视频主体
     checkBody(0);
     //初始化videoinfos数组和index
@@ -141,6 +113,8 @@ document.getElementById("refereeVideo").addEventListener("click",async function(
         //嵌入视频
         VideoLoadOperate();
         listIndex = 3;
+        //更新频道栏
+        updateBar();
     })
     .catch(error => {
         console.error('Error:', error);
@@ -154,12 +128,6 @@ document.getElementById("myWorks").addEventListener("click",async function(){
         return
     }
     
-    //设置按钮颜色
-    var buttons = document.querySelectorAll('.sidebar button');
-    buttons.forEach(function(button){
-        button.style.backgroundColor = '#666';
-    });
-    this.style.backgroundColor = '#5a8dd9';
     //切换视频主体
     checkBody(0);
     //获取我的作品
@@ -184,6 +152,8 @@ document.getElementById("myWorks").addEventListener("click",async function(){
         //嵌入视频
         VideoLoadOperate();
         listIndex = 4;
+        //更新频道栏
+        updateBar();
     })
     .catch(error => {
         console.error('Error:', error);
@@ -198,12 +168,6 @@ document.getElementById("myFavorite").addEventListener("click",async function(){
         return
     }
    
-    //设置按钮颜色
-    var buttons = document.querySelectorAll('.sidebar button');
-    buttons.forEach(function(button){
-        button.style.backgroundColor = '#666';
-    });
-    this.style.backgroundColor = '#5a8dd9';
     //切换视频主体
     checkBody(0);
     //获取我的喜爱
@@ -228,6 +192,8 @@ document.getElementById("myFavorite").addEventListener("click",async function(){
         //嵌入视频
         VideoLoadOperate();
         listIndex = 5;
+        //更新频道栏
+        updateBar();
     })
     .catch(error => {
         console.error('Error:', error);
@@ -242,12 +208,6 @@ document.getElementById("myHistory").addEventListener("click",async function(){
         return
     }
     
-    //设置按钮颜色
-    var buttons = document.querySelectorAll('.sidebar button');
-    buttons.forEach(function(button){
-        button.style.backgroundColor = '#666';
-    });
-    this.style.backgroundColor = '#5a8dd9';
     //切换视频主体
     checkBody(0);
     //获取历史记录
@@ -272,6 +232,8 @@ document.getElementById("myHistory").addEventListener("click",async function(){
         //嵌入视频
         VideoLoadOperate();
         listIndex = 6;
+        //更新频道栏
+        updateBar();
     })
     .catch(error => {
         console.error('Error:', error);
@@ -373,18 +335,25 @@ document.getElementById("comment").addEventListener("click",function(){
 });
 
 //搜索点击事件
-document.getElementById("search").addEventListener("click",function(){
+document.getElementById("search").addEventListener("click",async function(){
     var searchText = document.getElementById("searchText").value
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
+    var tk 
+    if(await UserIsLogin()){
+        tk = userData.token
+    }else{
+        tk = "0"
+    }
     //发送get请求获取查找的视频信息数组
-    POST_Req("/video/search",SearchVideoParam(userData.token,searchText))
+    POST_Req("/video/search",SearchVideoParam(tk,searchText))
     .then(data => {
         if(data.status_code != 0){
             showMessage(data.status_msg);
             return
         }
-        console.log(data);
+        //初始化视频
+        initVideo();
         videoInfos = videoInfos.concat(data.videoInfos)
         //嵌入视频
         VideoLoadOperate();
@@ -428,17 +397,7 @@ document.getElementById("submitUpdatePwd").addEventListener("click",function(){
 document.getElementById("user-rebackVideo").addEventListener("click",async function(){
     checkBody(0)
     VideoLoadOperate();
-    //设置按钮颜色
-    var buttons = document.querySelectorAll('.sidebar button');
-    var cnt = 0;
-    buttons.forEach(function(button){
-        cnt++;
-        if(cnt == listIndex){
-            button.style.backgroundColor = '#5a8dd9';
-        }else{
-            button.style.backgroundColor = '#666';
-        }
-    });
+    updateBar();
 
 });
 
