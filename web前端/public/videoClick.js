@@ -346,7 +346,7 @@ document.getElementById("search").addEventListener("click",async function(){
         tk = "0"
     }
     //发送get请求获取查找的视频信息数组
-    POST_Req("/video/search",SearchVideoParam(tk,searchText))
+    GET_Req("/video/search","searchText",searchText)
     .then(data => {
         if(data.status_code != 0){
             showMessage(data.status_msg);
