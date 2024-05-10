@@ -17,7 +17,7 @@
     <div id="messageBox" class="hidden"></div>
     <!-- 频道栏区 -->
     <div class="sidebar" id="sidebar">
-        <h1>AHUT_TikTok</h1>
+        <h1 class="Img" id="title"></h1>
         <ul>
             <!-- <li><button id="home">首页</button></li> -->
             <li><button id="topVideo">热点</button></li>  
@@ -35,8 +35,9 @@
     <!-- 视频主体区域 -->
     <div class="content" id="content">
         <div class="search-box">
+            <button class="Img"  id="rebackBarVideo"></button>
             <input  id="searchText" type="text" placeholder="搜索">
-            <button id="search">搜索</button>
+            <button class="Img" id="search"></button>
         </div>
         <div class="video-player-container">
             <video id="video" class="video-player" controls autoplay loop>
@@ -48,20 +49,20 @@
                 <div id="vTags">视频标签</div>
             </div>
             <div class="video-controls">
-                <button class="btn" id="publicUser2">发布人</button>
-                <button class="btn" id="careUser">+</button>
-                <button class="btn" id="favorite">点赞</button>
+                <button class="Img" id="publicUser2"></button>
+                <button class="Img" id="careUser"></button>
+                <button class="Img" id="favorite"></button>
                 <div id="favoriteNum">0</div>
-                <button class="btn" id="comment">评论</button>
+                <button class="Img" id="comment"></button>
                 <div id="commentNum">0</div>
             </div>
         </div>
     </div>
     <!-- 用户个人中心主体区域 -->
     <div class="user-profile" id="user-profile">
-        <button id="user-rebackVideo">◀返回</button>
+        <button class="Img"  id="user-rebackVideo"></button>
         <div id="user-baseInfo">
-            <div class="profile-picture">假装有头像</div>
+            <div class="Img" id="profile-picture"></div>
             <div  class="profile-info">
                 <h1 id="profile-userName">用户昵称区</h1>
                 <h5 id="profile-userID">用户ID区</h5>
@@ -97,7 +98,7 @@
     </div>
     <!-- 视频发布人信息区 -->
     <div class="video-publicUser" id="video-publicUser"  style="display: none;">
-        <button id="rebackVideo">返回</button>
+        <button class="img_btn"  id="rebackVideo">返回</button>
         <h1 id="publicUserName">未登录</h1>
         <h5 id="publicUserID">AHUT_TikTok  ID:</h5>
         <button id="careInfo" value="关注"></button>
@@ -134,7 +135,7 @@
     </div>
     <!-- 用户操作区 -->
     <div id="header">
-        <div id="user_avatar">我</div>
+        <div class="Img" id="user_avatar"></div>
         <div id="user_menu">
             <h1 id="user_name">未登录</h1>
             <h5 id="user_id">AHUT_TikTok  ID号:</h5>
@@ -144,7 +145,7 @@
             <input type="menu_item" id="userlogin" value="退出登录" readonly onclick="UserExit()">
             <input type="menu_item" value="注销账户" readonly onclick="UserDelete()">
             <a href="https://mytiktok-1324994323.cos.ap-nanjing.myqcloud.com/%E6%8A%96%E9%9F%B3%28%E4%BD%8E%E4%BB%BF%E7%89%88%29-win32-x64.zip" download="抖音(低仿版)-win32-x64.zip">
-                <input type="menu_item" id="downloadPC" value="下载PC客户端" readonly>
+                <input class="Img" type="menu_item" id="downloadPC" value="下载PC客户端" readonly>
             </a>
         </div>
     </div>

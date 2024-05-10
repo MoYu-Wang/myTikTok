@@ -15,10 +15,33 @@ var listValue = ["search","top","care","referee","works","favorite","history",""
 var videoComments = [];//视频评论
 
 
+
+
+
+function loadImg(){
+    
+    document.getElementById("title").style.backgroundImage = "url('./Icon/抖音.png')";
+    // document.getElementById("").style.backgroundImage = "url('./Icon/标签.png')";
+    document.getElementById("comment").style.backgroundImage = "url('./Icon/评论.png')";
+    document.getElementById("search").style.backgroundImage = "url('./Icon/搜索.png')";
+    document.getElementById("careUser").style.backgroundImage = "url('./Icon/未关注.png')";
+    document.getElementById("favorite").style.backgroundImage = "url('./Icon/未点赞.png')";
+    // document.getElementById("rebackVideo").style.backgroundImage = "url('./Icon/返回.png')";
+    document.getElementById("user-rebackVideo").style.backgroundImage = "url('./Icon/返回.png')";
+    document.getElementById("rebackBarVideo").style.backgroundImage = "url('./Icon/返回.png')";
+    // document.getElementById("").style.backgroundImage = "url('./Icon/密码.png')";
+    // document.getElementById("").style.backgroundImage = "url('./Icon/手机号.png')";
+    document.getElementById("downloadPC").style.backgroundImage = "url('./Icon/下载客户端.png')";
+    document.getElementById("user_avatar").style.backgroundImage = "url('./Icon/用户.png')";
+    document.getElementById("profile-picture").style.backgroundImage = "url('./Icon/用户.png')";
+    document.getElementById("publicUser2").style.backgroundImage = "url('./Icon/发布人.png')";
+}
+
 //初始加载事件
 //频道显示
 //视频切换源
 window.onload = async function(){
+    loadImg();
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
     //判断是否登录
@@ -59,7 +82,6 @@ window.onload = async function(){
         //未登录情况默认进入热点页面
         document.getElementById("topVideo").click();
     }
-    
 }
 
 //右上角用户信息
@@ -623,9 +645,12 @@ function updateBar(){
 }
 
 //视频嵌入之后的操作
-function VideoLoadOperate(){
+async function VideoLoadOperate(){
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
+    if(await UserIsLogin()){
+        
+    }
     //获取视频信息
     var videoInfo
     if(!videoORUserVideo){
@@ -642,13 +667,13 @@ function VideoLoadOperate(){
         }
         //更改发布人1
         document.getElementById("publicUser1").innerHTML = data.name;
-        //更改发布人2
-        document.getElementById("publicUser2").innerHTML = data.name;
         //是否关注用户
         if (data.isCare){
-            document.getElementById("careUser").innerHTML = `√`;
+            document.getElementById("careUser").style.backgroundImage = "url('./Icon/已关注.png')";
+            document.getElementById("careUser").setAttribute("isCare",true);
         }else{
-            document.getElementById("careUser").innerHTML = `+`;
+            document.getElementById("careUser").style.backgroundImage = "url('./Icon/未关注.png')";
+            document.getElementById("careUser").setAttribute("isCare",false);
         }
     })
     .catch(error => {
@@ -663,11 +688,11 @@ function VideoLoadOperate(){
         videoOperateInfo = data;
         //是否点赞视频
         if (data.isFavorite){
-            document.getElementById("favorite").innerHTML = `取消点赞`;
-            document.getElementById("favorite").style.backgroundColor = 'red';
+            document.getElementById("favorite").style.backgroundImage = "url('./Icon/点赞.png')";
+            document.getElementById("favorite").setAttribute("isFavorite",true);
         }else{
-            document.getElementById("favorite").innerHTML = `点赞`;
-            document.getElementById("favorite").style.backgroundColor = '#fff';
+            document.getElementById("favorite").style.backgroundImage = "url('./Icon/未点赞.png')";
+            document.getElementById("favorite").setAttribute("isFavorite",false);
         }
         //点赞数量
         document.getElementById("favoriteNum").innerHTML = data.videoFavoriteNum;
@@ -697,20 +722,12 @@ function VideoLoadOperate(){
     favIsClick = 0;
 }
 
-function userVideoLoadOperate(){
-
-}
 
 //视频划走之后的操作
 function VideoCloseOperate(vID){
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
-    var isfav = 0
-    if(videoOperateInfo.isFavorite){
-        isfav = -1 * favIsClick;
-    }else{
-        isfav = favIsClick;
-    }
+    var isfav = parseInt(document.getElementById("favorite").getAttribute("operate"));
     POST_Req("/video/operate",OperateVideoParam(userData.token,vID,videoWatchTime,isfav))
     .then(data => {
         if(data.status_code != 0){

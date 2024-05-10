@@ -37,22 +37,48 @@
                 color: white;
                 cursor: pointer;
             }
+
+            .Img {
+                float: left;
+                width: 30px;
+                height: 30px;
+                padding: 10px 10px;/* 设置内边距 */
+                margin: 5px; /* 设置外边距 */
+                border: none; /* 设置无边框 */
+                background-color:rgba(255, 255, 255, 0);/* 设置透明 */
+                background-size: calc(100%); /* 图片大小 */
+                background-repeat: no-repeat; /* 不重复平铺 */
+                background-position: center; /* 图片位置 */
+            }
+
+            #title{
+                float: none;
+                width: 100px;
+                height: 100px;
+                margin: 0 auto; /* 将左右边距设置为 auto 来水平居中 */
+                text-align: center; /* 确保父元素居中 */
+            }
+            
+            label{
+                height: 30px;
+                font-size: 25px;
+            }
         </style>
     </head>
     <div class="login-container">
-        <h2 style="text-align: center;">抖音(AHUT低仿版)注册界面</h2>
+        <h1 class="Img" id="title" style="text-align: center;"></h1>
         <form id="registerForm">
 
-            <label for="username">昵称:</label>
+            <label for="username">昵称:</label><button class="Img" id="userInfo"></button>
             <input type="username" id="username" name="username" ><br>
 
-            <label for="password">密码:</label>
+            <label for="password">密码:</label><button class="Img" id="pwd"></button>
             <input type="password" id="password" name="password" minlength="5" maxlength="18" required title="密码必须大于等于5位小于等于18位" required><br>
 
-            <label for="password2">请再次输入密码:</label>
+            <label for="password2">请再次输入密码:</label><button class="Img" id="pwd2"></button>
             <input type="password" id="password2" name="password2" minlength="5" maxlength="18" required title="密码必须与上一次输入密码相同" required><br>
 
-            <label for="iphoneID">手机号:</label>
+            <label for="iphoneID">手机号:</label><button class="Img" id="iphone"></button>
             <input type="iphoneID" id="iphoneID" name="iphoneID" length="11" required title="请输入正确的手机号" required><br>
 
             <input type="submit" value="注册" placeholder="center" onclick="Register()">
@@ -64,6 +90,18 @@
 
     <script src="httpReq.js"></script>
     <script>
+        window.onload = function(){
+            loadImg();
+        }
+
+        function loadImg(){ 
+            document.getElementById("title").style.backgroundImage = "url('./Icon/抖音.png')";
+            document.getElementById("userInfo").style.backgroundImage = "url('./Icon/用户信息.png')";
+            document.getElementById("pwd").style.backgroundImage = "url('./Icon/密码.png')";
+            document.getElementById("pwd2").style.backgroundImage = "url('./Icon/密码.png')";
+            document.getElementById("iphone").style.backgroundImage = "url('./Icon/手机号.png')";
+            
+        }
         function Register() {
             event.preventDefault(); // 阻止表单默认提交行为
 

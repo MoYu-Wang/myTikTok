@@ -7,6 +7,8 @@ body {
     background: radial-gradient(ellipse at center, #adf391 0%, #8ac1f5 100%); /* 蓝色到绿色的横向径向渐变 */
     width: 100vw; /* 将页面宽度设置为屏幕宽度 */
     height: 100vh; /* 将页面高度设置为屏幕高度 */
+
+    overflow:hidden;
 }
 
 /*  右上角个人中心部分  */
@@ -24,14 +26,7 @@ body {
 
 #user_avatar {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    background-color: #333;
-    color: white;
-    border-radius: 50%;
-    cursor: pointer;
+    margin-top: -10px;
 }
 
 
@@ -66,11 +61,8 @@ input[type="menu_item"] {
     cursor: pointer;
 }
 
-#downloadPC {
-    background-color:red;
-}
 
-/*  主体部分  */
+/*  视频主体部分  */
 .content {
     flex: 1;
     padding: 20px;
@@ -98,17 +90,17 @@ input[type="menu_item"] {
 }
 
 .search-box button {
-    padding: 10px 20px;
-    background-color: #333;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
+    border-radius: 5px; 
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-.search-box button:hover {
+.search-box #search:hover {
     background-color: #555;
+}
+
+#rebackBarVideo{
+    float: left;
 }
 
 .video-player-container {
@@ -151,22 +143,38 @@ input[type="menu_item"] {
     align-items: center; /* 水平居中 */
 }
 
+#careUser{
+    width: 20px;
+    height: 20px;
+    margin-top: -15px;
+}
 
 .btn {
+    margin: 5px;
     background-color: #fff;
     color: black;
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: 5px; /* 按钮间距 */
+}
+
+.Img {
+    width: 30px;
+    height: 30px;
+    padding: 10px 10px;/* 设置内边距 */
+    margin: 5px; /* 设置外边距 */
+    border: none; /* 设置无边框 */
+    background-color:rgba(255, 255, 255, 0);/* 设置透明 */
+    background-size: calc(100%); /* 图片大小 */
+    background-repeat: no-repeat; /* 不重复平铺 */
+    background-position: center; /* 图片位置 */
 }
 
 
 #publicUser2 {
-    
-    width: 75px; /* 设置宽度 */
-    height: 75px; /* 设置高度 */
+    width: 50px; /* 设置宽度 */
+    height: 50px; /* 设置高度 */
     border-radius: 50%;
     justify-content: center;
     align-items: center;

@@ -1,6 +1,7 @@
 /*  频道栏  */
 .sidebar {
-    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
     background: linear-gradient(to right, #666, #333); /* 水平渐变 */
     padding: 20px;
     border-radius: 10px;
@@ -9,8 +10,12 @@
 }
 
 .sidebar h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
+    width: 50px;
+    height: 50px;
+    margin: 0 auto; /* 将左右边距设置为 auto 来水平居中 */
+    text-align: center; /* 确保父元素居中 */
+    /* font-size: 24px;*/
+    margin-bottom: 20px; 
 }
 
 .sidebar ul {

@@ -5,7 +5,7 @@
     flex-direction: column; /* 设置为垂直方向的列布局 */
 }
 
-#user-rebackVideo{
+/* #user-rebackVideo{
     width: calc(5%);
     height: calc(5%);
     color: #fff;
@@ -14,7 +14,7 @@
     border-radius: 20px;
     cursor: pointer;
     outline: none;
-}
+} */
 
 #user-baseInfo{
     padding: 20px;
@@ -27,12 +27,9 @@
     height: calc(25%);
 }
 
-.profile-picture {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-color: white; /* 将背景颜色改为白色 */
-    margin-right: 20px;
+#profile-picture {
+    width: 100px;
+    height: 100px;
     float: left;
 
     display: flex;

@@ -37,11 +37,38 @@
             color: white;
             cursor: pointer;
         }
+
+        .Img {
+            float: left;
+            width: 30px;
+            height: 30px;
+            padding: 10px 10px;/* 设置内边距 */
+            margin: 5px; /* 设置外边距 */
+            border: none; /* 设置无边框 */
+            background-color:rgba(255, 255, 255, 0);/* 设置透明 */
+            background-size: calc(100%); /* 图片大小 */
+            background-repeat: no-repeat; /* 不重复平铺 */
+            background-position: center; /* 图片位置 */
+        }
+
+        #title{
+            float: none;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto; /* 将左右边距设置为 auto 来水平居中 */
+            text-align: center; /* 确保父元素居中 */
+        }
+
+        label{
+            height: 30px;
+            font-size: 25px;
+        }
+
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2 style="text-align: center;">抖音(AHUT低仿版)登录界面</h2>
+        <h1 class="Img" id="title" style="text-align: center;"></h1>
         <form id="loginForm">
 
         </form>
@@ -55,8 +82,13 @@
 
     <script src="httpReq.js"></script>
     <script>
+        function loadImg(){ 
+            document.getElementById("title").style.backgroundImage = "url('./Icon/抖音.png')";
+        
+        }
         //页面初始化
         window.onload = function() {
+            loadImg();
             checkID();
             // 在这里进行你的判断操作
             //获取token信息
@@ -70,13 +102,16 @@
 
         function checkID(){
             document.getElementById("loginForm").innerHTML = `
-            <label for="ID">用户ID(或手机号):</label>
+            <label for="ID">用户ID(或手机号):</label><button class="Img" id="userInfo"></button>
             <input type="text" id="ID" name="ID" required><br>
-            <label for="password">密码:</label>
+            <label for="password">密码:</label><button class="Img" id="pwd"></button>
             <input type="password" id="password" name="password" required><br>
             <input type="submit" value="登录" placeholder="center" onclick="IDLogin()">
             <input type="submit" value="使用曾经登录账号" onclick="checkToken()">
             `;
+            
+            document.getElementById("userInfo").style.backgroundImage = "url('./Icon/用户信息.png')";
+            document.getElementById("pwd").style.backgroundImage = "url('./Icon/密码.png')";
         }
         function checkToken(){
             //获取token信息
@@ -84,11 +119,13 @@
             if (JSON.stringify(userData) !== "{}") {
                 //存在用户登录信息
                 document.getElementById("loginForm").innerHTML = `
-                <h1>用户昵称:`+userData.userName+`</h1>
+                <button class="Img" id="userInfo2"></button><h1>${userData.userName}</h1>
                 <h4>用户ID:`+userData.userID+`</h4>
                 <input type="submit" value="登录" placeholder="center" onclick="TokenLogin()">
                 <input type="submit" value="切换账号" onclick="checkID()">
                 `;
+                document.getElementById("userInfo2").style.backgroundImage = "url('./Icon/用户信息.png')";
+        
             }else{
                 alert("曾经没有账号登录或账号已退出")
             }

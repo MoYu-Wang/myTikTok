@@ -21,21 +21,6 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-
-        form {
-            text-align: center;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #555;
-        }
 
         input[type="text"],
         input[type="file"],
@@ -75,22 +60,53 @@
             font-size: 16px;
             display: none; /* 初始隐藏进度文本 */
         }
+        
+        .Img {
+            float: left;
+            width: 30px;
+            height: 30px;
+            padding: 10px 10px;/* 设置内边距 */
+            margin: 5px; /* 设置外边距 */
+            border: none; /* 设置无边框 */
+            background-color:rgba(255, 255, 255, 0);/* 设置透明 */
+            background-size: calc(100%); /* 图片大小 */
+            background-repeat: no-repeat; /* 不重复平铺 */
+            background-position: center; /* 图片位置 */
+        }
+
+        #title{
+            float: none;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto; /* 将左右边距设置为 auto 来水平居中 */
+            text-align: center; /* 确保父元素居中 */
+        }
+
+        label{
+            height: 30px;
+            font-size: 25px;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>抖音(AHUT低仿版)上传视频界面</h1>
+        <button class="Img" id="reback" onclick="reback()"></button>
+        <h1 class="Img" id="title" style="text-align: center;"></h1>
+
         <form id="uploadForm" enctype="multipart/form-data">
             <label for="videoName">视频名称:</label>
+            <div class="Img" id="videoInfo"></div>
             <input type="text" id="videoName" name="videoName"><br>
             
             <label for="videoTags">视频标签 (每个不同标签用#号开头):</label>
+            <div class="Img" id="videoTags"></div>
             <input type="text" id="videoTags" name="videoTags"><br>
             
+            <div class="Img" id="videoFile"></div>
             <input type="file" name="file" id="fileInput"><br>
             
             <button type="button" onclick="uploadVideo()">上传视频</button>
-            <button type="button" onclick="reback()">返回主页</button>
 
             <progress id="uploadProgress" value="0" max="1"></progress> <!-- 进度条 -->
             <div id="progressText">上传进度:0%</div> <!-- 进度文本 -->
@@ -102,8 +118,17 @@
     <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+         function loadImg(){ 
+            document.getElementById("title").style.backgroundImage = "url('./Icon/抖音.png')";
+            document.getElementById("videoInfo").style.backgroundImage = "url('./Icon/视频.png')";
+            document.getElementById("videoTags").style.backgroundImage = "url('./Icon/标签.png')";
+            document.getElementById("reback").style.backgroundImage = "url('./Icon/返回.png')";
+            document.getElementById("videoFile").style.backgroundImage = "url('./Icon/视频文件.png')";
+            
+        }
         //页面初始化
         window.onload = function() {
+            loadImg();
             // 在这里进行你的判断操作
             //获取token信息
             var userData = JSON.parse(localStorage.getItem("userData"));

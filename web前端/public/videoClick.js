@@ -2,6 +2,7 @@
 //各种点击事件
 //热点点击事件
 document.getElementById("topVideo").addEventListener("click", function() {
+    videoORUserVideo = false;
     //切换视频主体
     checkBody(0);
     //初始化videoinfos数组和index
@@ -57,6 +58,7 @@ document.getElementById("careVideo").addEventListener("click",async function(){
         return
     }
     
+    videoORUserVideo = false;
     //切换视频主体
     checkBody(0);
     //初始化videoinfos数组和index
@@ -95,6 +97,7 @@ document.getElementById("refereeVideo").addEventListener("click",async function(
         return
     }
    
+    videoORUserVideo = false;
     //切换视频主体
     checkBody(0);
     //初始化videoinfos数组和index
@@ -128,6 +131,7 @@ document.getElementById("myWorks").addEventListener("click",async function(){
         return
     }
     
+    videoORUserVideo = false;
     //切换视频主体
     checkBody(0);
     //获取我的作品
@@ -168,6 +172,7 @@ document.getElementById("myFavorite").addEventListener("click",async function(){
         return
     }
    
+    videoORUserVideo = false;
     //切换视频主体
     checkBody(0);
     //获取我的喜爱
@@ -208,6 +213,7 @@ document.getElementById("myHistory").addEventListener("click",async function(){
         return
     }
     
+    videoORUserVideo = false;
     //切换视频主体
     checkBody(0);
     //获取历史记录
@@ -254,7 +260,7 @@ document.getElementById("careUser").addEventListener("click",async function(){
         return
     }
     if(null != videoInfos[index]){
-        if(this.innerText == "+"){
+        if(document.getElementById("careUser").getAttribute("isCare") == 'false'){
             //获取登录用户信息
             var userData = JSON.parse(localStorage.getItem("userData"));
             POST_Req("/user/care",CareUserParam(userData.token,videoInfos[index].userID,1))
@@ -264,13 +270,14 @@ document.getElementById("careUser").addEventListener("click",async function(){
                     return
                 }
                 showMessage("成功关注");
-                this.innerHTML = `√`;
+                document.getElementById("careUser").setAttribute("isCare",true);
+                document.getElementById("careUser").style.backgroundImage = "url('./Icon/已关注.png')";
             })
             .catch(error => {
                 console.error('Error:', error);
             });
         }
-        else if(this.innerText == "√"){
+        else{
             showMessage("您已经关注了该用户")
         }
     }else{
@@ -284,17 +291,16 @@ document.getElementById("favorite").addEventListener("click",async function(){
         showMessage("用户未登录\n或登录信息已过期")
         return
     }
-    favIsClick ^= 1;
-    if(favIsClick){
-        document.getElementById("favorite").innerHTML = `取消点赞`;
+    if(document.getElementById("favorite").getAttribute("isFavorite") == 'false'){
+        // 点赞操作
+        document.getElementById("favorite").style.backgroundImage = "url('./Icon/点赞.png')";
         document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) + 1);
-        
-        document.getElementById("favorite").style.backgroundColor = 'red';
+        document.getElementById("favorite").setAttribute("operate",1);
     }else{
-        document.getElementById("favorite").innerHTML = `点赞`;
+        // 取消点赞操作
+        document.getElementById("favorite").style.backgroundImage = "url('./Icon/未点赞.png')";
         document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) - 1);
-        
-        document.getElementById("favorite").style.backgroundColor = '#fff';
+        document.getElementById("favorite").setAttribute("operate",-1);
     }
 });
 
@@ -306,15 +312,15 @@ document.getElementById("comment").addEventListener("click",function(){
     if (sidebar.style.display === 'none') {
         // 如果当前是隐藏状态，则显示频道栏
         sidebar.style.display = 'block';
-        //设置评论按钮颜色
-        document.getElementById("comment").style.backgroundColor = '#fff'
+        //设置评论图标
+        document.getElementById("comment").style.backgroundImage = "url('./Icon/评论.png')";
         //添加鼠标滚轮监听切换视频
         addScrollEventListener();
     } else {
         // 如果当前是显示状态，则隐藏频道栏
         sidebar.style.display = 'none';
-        //设置评论按钮颜色
-        document.getElementById("comment").style.backgroundColor = 'skyblue'
+        //设置评论图标
+        document.getElementById("comment").style.backgroundImage = "url('./Icon/点击评论.png')";
         //移除鼠标滚轮监听切换视频
         removeScrollEventListener();
     }
@@ -337,6 +343,16 @@ document.getElementById("comment").addEventListener("click",function(){
 //搜索点击事件
 document.getElementById("search").addEventListener("click",async function(){
     var searchText = document.getElementById("searchText").value
+    if (searchText === ""){
+        showMessage("请输入内容");
+        return ;
+    }
+    //重置频道栏按钮颜色
+    var buttons = document.querySelectorAll('.sidebar button');
+    buttons.forEach(function(button){
+        button.style.backgroundColor = '#666';
+    });
+    
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
     var tk 
@@ -353,8 +369,13 @@ document.getElementById("search").addEventListener("click",async function(){
             return
         }
         //初始化视频
-        initVideo();
-        videoInfos = videoInfos.concat(data.videoInfos)
+        initUserVideo();
+        userVideoInfos = userVideoInfos.concat(data.videoInfos)
+        if(userVideoInfos[0] == null){
+            showMessage("没有找到与之相关的视频")
+            document.getElementById("rebackBarVideo").click();
+            return;
+        }
         //嵌入视频
         VideoLoadOperate();
         listIndex = 0;
@@ -395,10 +416,17 @@ document.getElementById("submitUpdatePwd").addEventListener("click",function(){
 
 //点击返回
 document.getElementById("user-rebackVideo").addEventListener("click",async function(){
+    videoORUserVideo = false;
     checkBody(0)
     VideoLoadOperate();
     updateBar();
+});
 
+document.getElementById("rebackBarVideo").addEventListener("click",async function(){
+    videoORUserVideo = false;
+    checkBody(0)
+    VideoLoadOperate();
+    updateBar();
 });
 
 //点击修改资料
