@@ -101,7 +101,7 @@
             
             <label for="videoTags">视频标签 (每个不同标签用#号开头):</label>
             <div class="Img" id="videoTags"></div>
-            <input type="text" id="videoTags" name="videoTags"><br>
+            <input type="text" id="videoTags-input" name="videoTags"><br>
             
             <div class="Img" id="videoFile"></div>
             <input type="file" name="file" id="fileInput"><br>
@@ -158,10 +158,10 @@
                 showMessage("请输入视频名称")
                 return; 
             }
-            if (document.getElementById("videoTags").value == ""){
+            if (document.getElementById("videoTags-input").value == ""){
                 showMessage("请至少输入一个标签")
                 return 
-            }else if(document.getElementById("videoTags").value[0] != '#'){
+            }else if(document.getElementById("videoTags-input").value[0] != '#'){
                 showMessage("请输入正确的标签格式")
                 return 
             }
@@ -176,12 +176,12 @@
             }
 
             var vName = document.getElementById('videoName').value;
-            var vTags = document.getElementById('videoTags').value;
+            var vTags = document.getElementById('videoTags-input').value;
 
             var formData = new FormData();
             formData.append('file', file);
             formData.append('videoName', vName);
-            formData.append('videoTags', JSON.stringify(vTags));
+            formData.append('videoTags-input', JSON.stringify(vTags));
 
             // 显示上传进度条和文本
             var progress = document.getElementById('uploadProgress');

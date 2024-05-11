@@ -302,11 +302,13 @@ async function UpdateUserCenterVideo(videoEnum,uID){
                     // 创建视频元素
                     const li = document.createElement('li');
                     li.className = 'user-videoInfo-data';
-                    li.onclick = function(){
-                        videoORUserVideo = true;
-                        userVideoIndex = userVideoInfos.indexOf(videoInfo);
-                        checkBody(0);
-                        VideoLoadOperate();
+                    li.onclick = function(event){
+                        if (!event.target.closest('.deleteVideoDIV')) { // 如果点击的不是 .deleteVideoDIV
+                            videoORUserVideo = true;
+                            userVideoIndex = userVideoInfos.indexOf(videoInfo);
+                            checkBody(0);
+                            VideoLoadOperate();
+                        }
                     }
                     videoContainer.appendChild(li);
                     //获取单个视频信息
@@ -318,12 +320,15 @@ async function UpdateUserCenterVideo(videoEnum,uID){
                         }
                         // <div>${videoInfo.videoLink}</div>
                         li.innerHTML = `
-                            <div>${videoInfo.videoName}</div>
-                            <div>${videoInfo.videoTags}</div>
-                            <div>${data.videoFavoriteNum}</div>
-                            <div class="Img" style="float:'none'; background-image: url(./Icon/点赞.png);width:10px;heigth:10px;"></div>
-                            <div>${data.videoCommitNum}</div>
-                            <div class="Img" style="float:'none'; background-image: url(./Icon/评论.png);width:10px;heigth:10px;"></div>
+                            <div>${videoInfo.videoName}</div></br>
+                            <div>${videoInfo.videoTags}</div></br>
+
+                            <span class="Img" style="float:'none'; background-image: url(./Icon/点赞.png);width:20px;heigth:20px;"></span>
+                            <span>${data.videoFavoriteNum}</span>
+                            <span class="Img" style="float:'none'; background-image: url(./Icon/点击评论.png);width:20px;heigth:20px;"></span>
+                            <span>${data.videoCommitNum}</span>
+                            </br>
+
                             <div class="deleteVideoDIV"></div>
                         `;
                         // 检查用户是否登录且为视频发布人
@@ -339,6 +344,11 @@ async function UpdateUserCenterVideo(videoEnum,uID){
                                         if(response.status_code != 0){
                                             showMessage(response.status_msg);
                                             return;
+                                        }
+                                        //从数组中移除视频
+                                        var index = userVideoInfos.indexOf(videoInfo);
+                                        if (index !== -1) {
+                                            userVideoInfos.splice(index, 1);
                                         }
                                         li.remove(); // 或重新加载视频
                                         showMessage("删除成功");
@@ -382,11 +392,13 @@ async function UpdateUserCenterVideo(videoEnum,uID){
                     // 创建视频元素
                     const li = document.createElement('li');
                     li.className = 'user-videoInfo-data';
-                    li.onclick = function(){
-                        videoORUserVideo = true;
-                        userVideoIndex = userVideoInfos.indexOf(videoInfo);
-                        checkBody(0);
-                        VideoLoadOperate();
+                    li.onclick = function(event){
+                        if (!event.target.closest('.deleteVideoDIV')) { // 如果点击的不是 .deleteVideoDIV
+                            videoORUserVideo = true;
+                            userVideoIndex = userVideoInfos.indexOf(videoInfo);
+                            checkBody(0);
+                            VideoLoadOperate();
+                        }
                     }
                     videoContainer.appendChild(li);
                     //获取单个视频信息
@@ -398,12 +410,15 @@ async function UpdateUserCenterVideo(videoEnum,uID){
                         }
                         // <div>${videoInfo.videoLink}</div>
                         li.innerHTML = `
-                            <div>${videoInfo.videoName}</div>
-                            <div>${videoInfo.videoTags}</div>
-                            <div>${data.videoFavoriteNum}</div>
-                            <div class="Img" style="float:'none'; background-image: url(./Icon/点赞.png);width:10px;heigth:10px;"></div>
-                            <div>${data.videoCommitNum}</div>
-                            <div class="Img" style="float:'none'; background-image: url(./Icon/评论.png);width:10px;heigth:10px;"></div>
+                            <div>${videoInfo.videoName}</div></br>
+                            <div>${videoInfo.videoTags}</div></br>
+
+                            <span class="Img" style="float:'none'; background-image: url(./Icon/点赞.png);width:20px;heigth:20px;"></span>
+                            <span>${data.videoFavoriteNum}</span>
+                            <span class="Img" style="float:'none'; background-image: url(./Icon/点击评论.png);width:20px;heigth:20px;"></span>
+                            <span>${data.videoCommitNum}</span>
+                            </br>
+
                             <div class="deleteVideoDIV"></div>
                         `;
                         // 检查用户是否登录且为视频发布人
@@ -419,6 +434,11 @@ async function UpdateUserCenterVideo(videoEnum,uID){
                                         if(response.status_code != 0){
                                             showMessage(response.status_msg);
                                             return;
+                                        }
+                                        //从数组中移除视频
+                                        var index = userVideoInfos.indexOf(videoInfo);
+                                        if (index !== -1) {
+                                            userVideoInfos.splice(index, 1);
                                         }
                                         li.remove(); // 或重新加载视频
                                         showMessage("删除成功");
@@ -475,11 +495,13 @@ async function UpdateSearchVideo(searchText){
             // 创建视频元素
             const li = document.createElement('li');
             li.className = 'search-videoInfo-data';
-            li.onclick = function(){
-                videoORUserVideo = true;
-                userVideoIndex = userVideoInfos.indexOf(videoInfo);
-                checkBody(0);
-                VideoLoadOperate();
+            li.onclick = function(event){
+                if (!event.target.closest('.deleteVideoDIV')) { // 如果点击的不是 .deleteVideoDIV
+                    videoORUserVideo = true;
+                    userVideoIndex = userVideoInfos.indexOf(videoInfo);
+                    checkBody(0);
+                    VideoLoadOperate();
+                }
             }
             videoContainer.appendChild(li);
             //获取单个视频信息
@@ -491,12 +513,15 @@ async function UpdateSearchVideo(searchText){
                 }
                 // <div>${videoInfo.videoLink}</div>
                 li.innerHTML = `
-                            <div>${videoInfo.videoName}</div>
-                            <div>${videoInfo.videoTags}</div>
-                            <div>${data.videoFavoriteNum}</div>
-                            <div class="Img" style="float:'none'; background-image: url(./Icon/点赞.png);width:10px;heigth:10px;"></div>
-                            <div>${data.videoCommitNum}</div>
-                            <div class="Img" style="float:'none'; background-image: url(./Icon/评论.png);width:10px;heigth:10px;"></div>
+                            <div>${videoInfo.videoName}</div></br>
+                            <div>${videoInfo.videoTags}</div></br>
+
+                            <span class="Img" style="float:'none'; background-image: url(./Icon/点赞.png);width:20px;heigth:20px;"></span>
+                            <span>${data.videoFavoriteNum}</span>
+                            <span class="Img" style="float:'none'; background-image: url(./Icon/点击评论.png);width:20px;heigth:20px;"></span>
+                            <span>${data.videoCommitNum}</span>
+                            </br>
+
                             <div class="deleteVideoDIV"></div>
                         `;
             })

@@ -135,6 +135,8 @@
     padding: 10px;
     text-align: center; /* 设置文字居中 */
     cursor: pointer; /* 鼠标指针样式变为手形，表示可点击 */
+
+    position: relative;
 }
 
 /* .user-videoInfo-data div {
@@ -142,13 +144,31 @@
 /*    overflow-wrap: break-word; /* 新er的名称 */
 /*} */
 
+
+
+
+/*  删除视频按钮  */
 .deleteVideo{
-    /* display: none; /*默认不显示删除按钮 */
+    display: none; /*默认不显示删除按钮 */
     padding: 5px 10px;
     background-color: #e74c3c;
     color: white;
     border: none;
-    border-radius: 3px;
+    border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+
+    position: absolute;
+    bottom: 10px;
+    left: 50%; /* 将按钮的左边缘放置在父元素的水平中心 */
+    transform: translateX(-50%); /* 使用transform属性将按钮水平居中 */
+}
+
+
+.user-videoInfo-data:hover .deleteVideo {
+    display: block; /* 当鼠标悬停在评论项上时显示删除按钮 */
+}
+
+.deleteVideo:hover {
+    background-color: #c0392b; /* 鼠标悬停时深化按钮颜色 */
 }
