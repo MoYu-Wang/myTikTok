@@ -21,19 +21,14 @@ var videoComments = [];//视频评论
 function loadImg(){
     
     document.getElementById("title").style.backgroundImage = "url('./Icon/抖音.png')";
-    // document.getElementById("").style.backgroundImage = "url('./Icon/标签.png')";
     document.getElementById("comment").style.backgroundImage = "url('./Icon/评论.png')";
     document.getElementById("search").style.backgroundImage = "url('./Icon/搜索.png')";
     document.getElementById("careUser").style.backgroundImage = "url('./Icon/未关注.png')";
     document.getElementById("favorite").style.backgroundImage = "url('./Icon/未点赞.png')";
-    // document.getElementById("rebackVideo").style.backgroundImage = "url('./Icon/返回.png')";
-    document.getElementById("user-rebackVideo").style.backgroundImage = "url('./Icon/返回.png')";
     document.getElementById("rebackBarVideo").style.backgroundImage = "url('./Icon/返回.png')";
-    // document.getElementById("").style.backgroundImage = "url('./Icon/密码.png')";
-    // document.getElementById("").style.backgroundImage = "url('./Icon/手机号.png')";
     document.getElementById("downloadPC").style.backgroundImage = "url('./Icon/下载客户端.png')";
     document.getElementById("user_avatar").style.backgroundImage = "url('./Icon/用户.png')";
-    document.getElementById("profile-picture").style.backgroundImage = "url('./Icon/用户.png')";
+    document.getElementById("profile-picture").style.backgroundImage = "url('./Icon/发布人.png')";
     document.getElementById("publicUser2").style.backgroundImage = "url('./Icon/发布人.png')";
 }
 
@@ -108,6 +103,7 @@ function checkBody(checkEnum){
             // 切换视频主体
             document.getElementById("content").style.display = 'block';
             document.getElementById("user-profile").style.display = 'none';
+            document.getElementById("search-body").style.display = 'none';
             //添加滚轮监听切换视频
             addScrollEventListener();
             break;
@@ -117,9 +113,19 @@ function checkBody(checkEnum){
             document.getElementById("video").pause();
             document.getElementById("content").style.display = 'none';
             document.getElementById("user-profile").style.display = 'flex';
+            document.getElementById("search-body").style.display = 'none';
             //移除滚轮监听
             removeScrollEventListener();
             break;
+        case 2:
+            // 切换搜索主体
+            //暂停播放
+            document.getElementById("video").pause();
+            document.getElementById("content").style.display = 'none';
+            document.getElementById("user-profile").style.display = 'none';
+            document.getElementById("search-body").style.display = 'flex';
+            //移除滚轮监听
+            removeScrollEventListener();
         default:
             break;
     }
@@ -133,7 +139,6 @@ async function UserCenter(){
     // 获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
     ToUserCenter(userData.userID);
-
 }
 
 //去到uID用户中心
@@ -315,8 +320,10 @@ async function UpdateUserCenterVideo(videoEnum,uID){
                         li.innerHTML = `
                             <div>${videoInfo.videoName}</div>
                             <div>${videoInfo.videoTags}</div>
-                            <div>点赞数    ${data.videoFavoriteNum}</div>
-                            <div>评论数    ${data.videoCommitNum}</div>
+                            <div>${data.videoFavoriteNum}</div>
+                            <div class="Img" style="float:'none'; background-image: url(./Icon/点赞.png);width:10px;heigth:10px;"></div>
+                            <div>${data.videoCommitNum}</div>
+                            <div class="Img" style="float:'none'; background-image: url(./Icon/评论.png);width:10px;heigth:10px;"></div>
                             <div class="deleteVideoDIV"></div>
                         `;
                         // 检查用户是否登录且为视频发布人
@@ -393,8 +400,10 @@ async function UpdateUserCenterVideo(videoEnum,uID){
                         li.innerHTML = `
                             <div>${videoInfo.videoName}</div>
                             <div>${videoInfo.videoTags}</div>
-                            <div>点赞数    ${data.videoFavoriteNum}</div>
-                            <div>评论数    ${data.videoCommitNum}</div>
+                            <div>${data.videoFavoriteNum}</div>
+                            <div class="Img" style="float:'none'; background-image: url(./Icon/点赞.png);width:10px;heigth:10px;"></div>
+                            <div>${data.videoCommitNum}</div>
+                            <div class="Img" style="float:'none'; background-image: url(./Icon/评论.png);width:10px;heigth:10px;"></div>
                             <div class="deleteVideoDIV"></div>
                         `;
                         // 检查用户是否登录且为视频发布人
@@ -435,6 +444,73 @@ async function UpdateUserCenterVideo(videoEnum,uID){
     }
 }
 
+async function UpdateSearchVideo(searchText){
+    var tk;
+    if(UserIsLogin()){
+        // 获取登录用户信息
+        var userData = JSON.parse(localStorage.getItem("userData"));
+        tk = userData.token
+    }else{
+        tk = 0
+    }
+    //发送get请求获取查找的视频信息数组
+    GET_Req("/video/search","searchText",searchText)
+    .then(data => {
+        if(data.status_code != 0){
+            showMessage(data.status_msg);
+            return
+        }
+        //初始化视频
+        initUserVideo();
+        userVideoInfos = userVideoInfos.concat(data.videoInfos)
+        if(userVideoInfos[0] == null){
+            showMessage("没有找到与之相关的视频")
+            document.getElementById("rebackBarVideo").click();
+            return;
+        }
+        //显示作品
+        const videoContainer = document.querySelector('.search-body');
+        videoContainer.innerHTML = ''; // 清空现有视频
+        userVideoInfos.forEach(async videoInfo => {
+            // 创建视频元素
+            const li = document.createElement('li');
+            li.className = 'search-videoInfo-data';
+            li.onclick = function(){
+                videoORUserVideo = true;
+                userVideoIndex = userVideoInfos.indexOf(videoInfo);
+                checkBody(0);
+                VideoLoadOperate();
+            }
+            videoContainer.appendChild(li);
+            //获取单个视频信息
+            POST_Req("/video/info",VideoOperateInfoParam(tk,videoInfo.videoID))
+            .then(async data => {
+                if(data.status_code != 0){
+                    showMessage(data.status_msg);
+                    return
+                }
+                // <div>${videoInfo.videoLink}</div>
+                li.innerHTML = `
+                            <div>${videoInfo.videoName}</div>
+                            <div>${videoInfo.videoTags}</div>
+                            <div>${data.videoFavoriteNum}</div>
+                            <div class="Img" style="float:'none'; background-image: url(./Icon/点赞.png);width:10px;heigth:10px;"></div>
+                            <div>${data.videoCommitNum}</div>
+                            <div class="Img" style="float:'none'; background-image: url(./Icon/评论.png);width:10px;heigth:10px;"></div>
+                            <div class="deleteVideoDIV"></div>
+                        `;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 //视频初始化
 function initVideo(){
     index = 0;
@@ -463,12 +539,72 @@ async function UpdatePassword(){
         showMessage("用户未登录")
         return 
     }
-    //设置浮窗可见
-    document.getElementById("floatWindow").style.display = "block";
     //获取登录用户信息
     var userData = JSON.parse(localStorage.getItem("userData"));
-    document.getElementById("float-userName").innerText = userData.userName
-    document.getElementById("float-userID").innerText = "ID:" + userData.userID
+    //设置浮窗可见
+    document.getElementById("floatWindow").style.display = "block";
+    //移除滚轮监听
+    removeScrollEventListener();
+    //设置浮窗内容
+    document.getElementById("floatWindow-data").innerHTML = `
+    <span class="close" id="closeFloatWindows">&times;</span>
+
+    <div class="Img" id="title" style=" background-image: url(./Icon/抖音.png);"></div>
+    <h1 id="floatWindow-title">修改密码界面</h1>
+
+    <div class="Img" style="float:'left'; background-image: url(./Icon/用户信息.png)"></div>
+    <span id="float-userName" style="height: 50px;font-size: 45px">${userData.userName}</span></br>
+    <span id="float-userID" style="height: 25px;font-size: 20px">ID:${userData.userID}</span></br></br>
+
+    <span class="Img" style="background-image: url(./Icon/密码.png);width:20px;height:20px"></span>
+    <label for="password">原密码:</label>
+    <input type="password" id="password" minlength="5" maxlength="18"  title="请输入原密码" required><br>
+
+    <span class="Img" style="background-image: url(./Icon/密码.png);width:20px;height:20px"></span>
+    <label for="newPassword">新密码:</label>
+    <input type="password" id="newPassword" minlength="5" maxlength="18" title="请输入新密码" required><br>
+
+    <span class="Img" style="background-image: url(./Icon/密码.png);width:20px;height:20px"></span>
+    <label for="newPassword">再次输入新密码:</label>
+    <input type="password" id="newPassword2" minlength="5" maxlength="18"  title="密码必须与上一次输入密码相同" required><br>
+
+    <button id="submitUpdatePwd">确认修改</button>
+    `
+    // 点击关闭按钮关闭模态浮窗
+    document.getElementById("closeFloatWindows").onclick = function() {
+        document.getElementById("floatWindow").style.display = "none";
+        addScrollEventListener();
+    }
+
+
+    //点击确认修改密码
+    document.getElementById("submitUpdatePwd").onclick = function(){
+        var pwd = document.getElementById("password").value;
+        var newpwd = document.getElementById("newPassword").value;
+        var newpwd2 = document.getElementById("newPassword2").value;
+        //获取登录用户信息
+        var userData = JSON.parse(localStorage.getItem("userData"));
+        if (newpwd != newpwd2){
+            showMessage("两次输入的新密码不同")
+            return;
+        }
+        POST_Req("/user/update/password",UpdatePasswordParam(userData.token,pwd,newpwd))
+        .then(data => {
+            if(data.status_code != 0){
+                showMessage(data.status_msg);
+                return
+            }
+            alert("修改密码成功,请重新登录")
+            nowData = {};
+            localStorage.setItem("userData", JSON.stringify(nowData));
+            window.location.href = "login.html";
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+    };
+
     
 }
 

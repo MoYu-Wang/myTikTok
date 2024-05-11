@@ -18,13 +18,13 @@
 
 #user-baseInfo{
     padding: 20px;
-    width: calc(100%) - 40px;
+    width: 95%;
     background: linear-gradient(to right, #8ac1f5, #adf391); /* 蓝色到绿色的水平渐变 */
     align-items: center;
-    /* margin-top: calc(3%); 将位置往下移动 20 像素 */
-    border-bottom: 1px solid #ccc;
-    border-radius: 10px;
-    height: calc(25%);
+    border-bottom: 1px solid #000;
+    border-top-left-radius: 10px; /* 左上角圆角半径为 10px */
+    border-top-right-radius: 10px; /* 右上角圆角半径为 10px */
+    height: 20%;
 }
 
 #profile-picture {
@@ -92,14 +92,16 @@
 
 /* 视频区域 */
 .user-videoInfo{
-    padding: 20px;
-    width: calc(100%) - 40px;
-    background: linear-gradient(to right, #8ac1f5, #adf391); /* 蓝色到绿色的水平渐变 */
+    width: 95%;
+    height: 65vh;
+    /*background: linear-gradient(to right, #8ac1f5, #adf391); /* 蓝色到绿色的水平渐变 */
+    background-color: #adf391;
     align-items: center;
     overflow-y: auto; /* 如果评论内容超出评论区域的高度，启用垂直滚动条 */
-    border-radius: 10px;
+    
+    border-bottom-left-radius: 10px; /* 左下角圆角半径为 10px */
+    border-bottom-right-radius: 10px; /* 右下角圆角半径为 10px */
     margin: 0;
-    height: calc(100%);
 }
 
 /* 定制滚动条样式 */
@@ -126,18 +128,19 @@
 .user-videoInfo-data{
     background-color: white;
     border-radius: 30px;
-    width: calc(23%);
+    width: calc(20%);
     height: calc(50%);
     float: left; /* 设置左浮动 */
-    margin:10px 10px auto;
+    margin: 10px;
+    padding: 10px;
     text-align: center; /* 设置文字居中 */
     cursor: pointer; /* 鼠标指针样式变为手形，表示可点击 */
 }
 
-.user-videoInfo-data div {
+/* .user-videoInfo-data div {
     word-wrap: break-word; /* 兼容性更好 */
-    overflow-wrap: break-word; /* 新er的名称 */
-}
+/*    overflow-wrap: break-word; /* 新er的名称 */
+/*} */
 
 .deleteVideo{
     /* display: none; /*默认不显示删除按钮 */

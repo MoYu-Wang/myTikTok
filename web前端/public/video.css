@@ -61,46 +61,16 @@ input[type="menu_item"] {
     cursor: pointer;
 }
 
-
-/*  视频主体部分  */
-.content {
+/* 主体区域 */
+#mainBody{
     flex: 1;
-    padding: 20px;
     position: relative; /* 设置相对定位 */
 }
 
-.content-main {
-    flex: 1;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-}
-
-.search-box {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.search-box input[type="text"] {
+/*  视频主体部分  */
+.content {
     padding: 10px;
-    width: 200px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-right: 10px;
-}
-
-.search-box button {
-    border-radius: 5px; 
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.search-box #search:hover {
-    background-color: #555;
-}
-
-#rebackBarVideo{
-    float: left;
+    position: relative; /* 设置相对定位 */
 }
 
 .video-player-container {
@@ -108,6 +78,8 @@ input[type="menu_item"] {
     padding-top: 56.25%; /* 16:9 视频播放器比例 */
     overflow: hidden;
     background-color: #000;
+    
+    border-radius: 10px;
 }
 
 .video-player {
@@ -170,6 +142,7 @@ input[type="menu_item"] {
     background-repeat: no-repeat; /* 不重复平铺 */
     background-position: center; /* 图片位置 */
 }
+
 
 
 #publicUser2 {

@@ -1,17 +1,27 @@
 /* 浮窗整体样式 */
-.floatWindow {
-    display: none;          /* 默认不可见 */
-    position: fixed;       /* 固定位置，浮动效果 */
-    top: 50%;              /* 居中显示 */
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 400px;          /* 修改宽度为400px */
+.floatWindow{
+    display: none; /* 默认情况下隐藏模态浮窗 */
+    position: fixed; /* 固定定位，使其覆盖在页面上 */
+    z-index: 1; /* 设置堆叠顺序，确保在顶部显示 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* 添加半透明黑色背景，实现遮罩效果 */
+}
+
+
+.floatWindow-data {
+    background-color: #fefefe;
+    margin: 20px auto; /* 居中显示模态内容 */
     padding: 20px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 25%;
+    overflow: auto;
+   /* width: 400px;          /* 修改宽度为400px */
     background: linear-gradient(45deg, #de99f3, #8ef0d3);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    border: 2px solid #333333; /* 添加黑色边框 */
-    border-radius: 8px;
-    z-index: 1000;
 }
 
 /* 设置标题居中 */
@@ -20,15 +30,22 @@
 }
 
 /* 标签样式 */
-.floatWindow label {
-    display: block;
-    margin-bottom: 5px;
-    color: #333333;
-    font-size: 14px;
+.floatWindow label{
+    height: 30px;
+    font-size: 20px;
+}
+
+.floatWindow #title{
+    float: none;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto; /* 将左右边距设置为 auto 来水平居中 */
+    text-align: center; /* 确保父元素居中 */
+    margin-top: 10px;
 }
 
 /* 输入框样式 */
-.floatWindow input[type="password"] {
+.floatWindow input[type="password"],input[type="edit-userName"],input[type="edit-userIphone"] {
     width: calc(100% - 12px); /* 减去padding的宽度 */
     padding: 6px;
     margin-bottom: 10px;
@@ -53,3 +70,18 @@
 .floatWindow button:hover {
     background-color: #45a049;
 }
+
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: -10px;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }

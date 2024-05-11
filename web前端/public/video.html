@@ -8,9 +8,11 @@
     <link rel="stylesheet" href="message.css" type="text/css"/>
     <link rel="stylesheet" href="channelBar.css" type="text/css"/>
     <link rel="stylesheet" href="video.css" type="text/css"/>
+    <link rel="stylesheet" href="search.css" type="text/css"/>
     <link rel="stylesheet" href="comment.css" type="text/css"/>
     <link rel="stylesheet" href="floatWindow.css" type="text/css"/>
     <link rel="stylesheet" href="userInfo.css" type="text/css"/>
+
 </head>
 <body>
     <!-- 信息显示区 -->
@@ -32,67 +34,79 @@
             <li><button id="myHistory">历史记录</button></li>
         </ul>
     </div>
-    <!-- 视频主体区域 -->
-    <div class="content" id="content">
+    <!-- 主体 -->
+    <div id="mainBody">
+        <!-- 搜索栏 -->
         <div class="search-box">
             <button class="Img"  id="rebackBarVideo"></button>
             <input  id="searchText" type="text" placeholder="搜索">
             <button class="Img" id="search"></button>
         </div>
-        <div class="video-player-container">
-            <video id="video" class="video-player" controls autoplay loop>
-                <source src="" type="video/mp4">
-            </video>
-            <div class="video-info">
-                <div id="publicUser1">用户名</div>
-                <div id="vName">视频名称</div>
-                <div id="vTags">视频标签</div>
-            </div>
-            <div class="video-controls">
-                <button class="Img" id="publicUser2"></button>
-                <button class="Img" id="careUser"></button>
-                <button class="Img" id="favorite"></button>
-                <div id="favoriteNum">0</div>
-                <button class="Img" id="comment"></button>
-                <div id="commentNum">0</div>
-            </div>
-        </div>
-    </div>
-    <!-- 用户个人中心主体区域 -->
-    <div class="user-profile" id="user-profile">
-        <button class="Img"  id="user-rebackVideo"></button>
-        <div id="user-baseInfo">
-            <div class="Img" id="profile-picture"></div>
-            <div  class="profile-info">
-                <h1 id="profile-userName">用户昵称区</h1>
-                <h5 id="profile-userID">用户ID区</h5>
-                <div class="profile-counts">
-                    <span id="profile-getLikes">X</span>
-                    <span id="profile-careCount">X</span>
-                    <span id="profile-fansCount">X</span>
+        <!-- 视频主体区域 -->
+        <div class="content" id="content">
+            <div class="video-player-container">
+                <video id="video" class="video-player" controls autoplay loop>
+                    <source src="" type="video/mp4">
+                </video>
+                <div class="video-info">
+                    <div id="publicUser1">用户名</div>
+                    <div id="vName">视频名称</div>
+                    <div id="vTags">视频标签</div>
                 </div>
-                <div class="edit-button">
-                    <button id="user-careOperate">关注</button>
-                    <button id="user-baseInfo-edit">编辑资料</button>
+                <div class="video-controls">
+                    <button class="Img" id="publicUser2"></button>
+                    <button class="Img" id="careUser"></button>
+                    <button class="Img" id="favorite"></button>
+                    <div id="favoriteNum">0</div>
+                    <button class="Img" id="comment"></button>
+                    <div id="commentNum">0</div>
                 </div>
             </div>
-            <div id="user-videoInfo-bar">
-                <button id="user-works">用户作品</button>
-                <button id="user-likes">用户喜爱🔒</button>
-                <button id="user-history">用户历史记录🔒</button>
-            </div>
         </div>
-        <ul class="user-videoInfo">
-            <li class="user-videoInfo-data">
+        <!-- 用户个人中心主体区域 -->
+        <div class="user-profile" id="user-profile">
+            <div id="user-baseInfo">
+                <div class="Img" id="profile-picture"></div>
+                <div  class="profile-info">
+                    <h1 id="profile-userName">用户昵称区</h1>
+                    <h5 id="profile-userID">用户ID区</h5>
+                    <div class="profile-counts">
+                        <span id="profile-getLikes">X</span>
+                        <span id="profile-careCount">X</span>
+                        <span id="profile-fansCount">X</span>
+                    </div>
+                    <div class="edit-button">
+                        <button id="user-careOperate">关注</button>
+                        <button id="user-baseInfo-edit">编辑资料</button>
+                    </div>
+                </div>
+                <div id="user-videoInfo-bar">
+                    <button id="user-works">用户作品</button>
+                    <button id="user-likes">用户喜爱🔒</button>
+                    <button id="user-history">用户历史记录🔒</button>
+                </div>
+            </div>
+            <ul class="user-videoInfo">
+                <li class="user-videoInfo-data">
+                    <div>视频名称</div>
+                    <div>视频标签</div>
+                    <div>视频链接</div>
+                    <div>视频点赞数</div>
+                    <div>视频评论数</div>
+                    <div class="deleteVideoDIV">
+                        <button class="deleteVideo">删除视频</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- 搜索主体 -->
+        <ul class="search-body" id="search-body">
+            <li class="search-videoInfo-data">
                 <div>视频名称</div>
                 <div>视频标签</div>
                 <div>视频链接</div>
                 <div>视频点赞数</div>
                 <div>视频评论数</div>
-                <div class="deleteVideoDIV">
-                    <button class="deleteVideo">删除视频</button>
-                </div>
-                
             </li>
         </ul>
     </div>
@@ -151,21 +165,9 @@
     </div>
     <!-- 浮窗 -->
     <div class="floatWindow" id="floatWindow">
-        <h1 id="floatWindow-title">修改密码界面</h1>
-
-        <h2 id="float-userName">用户名</h2>
-        <h4 id="float-userID">用户ID</h4>
-
-        <label for="password">原密码:</label>
-        <input type="password" id="password" minlength="5" maxlength="18" required title="请输入原密码" required><br>
-
-        <label for="newPassword">新密码:</label>
-        <input type="password" id="newPassword" minlength="5" maxlength="18" required title="请输入新密码" required><br>
-
-        <label for="newPassword">再次输入新密码:</label>
-        <input type="password" id="newPassword2" minlength="5" maxlength="18" required title="密码必须与上一次输入密码相同" required><br>
-
-        <button id="submitUpdatePwd">确认修改</button>
+        <div class="floatWindow-data" id="floatWindow-data">
+            <span class="close" id="closeFloatWindows">&times;</span>
+        </div>
     </div>
 </body>
 <script src="message.js"></script>

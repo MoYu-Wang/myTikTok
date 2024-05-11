@@ -171,7 +171,7 @@ func UserUpdateInfo(ctx *gin.Context) {
 		return
 	}
 	//3.返回成功响应
-	io.ResponseSuccess(ctx, common.CodeUpdateUserInfoSuccess)
+	io.ResponseSuccess(ctx, common.CodeSuccess)
 }
 
 // 修改密码

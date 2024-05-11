@@ -1,7 +1,7 @@
 /*  频道栏  */
 .sidebar {
-    min-width: 200px;
-    max-width: 200px;
+    min-width: 17%;
+    max-width: 17%;
     background: linear-gradient(to right, #666, #333); /* 水平渐变 */
     padding: 20px;
     border-radius: 10px;

@@ -352,114 +352,104 @@ document.getElementById("search").addEventListener("click",async function(){
     buttons.forEach(function(button){
         button.style.backgroundColor = '#666';
     });
-    
-    //获取登录用户信息
-    var userData = JSON.parse(localStorage.getItem("userData"));
-    var tk 
-    if(await UserIsLogin()){
-        tk = userData.token
-    }else{
-        tk = "0"
-    }
-    //发送get请求获取查找的视频信息数组
-    GET_Req("/video/search","searchText",searchText)
-    .then(data => {
-        if(data.status_code != 0){
-            showMessage(data.status_msg);
-            return
-        }
-        //初始化视频
-        initUserVideo();
-        userVideoInfos = userVideoInfos.concat(data.videoInfos)
-        if(userVideoInfos[0] == null){
-            showMessage("没有找到与之相关的视频")
-            document.getElementById("rebackBarVideo").click();
-            return;
-        }
-        //嵌入视频
-        VideoLoadOperate();
-        listIndex = 0;
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+    checkBody(2);
+    UpdateSearchVideo(searchText)
 });
-
-//点击确认修改密码
-document.getElementById("submitUpdatePwd").addEventListener("click",function(){
-    var pwd = document.getElementById("password").value;
-    var newpwd = document.getElementById("newPassword").value;
-    var newpwd2 = document.getElementById("newPassword2").value;
-    //获取登录用户信息
-    var userData = JSON.parse(localStorage.getItem("userData"));
-    if (newpwd != newpwd2){
-        showMessage("两次输入的新密码不同")
-        return;
-    }
-    POST_Req("/user/update/password",UpdatePasswordParam(userData.token,pwd,newpwd))
-    .then(data => {
-        if(data.status_code != 0){
-            showMessage(data.status_msg);
-            return
-        }
-        alert("修改密码成功,请重新登录")
-        nowData = {};
-        localStorage.setItem("userData", JSON.stringify(nowData));
-        window.location.href = "login.html";
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-
-});
-
 
 //点击返回
-document.getElementById("user-rebackVideo").addEventListener("click",async function(){
-    videoORUserVideo = false;
-    checkBody(0)
-    VideoLoadOperate();
-    updateBar();
-});
-
 document.getElementById("rebackBarVideo").addEventListener("click",async function(){
+    //关闭评论区
+    document.getElementById("video-comments").style.display = "none";
+    // 如果当前是隐藏状态，则显示频道栏
+    document.getElementById('sidebar').style.display = 'block';
+    //设置评论图标
+    document.getElementById("comment").style.backgroundImage = "url('./Icon/评论.png')";
+
     videoORUserVideo = false;
     checkBody(0)
     VideoLoadOperate();
     updateBar();
 });
 
-//点击修改资料
+//点击编辑资料
 document.getElementById("user-baseInfo-edit").addEventListener("click",async function(){
     if(await UserIsLogin()==false){
-        showMessage("用户未登录\n或登录信息已过期")
-        return
+        showMessage("用户未登录")
+        return 
     }
+    //获取登录用户信息
+    var userData = JSON.parse(localStorage.getItem("userData"));
+    //设置浮窗可见
+    document.getElementById("floatWindow").style.display = "block";
+    //移除滚轮监听
+    removeScrollEventListener();
+    //设置浮窗内容
+    document.getElementById("floatWindow-data").innerHTML = `
+    <span class="close" id="closeFloatWindows">&times;</span>
     
+    
+    <div class="Img" id="title" style=" background-image: url(./Icon/抖音.png);"></div>
+    <h1 id="floatWindow-title">编辑信息界面</h1>
 
-});
+    <span class="Img" style="background-image: url(./Icon/用户信息.png);width:20px;height:20px"></span>
+    <span>用户昵称:</span></br>
+    <input type="edit-userName" id="edit-userName" minlength="5" maxlength="18" value=${userData.userName}><br>
 
-//点击用户作品
-document.getElementById("user-works").addEventListener("click",async function(){
-    if(await UserIsLogin()==false){
-        showMessage("用户未登录\n或登录信息已过期")
-        return
-    }
-    UpdateUserCenterVideo(0,)
+    
+    <span class="Img" style="background-image: url(./Icon/手机号.png);width:20px;height:20px"></span>
+    <span>用户手机号:</span></br>
+    <input type="edit-userIphone" id="edit-userIphone" minlength="11" maxlength="11" value=${userData.iphoneID}><br>
 
-});
+    <button id="edit-userInfo">确认修改</button>
+    `;
 
-
-
-// 检查点击事件并隐藏浮窗
-document.addEventListener('click', function(event) {
-    // 检查点击的元素是否是浮窗或其子元素
-    var isClickInside = floatWindow.contains(event.target);
-
-    if (!isClickInside) {
-        // 如果点击的不是浮窗区域，则隐藏浮窗
-        floatWindow.style.display = 'none';
-        
+    // 点击关闭按钮关闭模态浮窗
+    document.getElementById("closeFloatWindows").onclick = function() {
+        document.getElementById("floatWindow").style.display = "none";
+        addScrollEventListener();
     }
 
+
+    //点击确认修改信息
+    document.getElementById("edit-userInfo").onclick = function(){
+        var userName = document.getElementById("edit-userName").value;
+        var userIphone = document.getElementById("edit-userIphone").value;
+        if(userIphone.length != 11 && userIphone.length != 0){
+            showMessage("手机号格式不正确")
+            return;
+        }
+        POST_Req("/user/update/info",UpdateUserInfoParam(userData.token,userName,userIphone))
+        .then(data => {
+            if(data.status_code != 0){
+                showMessage(data.status_msg);
+                return
+            }
+            if(userName != ""){
+                userData.userName = userName
+            }
+            if(userIphone != ""){
+                userData.iphoneID = userIphone
+            }
+            localStorage.setItem("userData", JSON.stringify(userData));
+            alert("修改信息成功")
+            UserCenter();
+            document.getElementById("closeFloatWindows").click();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 });
+
+// 点击关闭按钮或模态外部区域关闭模态浮窗
+document.getElementById("closeFloatWindows").onclick = function() {
+    document.getElementById("floatWindow").style.display = "none";
+    addScrollEventListener();
+}
+
+window.onclick = function(event) {
+  if (event.target == document.getElementById("floatWindow")) {
+    document.getElementById("floatWindow").style.display = "none";
+    addScrollEventListener();
+  }
+}

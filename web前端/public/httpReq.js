@@ -67,14 +67,6 @@ function LoginParam(uID,pwd,iphID){
   }
 }
 
-function UpdataUserParam(Token,uName,pwd,iphID){
-  return {
-    userName:uName,
-    password:pwd,
-    iphoneID:iphID,
-    token:Token
-  }
-}
 
 function ForgetPwdParam(uID,iphID){
   return {
@@ -173,6 +165,14 @@ function UpdatePasswordParam(Token,pwd,newpwd){
     token:Token,
     password:pwd,
     newPassword:newpwd
+  }
+}
+
+function UpdateUserInfoParam(Token,uName,uIphone){
+  return {
+    token:Token,
+    userName:uName,
+    userIphone:uIphone
   }
 }
 
