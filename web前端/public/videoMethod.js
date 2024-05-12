@@ -9,7 +9,6 @@ var videoORUserVideo = false;//false:正常视频表,true:用户中心视频表
 let current = 0;
 var userData = {};
 var videoWatchTime = 0;//视频播放时间(ms)
-var favIsClick = 0;//点赞操作缓存
 var listIndex = 1;
 var listValue = ["search","top","care","referee","works","favorite","history",""];
 var videoComments = [];//视频评论
@@ -772,6 +771,7 @@ async function UpdateComment(){
                                 return;
                             }
                             li.remove(); // 或重新加载评论
+                            document.getElementById("commentNum").innerText = String(parseInt(document.getElementById("commentNum").innerText) - 1);
                             showMessage("删除成功");
                         })
                         .catch(error => {
@@ -851,9 +851,11 @@ async function VideoLoadOperate(){
         if (data.isFavorite){
             document.getElementById("favorite").style.backgroundImage = "url('./Icon/点赞.png')";
             document.getElementById("favorite").setAttribute("isFavorite",true);
+            document.getElementById("favorite").setAttribute("operate",0);
         }else{
             document.getElementById("favorite").style.backgroundImage = "url('./Icon/未点赞.png')";
             document.getElementById("favorite").setAttribute("isFavorite",false);
+            document.getElementById("favorite").setAttribute("operate",0);
         }
         //点赞数量
         document.getElementById("favoriteNum").innerHTML = data.videoFavoriteNum;
@@ -879,8 +881,6 @@ async function VideoLoadOperate(){
     //更新评论区
     UpdateComment();
 
-    //重置操作
-    favIsClick = 0;
 }
 
 

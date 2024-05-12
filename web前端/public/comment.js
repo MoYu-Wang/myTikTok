@@ -19,6 +19,7 @@ document.getElementById("publishComment").addEventListener("click",function(){
         }
         UpdateComment()
         showMessage("评论成功")
+        document.getElementById("commentNum").innerText = String(parseInt(document.getElementById("commentNum").innerText) + 1);                    
         document.getElementById('commentText').value = '';
     })
     .catch(error => {

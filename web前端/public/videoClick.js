@@ -292,15 +292,30 @@ document.getElementById("favorite").addEventListener("click",async function(){
         return
     }
     if(document.getElementById("favorite").getAttribute("isFavorite") == 'false'){
-        // 点赞操作
-        document.getElementById("favorite").style.backgroundImage = "url('./Icon/点赞.png')";
-        document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) + 1);
-        document.getElementById("favorite").setAttribute("operate",1);
+        if(document.getElementById("favorite").getAttribute("operate") == '0'){
+            // 点赞操作
+            document.getElementById("favorite").style.backgroundImage = "url('./Icon/点赞.png')";
+            document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) + 1);
+            document.getElementById("favorite").setAttribute("operate",1);
+        }else{
+            // 取消点赞操作
+            document.getElementById("favorite").style.backgroundImage = "url('./Icon/未点赞.png')";
+            document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) - 1);
+            document.getElementById("favorite").setAttribute("operate",0);
+        }
+        
     }else{
-        // 取消点赞操作
-        document.getElementById("favorite").style.backgroundImage = "url('./Icon/未点赞.png')";
-        document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) - 1);
-        document.getElementById("favorite").setAttribute("operate",-1);
+        if(document.getElementById("favorite").getAttribute("operate") == '0'){
+            // 取消点赞操作
+            document.getElementById("favorite").style.backgroundImage = "url('./Icon/未点赞.png')";
+            document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) - 1);
+            document.getElementById("favorite").setAttribute("operate",-1);
+        }else{
+            // 点赞操作
+            document.getElementById("favorite").style.backgroundImage = "url('./Icon/点赞.png')";
+            document.getElementById("favoriteNum").innerText = String(parseInt(document.getElementById("favoriteNum").innerText) + 1);
+            document.getElementById("favorite").setAttribute("operate",0);
+        }
     }
 });
 
@@ -366,8 +381,15 @@ document.getElementById("rebackBarVideo").addEventListener("click",async functio
     document.getElementById("comment").style.backgroundImage = "url('./Icon/评论.png')";
 
     videoORUserVideo = false;
-    checkBody(0)
-    VideoLoadOperate();
+    checkBody(0);
+    //获取视频信息
+    var videoInfo
+    if(!videoORUserVideo){
+        videoInfo = videoInfos[index];
+    }else{
+        videoInfo = userVideoInfos[userVideoIndex];
+    }
+    VideoCloseOperate(videoInfo.videoID);
     updateBar();
 });
 
